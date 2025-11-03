@@ -1,158 +1,122 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { researchPosts } from "@/data/research";
 
 export const metadata: Metadata = {
   title: "Research & Insights",
-  description: "Case studies, whitepapers, and insights from building modular growth systems.",
+  description: "Case studies, whitepapers, and playbooks distilled from Marsala OS engagements.",
 };
-
-const posts = [
-  {
-    id: 1,
-    type: "Case Study",
-    title: "Fintech Launch System",
-    summary: "How a regulated fintech platform achieved 10× faster time-to-market using modular architecture.",
-    detail: "Complete breakdown of architecture decisions, compliance requirements, and operational metrics over 6 weeks.",
-    date: "November 2025",
-    metrics: ["10× faster GTM", "+38% lead conversion", "Green Core Web Vitals"],
-  },
-  {
-    id: 2,
-    type: "Case Study",
-    title: "Retail Automation Platform",
-    summary: "E-commerce brand improved ad-spend efficiency by 47% through automated creative testing and audience sync.",
-    detail: "Dynamic creative generation, weekly experimentation cadence, and LTV-based audience optimization.",
-    date: "October 2025",
-    metrics: ["+47% ad efficiency", "+19% AOV", "ROAS > 3.0"],
-  },
-  {
-    id: 3,
-    type: "Case Study",
-    title: "AI CRM Migration",
-    summary: "B2B SaaS company tripled engagement with ML-powered scoring and intelligent nurture sequences.",
-    detail: "ETL process, ID reconciliation, segmentation strategy, and AI-assisted playbooks for revenue teams.",
-    date: "September 2025",
-    metrics: ["3× engagement", "-35% response time", "Unified pipeline dashboard"],
-  },
-  {
-    id: 4,
-    type: "Whitepaper",
-    title: "Modular Growth Stacks",
-    summary: "Framework for building scalable, maintainable systems that evolve with your business needs.",
-    detail: "Principles for modular architecture, component boundaries, integration patterns, and operational playbooks.",
-    date: "August 2025",
-    metrics: [],
-  },
-  {
-    id: 5,
-    type: "Insight",
-    title: "AI Automation Playbook",
-    summary: "Practical guide to implementing AI workflows that save time and scale operations.",
-    detail: "From content generation to customer support, with real examples and integration patterns.",
-    date: "July 2025",
-    metrics: [],
-  },
-  {
-    id: 6,
-    type: "Insight",
-    title: "Performance Budgets for Modern Web",
-    summary: "How to set and maintain Core Web Vitals targets across your entire site.",
-    detail: "Monitoring strategies, optimization techniques, and automated enforcement in CI/CD pipelines.",
-    date: "June 2025",
-    metrics: [],
-  },
-];
 
 export default function ResearchPage() {
   return (
-    <main className="min-h-screen bg-white">
-      <section className="bg-white py-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-gray-600">
+    <main className="min-h-screen bg-cream-50">
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-cream-50 via-moss-50 to-sage-50 py-12 lg:py-20">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute left-1/3 top-0 h-72 w-72 rounded-full bg-moss-300 blur-3xl" />
+          <div className="absolute right-1/4 bottom-0 h-80 w-80 rounded-full bg-sage-300 blur-3xl" />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-6xl px-6 lg:px-8">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-moss-300 bg-white/80 px-4 py-2 shadow-sm backdrop-blur-sm">
+            <div className="h-2 w-2 rounded-full bg-moss-500" />
+            <span className="text-xs font-medium uppercase tracking-wider text-moss-700">
               Research & Insights
-            </p>
-            <h1 className="mt-4 text-4xl font-light tracking-tight text-gray-900 sm:text-5xl">
-              Learnings from building modular systems
-            </h1>
-            <p className="mt-6 text-lg text-gray-600">
-              Case studies, frameworks, and practical guides distilled from real projects across fintech, SaaS, and e-commerce.
-            </p>
+            </span>
           </div>
+
+          <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-moss-950 sm:text-5xl">
+            Learnings from real engagements
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg text-sage-700">
+            Case studies, frameworks, and operational playbooks from building modular growth systems
+          </p>
         </div>
       </section>
 
-      <section className="bg-gray-50 py-16">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-8">
-            {posts.map((post) => (
-              <article
-                key={post.id}
-                className="relative overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md"
+      {/* Posts Grid */}
+      <section className="bg-white py-12 lg:py-16">
+        <div className="mx-auto max-w-6xl px-6 lg:px-8">
+          <div className="grid gap-6">
+            {researchPosts.map((post) => (
+              <Link
+                key={post.slug}
+                href={`/research/${post.slug}`}
+                className="group relative overflow-hidden rounded-3xl border border-moss-200 bg-gradient-to-br from-white to-cream-50 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-moss-400 hover:shadow-hover lg:p-8"
               >
-                <div className="p-8">
-                  <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-                    <div className="flex-1">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-gray-600">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  {/* Content */}
+                  <div className="flex-1 space-y-3">
+                    {/* Meta */}
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="rounded-full bg-moss-gradient px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white">
                         {post.type}
-                      </p>
-                      <h2 className="mt-3 text-2xl font-light text-gray-900">{post.title}</h2>
-                      <p className="mt-3 text-sm text-gray-700">{post.summary}</p>
-                      <p className="mt-2 text-xs text-gray-500">{post.detail}</p>
-
-                      {post.metrics.length > 0 && (
-                        <div className="mt-6 flex flex-wrap gap-3">
-                          {post.metrics.map((metric, idx) => (
-                            <span
-                              key={idx}
-                              className="rounded-full border border-gray-300 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-700"
-                            >
-                              {metric}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                      </span>
+                      <span className="text-xs font-medium uppercase tracking-wider text-sage-500">
+                        {post.date}
+                      </span>
+                      <span className="text-xs text-sage-400">·</span>
+                      <span className="text-xs font-medium text-sage-500">{post.readingTime}</span>
                     </div>
-                    <div className="flex flex-col items-end gap-3">
-                      <p className="text-xs uppercase tracking-[0.3em] text-gray-500">{post.date}</p>
-                      <button className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-6 py-2 text-sm font-semibold text-gray-900 transition hover:bg-gray-50">
-                        Read Full Post
-                        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
+
+                    {/* Title & Summary */}
+                    <h2 className="text-2xl font-bold text-moss-950 transition-colors group-hover:text-moss-700 lg:text-3xl">
+                      {post.title}
+                    </h2>
+                    <p className="text-base text-sage-700 lg:text-lg">{post.summary}</p>
+
+                    {/* Metrics */}
+                    {post.metrics.length > 0 && (
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        {post.metrics.map((metric) => (
+                          <span
+                            key={metric}
+                            className="rounded-full border border-moss-300 bg-white px-3 py-1 text-xs font-semibold text-moss-700"
+                          >
+                            {metric}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {post.tags.map((tag) => (
+                        <span key={tag} className="text-xs text-sage-500">
+                          #{tag}
+                        </span>
+                      ))}
                     </div>
                   </div>
+
+                  {/* CTA */}
+                  <div className="flex items-center gap-2 text-moss-700 transition-all duration-300 group-hover:translate-x-1 group-hover:text-moss-900 lg:flex-col lg:items-end lg:gap-0">
+                    <span className="text-sm font-semibold">Read more</span>
+                    <span className="text-lg">→</span>
+                  </div>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-white py-24">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl border border-gray-200 bg-gray-50 p-12 text-center">
-            <h2 className="text-3xl font-light tracking-tight text-gray-900">
-              Subscribe to Research Updates
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
-              Get new case studies and insights delivered monthly.
-            </p>
-            <form className="mx-auto mt-8 flex max-w-md gap-3">
-              <input
-                type="email"
-                placeholder="your@email.com"
-                className="flex-1 rounded-full border border-gray-300 bg-white px-6 py-3 text-sm focus:border-gray-900 focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="rounded-full bg-gray-900 px-8 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-white transition hover:bg-gray-800"
-              >
-                Subscribe
-              </button>
-            </form>
-          </div>
+      {/* CTA Section */}
+      <section className="bg-moss-950 py-12 lg:py-16">
+        <div className="mx-auto max-w-4xl px-6 text-center lg:px-8">
+          <h2 className="text-3xl font-bold text-white lg:text-4xl">
+            Need help with your growth stack?
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-sage-300">
+            Schedule a call to design your ideal modular system
+          </p>
+          <Link
+            href="/contact"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-moss-gradient px-8 py-3 text-base font-semibold text-white shadow-glow transition-all duration-300 hover:scale-105"
+          >
+            Get in Touch
+            <span>→</span>
+          </Link>
         </div>
       </section>
     </main>
