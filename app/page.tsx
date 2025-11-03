@@ -1,100 +1,91 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 
-const metrics = [
-  {
-    value: "10×",
-    label: "Time to Market",
-    detail: "Ship faster with modular systems",
-  },
-  {
-    value: "+47%",
-    label: "Ad Efficiency",
-    detail: "Data-driven optimization",
-  },
-  {
-    value: "3×",
-    label: "Engagement",
-    detail: "AI-powered workflows",
-  },
-  {
-    value: "24/7",
-    label: "Operations",
-    detail: "Continuous automation",
-  },
+const modules = [
+  { id: 1, name: "Brand", color: "bg-moss-500", active: false },
+  { id: 2, name: "Web", color: "bg-moss-600", active: false },
+  { id: 3, name: "CRM", color: "bg-sage-500", active: false },
+  { id: 4, name: "AI", color: "bg-moss-700", active: false },
+  { id: 5, name: "Ads", color: "bg-sage-600", active: false },
+  { id: 6, name: "Data", color: "bg-moss-500", active: false },
 ];
 
-const capabilities = [
-  {
-    title: "Brand & Design Systems",
-    summary: "Scalable identity, component libraries, and visual languages that evolve with your business.",
-    detail: "From logos to complete design systems with reusable components, ensuring consistency across every touchpoint.",
-  },
-  {
-    title: "Web & Platform Engineering",
-    summary: "Next.js architectures optimized for performance, SEO, and conversion with clean Core Web Vitals.",
-    detail: "Fast, scalable websites built with modern frameworks, delivered on global CDNs with sub-second load times.",
-  },
-  {
-    title: "AI Automation & Intelligence",
-    summary: "Copilots, workflows, and intelligent systems that handle repetitive tasks and scale operations.",
-    detail: "From content generation to customer support, AI agents that integrate seamlessly with your existing stack.",
-  },
+const metrics = [
+  { value: "10×", label: "Faster Launch", icon: "⚡" },
+  { value: "+47%", label: "Efficiency", icon: "📈" },
+  { value: "3×", label: "Engagement", icon: "🎯" },
 ];
 
 export default function HomePage() {
+  const [activeModules, setActiveModules] = useState<number[]>([]);
+
+  const toggleModule = (id: number) => {
+    setActiveModules(prev =>
+      prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id]
+    );
+  };
+
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-cream-50">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-white via-marsala-50 to-white py-32 lg:py-40">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(0,0,0,0.03)_0%,_transparent_50%)]" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-cream-50 via-moss-50 to-sage-50 py-20 lg:py-32">
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-moss-400 blur-3xl" />
+          <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-sage-400 blur-3xl" />
+        </div>
+
         <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-8 flex justify-center">
-              <div className="rounded-3xl border border-marsala-200 bg-white px-4 py-2 shadow-card">
-                <span className="text-xs font-semibold uppercase tracking-widest text-marsala-600">
-                  Intelligent Growth Studio
-                </span>
-              </div>
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-moss-300 bg-white/80 px-4 py-2 shadow-sm backdrop-blur-sm">
+              <div className="h-2 w-2 rounded-full bg-moss-500" />
+              <span className="text-xs font-medium uppercase tracking-wider text-moss-700">
+                Intelligent Growth Studio
+              </span>
             </div>
-            <h1 className="text-5xl font-bold tracking-tight text-black sm:text-6xl lg:text-7xl">
-              Build your modular
-              <span className="mt-2 block bg-gradient-to-r from-black to-marsala-700 bg-clip-text text-transparent">
-                digital operating system
+
+            <h1 className="text-5xl font-bold leading-tight tracking-tight text-moss-950 sm:text-6xl lg:text-7xl">
+              Grow with
+              <span className="mt-2 block bg-moss-gradient bg-clip-text text-transparent">
+                modular intelligence
               </span>
             </h1>
-            <p className="mx-auto mt-8 max-w-2xl text-xl leading-relaxed text-marsala-600">
-              Strategy, design, engineering, and AI automation to connect every part of your growth stack
+
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-sage-700">
+              Build your digital ecosystem with plug-and-play modules for brand, web, AI, and automation
             </p>
 
-            <div className="mt-12 flex flex-col gap-4 sm:flex-row sm:justify-center">
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
               <Link
                 href="/modules"
-                className="group rounded-full bg-black px-8 py-4 text-base font-semibold text-white shadow-glow transition-all duration-300 hover:scale-105 hover:shadow-hover"
+                className="group inline-flex items-center justify-center gap-2 rounded-full bg-moss-gradient px-8 py-4 text-base font-semibold text-white shadow-glow transition-all duration-300 hover:scale-105 hover:shadow-hover"
               >
                 Explore Modules
-                <span className="ml-2 inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </Link>
               <Link
                 href="/contact"
-                className="rounded-full border-2 border-black px-8 py-4 text-base font-semibold text-black transition-all duration-300 hover:bg-black hover:text-white"
+                className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-moss-600 bg-white/50 px-8 py-4 text-base font-semibold text-moss-700 backdrop-blur-sm transition-all duration-300 hover:bg-moss-600 hover:text-white"
               >
-                Contact Team
+                Get Started
               </Link>
             </div>
           </div>
 
           {/* Metrics */}
-          <div className="mx-auto mt-20 grid max-w-5xl grid-cols-2 gap-4 md:grid-cols-4 lg:gap-6">
+          <div className="mx-auto mt-16 grid max-w-4xl grid-cols-3 gap-4 lg:gap-6">
             {metrics.map((metric) => (
               <div
                 key={metric.label}
-                className="group relative overflow-hidden rounded-3xl border border-marsala-200 bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-hover"
+                className="group relative overflow-hidden rounded-3xl border border-moss-200 bg-white/80 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-hover"
               >
-                <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 -translate-y-8 rounded-full bg-marsala-50 transition-transform duration-300 group-hover:scale-150" />
-                <div className="relative">
-                  <p className="text-4xl font-bold text-black">{metric.value}</p>
-                  <p className="mt-2 text-sm font-medium text-marsala-600">{metric.label}</p>
+                <div className="absolute right-0 top-0 h-20 w-20 translate-x-6 -translate-y-6 rounded-full bg-moss-100 transition-transform duration-500 group-hover:scale-150" />
+                <div className="relative text-center">
+                  <div className="mb-2 text-3xl">{metric.icon}</div>
+                  <p className="text-3xl font-bold text-moss-700">{metric.value}</p>
+                  <p className="mt-1 text-sm font-medium text-sage-600">{metric.label}</p>
                 </div>
               </div>
             ))}
@@ -102,130 +93,167 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Capabilities */}
-      <section className="bg-gray-50 py-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="text-4xl font-light tracking-tight text-gray-900 sm:text-5xl">Modular Capabilities</h2>
-            <p className="mt-4 text-lg text-gray-600">
-              Choose the modules you need today, add more as you scale.
+      {/* Interactive Module Builder */}
+      <section className="bg-white py-20 lg:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-4xl font-bold tracking-tight text-moss-950 lg:text-5xl">
+              Build Your Stack
+            </h2>
+            <p className="mt-4 text-lg text-sage-700">
+              Click modules to activate them and see your system grow
             </p>
           </div>
-          <div className="grid gap-8 md:grid-cols-3">
-            {capabilities.map((capability) => (
-              <article
-                key={capability.title}
-                className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-8 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-              >
-                <h3 className="text-xl font-light text-gray-900">{capability.title}</h3>
-                <p className="mt-4 text-sm text-gray-700">{capability.summary}</p>
-                <p className="mt-3 text-xs text-gray-500">{capability.detail}</p>
-              </article>
-            ))}
+
+          <div className="mx-auto mt-16 max-w-5xl">
+            {/* Module Grid */}
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:gap-6">
+              {modules.map((module) => {
+                const isActive = activeModules.includes(module.id);
+                return (
+                  <button
+                    key={module.id}
+                    onClick={() => toggleModule(module.id)}
+                    className={`group relative overflow-hidden rounded-4xl border-2 p-8 text-center transition-all duration-500 ${
+                      isActive
+                        ? "border-moss-500 bg-moss-gradient shadow-glow"
+                        : "border-moss-200 bg-cream-50 hover:border-moss-400"
+                    }`}
+                  >
+                    <div
+                      className={`absolute inset-0 bg-moss-gradient opacity-0 transition-opacity duration-500 ${
+                        isActive ? "opacity-100" : "group-hover:opacity-10"
+                      }`}
+                    />
+                    <div className="relative">
+                      <div
+                        className={`mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-500 ${
+                          isActive ? "bg-white/20 scale-110" : "bg-moss-100"
+                        }`}
+                      >
+                        <div
+                          className={`h-8 w-8 rounded-full transition-all duration-500 ${
+                            isActive ? "bg-white scale-110" : module.color
+                          }`}
+                        />
+                      </div>
+                      <h3
+                        className={`text-2xl font-bold transition-colors duration-300 ${
+                          isActive ? "text-white" : "text-moss-800"
+                        }`}
+                      >
+                        {module.name}
+                      </h3>
+                      <p
+                        className={`mt-2 text-sm transition-colors duration-300 ${
+                          isActive ? "text-moss-100" : "text-sage-600"
+                        }`}
+                      >
+                        {isActive ? "Active" : "Click to activate"}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Active Count */}
+            {activeModules.length > 0 && (
+              <div className="mt-12 text-center">
+                <div className="inline-flex items-center gap-3 rounded-full border-2 border-moss-500 bg-moss-gradient px-6 py-3 shadow-glow">
+                  <div className="flex -space-x-2">
+                    {activeModules.map((id) => (
+                      <div
+                        key={id}
+                        className="h-8 w-8 rounded-full border-2 border-white bg-moss-700"
+                      />
+                    ))}
+                  </div>
+                  <span className="text-base font-semibold text-white">
+                    {activeModules.length} module{activeModules.length !== 1 ? "s" : ""} active
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
-          <div className="mt-12 text-center">
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="bg-moss-950 py-20 lg:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-3">
+            <div className="text-center">
+              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-moss-700">
+                <div className="h-10 w-10 rounded-full bg-moss-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white">Modular by Design</h3>
+              <p className="mt-3 text-sage-300">
+                Add only what you need, when you need it
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-moss-700">
+                <div className="h-10 w-10 rounded-full bg-sage-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white">AI-Powered</h3>
+              <p className="mt-3 text-sage-300">
+                Intelligent automation that scales with you
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-moss-700">
+                <div className="h-10 w-10 rounded-full bg-moss-500" />
+              </div>
+              <h3 className="text-xl font-bold text-white">Always Growing</h3>
+              <p className="mt-3 text-sage-300">
+                Continuous improvement and optimization
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-16 text-center">
             <Link
-              href="/modules"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-gray-700"
+              href="/research"
+              className="inline-flex items-center gap-2 text-base font-semibold text-moss-400 transition-colors hover:text-moss-300"
             >
-              View all 10 modules
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
+              Read our research
+              <span>→</span>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="bg-white py-16">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl border border-gray-200 bg-gray-50 p-10">
-            <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-              <div className="max-w-xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-gray-600">
-                  Trusted By
-                </p>
-                <h3 className="mt-3 text-2xl font-light text-gray-900">
-                  Teams building the next generation of digital products across fintech, SaaS, and e-commerce.
-                </h3>
-              </div>
-            </div>
-          </div>
+      {/* CTA */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-moss-100 via-sage-100 to-cream-100 py-20 lg:py-32">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute left-0 top-0 h-full w-1/3 bg-moss-gradient blur-3xl" />
+          <div className="absolute right-0 bottom-0 h-full w-1/3 bg-sage-gradient blur-3xl" />
         </div>
-      </section>
 
-      {/* Research Preview */}
-      <section className="bg-gray-50 py-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-14 text-center">
-            <h2 className="text-4xl font-light tracking-tight text-gray-900">Research & Insights</h2>
-            <p className="mt-4 text-lg text-gray-600">
-              Learnings from building modular systems across industries.
-            </p>
-          </div>
-          <div className="grid gap-8 md:grid-cols-3">
-            <article className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-gray-600">Case Study</p>
-              <h3 className="mt-4 text-2xl font-light text-gray-900">Fintech Launch System</h3>
-              <p className="mt-3 text-sm text-gray-700">10× faster time-to-market with modular architecture and compliance-ready infrastructure.</p>
-              <Link href="/research" className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-gray-900">
-                Read More
-                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </article>
-            <article className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-gray-600">Whitepaper</p>
-              <h3 className="mt-4 text-2xl font-light text-gray-900">Modular Growth Stacks</h3>
-              <p className="mt-3 text-sm text-gray-700">Framework for building scalable, maintainable systems that evolve with your business.</p>
-              <Link href="/research" className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-gray-900">
-                Read More
-                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </article>
-            <article className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-gray-600">Insight</p>
-              <h3 className="mt-4 text-2xl font-light text-gray-900">AI Automation Playbook</h3>
-              <p className="mt-3 text-sm text-gray-700">Practical guide to implementing AI workflows that save time and scale operations.</p>
-              <Link href="/research" className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-gray-900">
-                Read More
-                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </article>
-          </div>
-        </div>
-      </section>
+        <div className="relative z-10 mx-auto max-w-4xl px-6 text-center lg:px-8">
+          <Image src="/logo.png" alt="Marsala" width={80} height={80} className="mx-auto mb-8 h-20 w-20" />
 
-      {/* CTA Section */}
-      <section className="bg-white py-24">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl border border-gray-200 bg-gray-50 p-12 text-center">
-            <h2 className="text-4xl font-light tracking-tight text-gray-900 sm:text-5xl">
-              Ready to build your OS?
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
-              Schedule a call to discuss your project, objectives, and ideal modular rollout.
-            </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Link
-                href="/contact"
-                className="rounded-full bg-gray-900 px-10 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-white shadow-lg transition hover:bg-gray-800"
-              >
-                Contact Team
-              </Link>
-              <Link
-                href="/about"
-                className="rounded-full border border-gray-300 px-10 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-gray-900 transition hover:bg-white"
-              >
-                Learn More
-              </Link>
-            </div>
+          <h2 className="text-4xl font-bold tracking-tight text-moss-950 lg:text-5xl">
+            Ready to grow?
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-sage-700">
+            Schedule a call to design your ideal modular system
+          </p>
+
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-moss-gradient px-10 py-4 text-base font-semibold text-white shadow-glow transition-all duration-300 hover:scale-105"
+            >
+              Get in Touch
+            </Link>
+            <Link
+              href="/modules"
+              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-moss-600 bg-white px-10 py-4 text-base font-semibold text-moss-700 transition-all duration-300 hover:bg-moss-600 hover:text-white"
+            >
+              View All Modules
+            </Link>
           </div>
         </div>
       </section>
