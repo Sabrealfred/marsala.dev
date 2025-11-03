@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const metrics = [
   {
@@ -45,44 +46,58 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-white">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-white py-32">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_#eef2ff_0%,_transparent_50%)]" />
-        <div className="relative z-10 mx-auto flex max-w-6xl flex-col items-center px-4 text-center sm:px-6 lg:px-8">
-          <span className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-gray-50 px-4 py-2 text-xs font-medium uppercase tracking-[0.35em] text-gray-700">
-            Intelligent Growth Studio
-          </span>
-          <h1 className="mt-8 max-w-4xl text-balance text-4xl font-light tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-            Build your modular digital operating system
-          </h1>
-          <p className="mt-6 max-w-3xl text-lg text-gray-600 sm:text-xl">
-            Marsala OS combines strategy, design, engineering, and AI automation to connect every part of your growth stack — from brand and web to CRM, ads, and data.
-          </p>
+      <section className="relative overflow-hidden bg-gradient-to-br from-white via-marsala-50 to-white py-32 lg:py-40">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(0,0,0,0.03)_0%,_transparent_50%)]" />
+        <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="mb-8 flex justify-center">
+              <div className="rounded-3xl border border-marsala-200 bg-white px-4 py-2 shadow-card">
+                <span className="text-xs font-semibold uppercase tracking-widest text-marsala-600">
+                  Intelligent Growth Studio
+                </span>
+              </div>
+            </div>
+            <h1 className="text-5xl font-bold tracking-tight text-black sm:text-6xl lg:text-7xl">
+              Build your modular
+              <span className="mt-2 block bg-gradient-to-r from-black to-marsala-700 bg-clip-text text-transparent">
+                digital operating system
+              </span>
+            </h1>
+            <p className="mx-auto mt-8 max-w-2xl text-xl leading-relaxed text-marsala-600">
+              Strategy, design, engineering, and AI automation to connect every part of your growth stack
+            </p>
 
-          {/* Metrics Grid */}
-          <div className="mt-16 grid w-full max-w-5xl grid-cols-2 gap-4 md:grid-cols-4">
-            {metrics.map((metric) => (
-              <article key={metric.label} className="relative rounded-xl border border-gray-200 bg-white p-6 text-left shadow-sm transition hover:shadow-md">
-                <p className="text-3xl font-light text-gray-900">{metric.value}</p>
-                <p className="mt-1 text-[11px] uppercase tracking-[0.35em] text-gray-600">{metric.label}</p>
-                <p className="mt-3 text-xs text-gray-500">{metric.detail}</p>
-              </article>
-            ))}
+            <div className="mt-12 flex flex-col gap-4 sm:flex-row sm:justify-center">
+              <Link
+                href="/modules"
+                className="group rounded-full bg-black px-8 py-4 text-base font-semibold text-white shadow-glow transition-all duration-300 hover:scale-105 hover:shadow-hover"
+              >
+                Explore Modules
+                <span className="ml-2 inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </Link>
+              <Link
+                href="/contact"
+                className="rounded-full border-2 border-black px-8 py-4 text-base font-semibold text-black transition-all duration-300 hover:bg-black hover:text-white"
+              >
+                Contact Team
+              </Link>
+            </div>
           </div>
 
-          {/* CTAs */}
-          <div className="mt-12 flex flex-col gap-4 sm:flex-row">
-            <Link
-              href="/modules"
-              className="rounded-full bg-gray-900 px-10 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-white shadow-lg transition hover:bg-gray-800"
-            >
-              Explore Modules
-            </Link>
-            <Link
-              href="/contact"
-              className="rounded-full border border-gray-300 px-10 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-gray-900 transition hover:bg-gray-50"
-            >
-              Contact Team
-            </Link>
+          {/* Metrics */}
+          <div className="mx-auto mt-20 grid max-w-5xl grid-cols-2 gap-4 md:grid-cols-4 lg:gap-6">
+            {metrics.map((metric) => (
+              <div
+                key={metric.label}
+                className="group relative overflow-hidden rounded-3xl border border-marsala-200 bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-hover"
+              >
+                <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 -translate-y-8 rounded-full bg-marsala-50 transition-transform duration-300 group-hover:scale-150" />
+                <div className="relative">
+                  <p className="text-4xl font-bold text-black">{metric.value}</p>
+                  <p className="mt-2 text-sm font-medium text-marsala-600">{metric.label}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
