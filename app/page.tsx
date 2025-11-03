@@ -31,7 +31,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-cream-50">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-cream-50 via-moss-50 to-sage-50 py-20 lg:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-cream-50 via-moss-50 to-sage-50 py-12 lg:py-20">
         <div className="absolute inset-0 opacity-30">
           <div className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-moss-400 blur-3xl" />
           <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-sage-400 blur-3xl" />
@@ -75,7 +75,7 @@ export default function HomePage() {
           </div>
 
           {/* Metrics */}
-          <div className="mx-auto mt-16 grid max-w-4xl grid-cols-3 gap-4 lg:gap-6">
+          <div className="mx-auto mt-10 grid max-w-4xl grid-cols-3 gap-4 lg:gap-6">
             {metrics.map((metric) => (
               <div
                 key={metric.label}
@@ -102,7 +102,7 @@ export default function HomePage() {
       </section>
 
       {/* Interactive Module Builder */}
-      <section className="bg-white py-20 lg:py-32">
+      <section className="bg-white py-12 lg:py-20">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-4xl font-bold tracking-tight text-moss-950 lg:text-5xl">
@@ -113,7 +113,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mx-auto mt-16 max-w-5xl">
+          <div className="mx-auto mt-10 max-w-5xl">
             {/* Module Grid */}
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:gap-6">
               {modules.map((module) => {
@@ -160,7 +160,7 @@ export default function HomePage() {
 
             {/* Active Count */}
             {activeModules.length > 0 && (
-              <div className="mt-12 text-center">
+              <div className="mt-8 text-center">
                 <div className="inline-flex items-center gap-3 rounded-full border-2 border-moss-500 bg-moss-gradient px-6 py-3 shadow-glow">
                   <div className="flex -space-x-2">
                     {activeModules.map((id) => (
@@ -181,7 +181,7 @@ export default function HomePage() {
       </section>
 
       {/* Features */}
-      <section className="bg-moss-950 py-20 lg:py-32">
+      <section className="bg-moss-950 py-12 lg:py-20">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-3">
             <div className="text-center">
@@ -213,7 +213,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="mt-16 text-center">
+          <div className="mt-10 text-center">
             <Link
               href="/research"
               className="inline-flex items-center gap-2 text-base font-semibold text-moss-400 transition-colors hover:text-moss-300"
@@ -226,23 +226,23 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-moss-100 via-sage-100 to-cream-100 py-20 lg:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-moss-100 via-sage-100 to-cream-100 py-12 lg:py-20">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute left-0 top-0 h-full w-1/3 bg-moss-gradient blur-3xl" />
           <div className="absolute right-0 bottom-0 h-full w-1/3 bg-sage-gradient blur-3xl" />
         </div>
 
         <div className="relative z-10 mx-auto max-w-4xl px-6 text-center lg:px-8">
-          <Image src="/logo.png" alt="Marsala" width={80} height={80} className="mx-auto mb-8 h-20 w-20" />
+          <Image src="/logo.png" alt="Marsala" width={80} height={80} className="mx-auto mb-6 h-20 w-20" />
 
           <h2 className="text-4xl font-bold tracking-tight text-moss-950 lg:text-5xl">
             Ready to grow?
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-sage-700">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-sage-700">
             Schedule a call to design your ideal modular system
           </p>
 
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-moss-gradient px-10 py-4 text-base font-semibold text-white shadow-glow transition-all duration-300 hover:scale-105"

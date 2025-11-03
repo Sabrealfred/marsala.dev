@@ -16,7 +16,7 @@ const legalLinks = [
 
 export function Footer() {
   return (
-    <footer className="mt-32 border-t border-moss-200 bg-cream-50">
+    <footer className="mt-16 border-t border-moss-200 bg-cream-50">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-10 text-sm text-sage-700 md:flex-row md:items-center md:justify-between md:px-10">
         <div className="space-y-2">
           <p className="font-display text-lg font-semibold text-moss-950">Marsala</p>
