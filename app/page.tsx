@@ -5,18 +5,18 @@ import Image from "next/image";
 import { useState } from "react";
 
 const modules = [
-  { id: 1, name: "Brand", color: "bg-moss-500", active: false },
-  { id: 2, name: "Web", color: "bg-moss-600", active: false },
-  { id: 3, name: "CRM", color: "bg-sage-500", active: false },
-  { id: 4, name: "AI", color: "bg-moss-700", active: false },
-  { id: 5, name: "Ads", color: "bg-sage-600", active: false },
-  { id: 6, name: "Data", color: "bg-moss-500", active: false },
+  { id: 1, name: "Brand", color: "bg-moss-500", icon: "/icon-arc.svg" },
+  { id: 2, name: "Web", color: "bg-moss-600", icon: "/icon-path.svg" },
+  { id: 3, name: "CRM", color: "bg-sage-500", icon: "/icon-arc.svg" },
+  { id: 4, name: "AI", color: "bg-moss-700", icon: "/icon-path.svg" },
+  { id: 5, name: "Ads", color: "bg-sage-600", icon: "/icon-arc.svg" },
+  { id: 6, name: "Data", color: "bg-moss-500", icon: "/icon-path.svg" },
 ];
 
 const metrics = [
-  { value: "10×", label: "Faster Launch", icon: "⚡" },
-  { value: "+47%", label: "Efficiency", icon: "📈" },
-  { value: "3×", label: "Engagement", icon: "🎯" },
+  { value: "10×", label: "Faster Launch", icon: "/icon-arc.svg" },
+  { value: "+47%", label: "Efficiency", icon: "/icon-path.svg" },
+  { value: "3×", label: "Engagement", icon: "/icon-arc.svg" },
 ];
 
 export default function HomePage() {
@@ -83,7 +83,15 @@ export default function HomePage() {
               >
                 <div className="absolute right-0 top-0 h-20 w-20 translate-x-6 -translate-y-6 rounded-full bg-moss-100 transition-transform duration-500 group-hover:scale-150" />
                 <div className="relative text-center">
-                  <div className="mb-2 text-3xl">{metric.icon}</div>
+                  <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center">
+                    <Image
+                      src={metric.icon}
+                      alt=""
+                      width={64}
+                      height={64}
+                      className="h-16 w-16"
+                    />
+                  </div>
                   <p className="text-3xl font-bold text-moss-700">{metric.value}</p>
                   <p className="mt-1 text-sm font-medium text-sage-600">{metric.label}</p>
                 </div>
@@ -120,21 +128,14 @@ export default function HomePage() {
                         : "border-moss-200 bg-cream-50 hover:border-moss-400"
                     }`}
                   >
-                    <div
-                      className={`absolute inset-0 bg-moss-gradient opacity-0 transition-opacity duration-500 ${
-                        isActive ? "opacity-100" : "group-hover:opacity-10"
-                      }`}
-                    />
                     <div className="relative">
-                      <div
-                        className={`mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-500 ${
-                          isActive ? "bg-white/20 scale-110" : "bg-moss-100"
-                        }`}
-                      >
-                        <div
-                          className={`h-8 w-8 rounded-full transition-all duration-500 ${
-                            isActive ? "bg-white scale-110" : module.color
-                          }`}
+                      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-moss-200 bg-white/60 p-2 transition-all duration-500 group-hover:border-moss-400">
+                        <Image
+                          src={module.icon}
+                          alt={`${module.name} module`}
+                          width={48}
+                          height={48}
+                          className="h-12 w-12"
                         />
                       </div>
                       <h3

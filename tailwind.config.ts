@@ -41,6 +41,17 @@ const config: Config = {
           200: "#e8e8dd",
           300: "#d9d9c8",
         },
+        surface: "#ffffff",
+        surfaceMuted: "#f0f2ee",
+        border: "#d1dbd1",
+        foreground: {
+          DEFAULT: "#2d3d2f",
+          muted: "#627465",
+        },
+        accent: {
+          DEFAULT: "#6a8a6c",
+          soft: "#8aa58c",
+        },
       },
       fontFamily: {
         sans: ["var(--font-inter)", "ui-sans-serif", "system-ui"],
