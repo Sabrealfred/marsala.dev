@@ -1,107 +1,219 @@
 import Link from "next/link";
-import { Hero } from "@/components/Hero";
 
-const quickLinks = [
-  { href: "/modules", title: "Modules", description: "Modular services from brand to AI" },
-  { href: "/cases", title: "Case Studies", description: "Real results with metrics" },
-  { href: "/lab", title: "Lab", description: "Experiments and prototypes" },
-  { href: "/about", title: "About", description: "Mission, values, and team" },
+const metrics = [
+  {
+    value: "10×",
+    label: "Time to Market",
+    detail: "Ship faster with modular systems",
+  },
+  {
+    value: "+47%",
+    label: "Ad Efficiency",
+    detail: "Data-driven optimization",
+  },
+  {
+    value: "3×",
+    label: "Engagement",
+    detail: "AI-powered workflows",
+  },
+  {
+    value: "24/7",
+    label: "Operations",
+    detail: "Continuous automation",
+  },
 ];
 
-const highlights = [
-  "Ultra-fast Next.js websites optimized for SEO",
-  "AI-powered CRM and sales automation",
-  "End-to-end ad and content automation",
-  "Measurable impact in weeks",
-];
-
-const socialProof = [
-  { metric: "10×", label: "faster time-to-market" },
-  { metric: "+47%", label: "ad efficiency" },
-  { metric: "3×", label: "engagement boost" },
+const capabilities = [
+  {
+    title: "Brand & Design Systems",
+    summary: "Scalable identity, component libraries, and visual languages that evolve with your business.",
+    detail: "From logos to complete design systems with reusable components, ensuring consistency across every touchpoint.",
+  },
+  {
+    title: "Web & Platform Engineering",
+    summary: "Next.js architectures optimized for performance, SEO, and conversion with clean Core Web Vitals.",
+    detail: "Fast, scalable websites built with modern frameworks, delivered on global CDNs with sub-second load times.",
+  },
+  {
+    title: "AI Automation & Intelligence",
+    summary: "Copilots, workflows, and intelligent systems that handle repetitive tasks and scale operations.",
+    detail: "From content generation to customer support, AI agents that integrate seamlessly with your existing stack.",
+  },
 ];
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen">
-      <main>
-        <Hero />
-
-        <section className="mt-24 space-y-5">
-          <h2 className="font-display text-3xl font-semibold text-foreground md:text-4xl">
-            Your modular digital operating system
-          </h2>
-          <p className="max-w-3xl text-lg text-foreground-muted">
-            Plug-and-play modules for Brand, Web, CRM, AI, Ads, Data, and Commerce.
-            Activate what you need today, scale as you grow.
+    <main className="min-h-screen bg-white">
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-white py-32">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_#eef2ff_0%,_transparent_50%)]" />
+        <div className="relative z-10 mx-auto flex max-w-6xl flex-col items-center px-4 text-center sm:px-6 lg:px-8">
+          <span className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-gray-50 px-4 py-2 text-xs font-medium uppercase tracking-[0.35em] text-gray-700">
+            Intelligent Growth Studio
+          </span>
+          <h1 className="mt-8 max-w-4xl text-balance text-4xl font-light tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+            Build your modular digital operating system
+          </h1>
+          <p className="mt-6 max-w-3xl text-lg text-gray-600 sm:text-xl">
+            Marsala OS combines strategy, design, engineering, and AI automation to connect every part of your growth stack — from brand and web to CRM, ads, and data.
           </p>
-        </section>
 
-        <section className="mt-16 grid gap-6 rounded-3xl border border-border bg-white/80 p-8 shadow-card md:grid-cols-3">
-          {socialProof.map((item) => (
-            <div key={item.label} className="text-center">
-              <p className="font-display text-4xl font-semibold text-accent">{item.metric}</p>
-              <p className="mt-2 text-sm text-foreground-muted">{item.label}</p>
-            </div>
-          ))}
-        </section>
-
-        <section className="mt-20 space-y-6">
-          <h2 className="font-display text-2xl font-semibold text-foreground">What you get</h2>
-          <div className="grid gap-3 text-sm text-foreground md:grid-cols-2">
-            {highlights.map((item) => (
-              <div key={item} className="flex items-start gap-3 rounded-2xl border border-border bg-surfaceMuted/70 p-5 shadow-card">
-                <span className="text-lg text-accent">✓</span>
-                <p>{item}</p>
-              </div>
+          {/* Metrics Grid */}
+          <div className="mt-16 grid w-full max-w-5xl grid-cols-2 gap-4 md:grid-cols-4">
+            {metrics.map((metric) => (
+              <article key={metric.label} className="relative rounded-xl border border-gray-200 bg-white p-6 text-left shadow-sm transition hover:shadow-md">
+                <p className="text-3xl font-light text-gray-900">{metric.value}</p>
+                <p className="mt-1 text-[11px] uppercase tracking-[0.35em] text-gray-600">{metric.label}</p>
+                <p className="mt-3 text-xs text-gray-500">{metric.detail}</p>
+              </article>
             ))}
           </div>
-        </section>
 
-        <section className="mt-24 space-y-6">
-          <h2 className="font-display text-2xl font-semibold text-foreground">Explore</h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {quickLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="group flex flex-col gap-2 rounded-3xl border border-border bg-white/80 p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-accent/50 hover:shadow-glow"
+          {/* CTAs */}
+          <div className="mt-12 flex flex-col gap-4 sm:flex-row">
+            <Link
+              href="/modules"
+              className="rounded-full bg-gray-900 px-10 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-white shadow-lg transition hover:bg-gray-800"
+            >
+              Explore Modules
+            </Link>
+            <Link
+              href="/contact"
+              className="rounded-full border border-gray-300 px-10 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-gray-900 transition hover:bg-gray-50"
+            >
+              Contact Team
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Capabilities */}
+      <section className="bg-gray-50 py-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto mb-16 max-w-3xl text-center">
+            <h2 className="text-4xl font-light tracking-tight text-gray-900 sm:text-5xl">Modular Capabilities</h2>
+            <p className="mt-4 text-lg text-gray-600">
+              Choose the modules you need today, add more as you scale.
+            </p>
+          </div>
+          <div className="grid gap-8 md:grid-cols-3">
+            {capabilities.map((capability) => (
+              <article
+                key={capability.title}
+                className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-8 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-md"
               >
-                <h3 className="font-display text-lg font-semibold text-foreground group-hover:text-accent">
-                  {link.title}
-                </h3>
-                <p className="text-sm text-foreground-muted">{link.description}</p>
-                <span className="mt-2 text-accent">→</span>
-              </Link>
+                <h3 className="text-xl font-light text-gray-900">{capability.title}</h3>
+                <p className="mt-4 text-sm text-gray-700">{capability.summary}</p>
+                <p className="mt-3 text-xs text-gray-500">{capability.detail}</p>
+              </article>
             ))}
           </div>
-        </section>
+          <div className="mt-12 text-center">
+            <Link
+              href="/modules"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-gray-700"
+            >
+              View all 10 modules
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </section>
 
-        <section className="mt-24 rounded-3xl border border-accent/20 bg-gradient-to-br from-accent/10 via-white to-surface p-10 shadow-glow">
-          <div className="max-w-2xl space-y-5">
-            <h2 className="font-display text-3xl font-semibold text-foreground">
+      {/* Social Proof */}
+      <section className="bg-white py-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-gray-200 bg-gray-50 p-10">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+              <div className="max-w-xl">
+                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-gray-600">
+                  Trusted By
+                </p>
+                <h3 className="mt-3 text-2xl font-light text-gray-900">
+                  Teams building the next generation of digital products across fintech, SaaS, and e-commerce.
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Research Preview */}
+      <section className="bg-gray-50 py-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-14 text-center">
+            <h2 className="text-4xl font-light tracking-tight text-gray-900">Research & Insights</h2>
+            <p className="mt-4 text-lg text-gray-600">
+              Learnings from building modular systems across industries.
+            </p>
+          </div>
+          <div className="grid gap-8 md:grid-cols-3">
+            <article className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-gray-600">Case Study</p>
+              <h3 className="mt-4 text-2xl font-light text-gray-900">Fintech Launch System</h3>
+              <p className="mt-3 text-sm text-gray-700">10× faster time-to-market with modular architecture and compliance-ready infrastructure.</p>
+              <Link href="/research" className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-gray-900">
+                Read More
+                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </article>
+            <article className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-gray-600">Whitepaper</p>
+              <h3 className="mt-4 text-2xl font-light text-gray-900">Modular Growth Stacks</h3>
+              <p className="mt-3 text-sm text-gray-700">Framework for building scalable, maintainable systems that evolve with your business.</p>
+              <Link href="/research" className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-gray-900">
+                Read More
+                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </article>
+            <article className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-gray-600">Insight</p>
+              <h3 className="mt-4 text-2xl font-light text-gray-900">AI Automation Playbook</h3>
+              <p className="mt-3 text-sm text-gray-700">Practical guide to implementing AI workflows that save time and scale operations.</p>
+              <Link href="/research" className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-gray-900">
+                Read More
+                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-white py-24">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-gray-200 bg-gray-50 p-12 text-center">
+            <h2 className="text-4xl font-light tracking-tight text-gray-900 sm:text-5xl">
               Ready to build your OS?
             </h2>
-            <p className="text-lg text-foreground-muted">
-              Book a call to map your ideal system, or browse our pricing.
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
+              Schedule a call to discuss your project, objectives, and ideal modular rollout.
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-surface shadow-glow transition-transform duration-300 hover:-translate-y-0.5"
+                className="rounded-full bg-gray-900 px-10 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-white shadow-lg transition hover:bg-gray-800"
               >
-                Contact Us
+                Contact Team
               </Link>
               <Link
-                href="/pricing"
-                className="inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-white px-6 py-3 text-sm font-semibold text-foreground transition-transform duration-300 hover:-translate-y-0.5 hover:border-foreground/40"
+                href="/about"
+                className="rounded-full border border-gray-300 px-10 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-gray-900 transition hover:bg-white"
               >
-                See Pricing
+                Learn More
               </Link>
             </div>
           </div>
-        </section>
-      </main>
-    </div>
+        </div>
+      </section>
+    </main>
   );
 }

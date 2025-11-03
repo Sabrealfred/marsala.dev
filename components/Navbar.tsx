@@ -6,11 +6,9 @@ import { useEffect, useState } from "react";
 const links = [
   { href: "/", label: "Home" },
   { href: "/modules", label: "Modules" },
-  { href: "/cases", label: "Cases" },
+  { href: "/research", label: "Research" },
   { href: "/lab", label: "Lab" },
   { href: "/about", label: "About" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/contact", label: "Contact" },
 ];
 
 export function Navbar() {
@@ -27,24 +25,24 @@ export function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "border-b border-border bg-surface/90 shadow-card backdrop-blur-xl"
+          ? "border-b border-gray-200 bg-white/90 shadow-sm backdrop-blur-xl"
           : "bg-transparent"
       }`}
     >
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4 md:px-10 md:py-5">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="font-display text-sm font-semibold uppercase tracking-[0.32em] text-foreground"
+          className="text-sm font-light uppercase tracking-[0.32em] text-gray-900"
         >
           Marsala OS
         </Link>
-        <nav className="flex items-center gap-6">
-          <ul className="flex flex-wrap items-center gap-4 text-xs text-foreground-muted sm:text-sm">
+        <nav className="flex items-center gap-8">
+          <ul className="flex items-center gap-6 text-sm text-gray-600">
             {links.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="transition-colors duration-300 hover:text-foreground"
+                  className="transition-colors duration-200 hover:text-gray-900"
                 >
                   {link.label}
                 </Link>
@@ -53,7 +51,7 @@ export function Navbar() {
           </ul>
           <Link
             href="/contact"
-            className="inline-flex items-center rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-surface transition-transform duration-300 hover:-translate-y-0.5"
+            className="rounded-full bg-gray-900 px-6 py-2 text-sm font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-gray-800"
           >
             Contact
           </Link>
