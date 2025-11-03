@@ -4,14 +4,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const links = [
-  { href: "/#home", label: "Home" },
-  { href: "/#modules", label: "Modules" },
-  { href: "/#lab", label: "Lab" },
-  { href: "/#cases", label: "Cases" },
+  { href: "/", label: "Home" },
+  { href: "/modules", label: "Modules" },
+  { href: "/cases", label: "Cases" },
+  { href: "/lab", label: "Lab" },
+  { href: "/about", label: "About" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/#about", label: "About" },
-  { href: "/#contact", label: "Contact" },
-  { href: "/links", label: "Links" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function Navbar() {
@@ -34,7 +33,7 @@ export function Navbar() {
     >
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4 md:px-10 md:py-5">
         <Link
-          href="/#home"
+          href="/"
           className="font-display text-sm font-semibold uppercase tracking-[0.32em] text-foreground"
         >
           Marsala OS
@@ -53,10 +52,10 @@ export function Navbar() {
             ))}
           </ul>
           <Link
-            href="/#contact"
+            href="/contact"
             className="inline-flex items-center rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-surface transition-transform duration-300 hover:-translate-y-0.5"
           >
-            Book a Call
+            Contact
           </Link>
         </nav>
       </div>

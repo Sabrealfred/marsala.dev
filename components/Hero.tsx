@@ -75,13 +75,13 @@ export function Hero() {
         </p>
         <div className="flex flex-wrap gap-3">
           <Link
-            href="/#modules"
+            href="/modules"
             className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-surface shadow-glow transition-transform duration-300 hover:-translate-y-0.5"
           >
             Explore Modules · Explorar módulos
           </Link>
           <Link
-            href="/#contact"
+            href="/contact"
             className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-white/40 px-6 py-3 text-sm font-semibold text-foreground transition-transform duration-300 hover:-translate-y-0.5 hover:border-foreground/30"
           >
             Book a Call · Reservar llamada
