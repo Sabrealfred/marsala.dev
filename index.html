@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Marsala OS | Marsala.dev</title>
+    <meta
+      name="description"
+      content="Marsala OS: The Intelligent Growth Studio. Build your digital ecosystem with modular intelligence — from brand to automation, all in one system."
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Sora:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0f0f11;
+        --bg-muted: #141416;
+        --fg: #f5f5f7;
+        --fg-muted: #cfd2da;
+        --accent: #8c2f39;
+        --accent-soft: rgba(140, 47, 57, 0.2);
+        --radius: 20px;
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Inter", "Sora", "Segoe UI", sans-serif;
+        background: radial-gradient(circle at 20% 20%, rgba(140, 47, 57, 0.12), transparent 45%),
+          var(--bg);
+        color: var(--fg);
+        min-height: 100vh;
+        line-height: 1.6;
+      }
+
+      main {
+        width: min(1100px, 90vw);
+        margin: 0 auto;
+        padding-bottom: 96px;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(12px);
+        background: rgba(15, 15, 17, 0.72);
+        border-bottom: 1px solid rgba(245, 245, 247, 0.05);
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: min(1100px, 90vw);
+        margin: 0 auto;
+        padding: 20px 0;
+      }
+
+      nav .logo {
+        font-family: "Sora", "Inter", sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      nav ul {
+        list-style: none;
+        display: flex;
+        gap: 24px;
+        padding: 0;
+        margin: 0;
+      }
+
+      nav a {
+        text-decoration: none;
+        color: var(--fg-muted);
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: color 0.2s ease;
+      }
+
+      nav a:hover {
+        color: var(--fg);
+      }
+
+      section {
+        margin-top: 96px;
+      }
+
+      .hero {
+        padding-top: 120px;
+        display: grid;
+        gap: 32px;
+      }
+
+      .headline {
+        font-size: clamp(2.8rem, 4vw, 3.4rem);
+        font-family: "Sora", "Inter", sans-serif;
+        line-height: 1.1;
+        font-weight: 700;
+      }
+
+      .subheadline {
+        color: var(--fg-muted);
+        font-size: 1.1rem;
+        max-width: 620px;
+      }
+
+      .cta-group {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 12px 22px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        background: transparent;
+        color: var(--fg);
+        border: 1px solid rgba(245, 245, 247, 0.12);
+        transition: all 0.3s ease;
+      }
+
+      .cta-primary {
+        background: linear-gradient(120deg, var(--accent), #b43a46);
+        border: none;
+        box-shadow: var(--shadow);
+      }
+
+      .cta:hover {
+        transform: translateY(-2px);
+        border-color: rgba(245, 245, 247, 0.25);
+      }
+
+      h2 {
+        font-family: "Sora", "Inter", sans-serif;
+        font-size: clamp(2rem, 3vw, 2.5rem);
+        margin-bottom: 16px;
+      }
+
+      p {
+        margin: 0 0 12px;
+      }
+
+      .muted {
+        color: var(--fg-muted);
+      }
+
+      .module-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 24px;
+        margin-top: 32px;
+      }
+
+      .card {
+        padding: 24px;
+        background: linear-gradient(160deg, rgba(20, 20, 22, 0.95), rgba(27, 27, 30, 0.85));
+        border-radius: var(--radius);
+        border: 1px solid rgba(245, 245, 247, 0.08);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.4s ease, border 0.4s ease;
+      }
+
+      .card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top, rgba(140, 47, 57, 0.25), transparent 60%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-6px) scale(1.01);
+        border-color: rgba(140, 47, 57, 0.6);
+      }
+
+      .card:hover::after {
+        opacity: 1;
+      }
+
+      .card h3 {
+        margin: 0 0 12px;
+        font-size: 1.15rem;
+      }
+
+      .case-list {
+        display: grid;
+        gap: 16px;
+        margin-top: 16px;
+      }
+
+      .case-item {
+        padding: 20px;
+        border-radius: var(--radius);
+        border: 1px solid rgba(245, 245, 247, 0.08);
+        background: rgba(27, 27, 30, 0.7);
+        transition: border 0.3s ease;
+      }
+
+      .case-item:hover {
+        border-color: rgba(140, 47, 57, 0.55);
+      }
+
+      .contact {
+        display: grid;
+        gap: 16px;
+        margin-top: 32px;
+        background: rgba(27, 27, 30, 0.7);
+        padding: 32px;
+        border-radius: var(--radius);
+        border: 1px solid rgba(245, 245, 247, 0.08);
+      }
+
+      .contact a {
+        color: var(--fg);
+      }
+
+      footer {
+        margin-top: 120px;
+        padding: 32px 0 48px;
+        text-align: center;
+        color: var(--fg-muted);
+        font-size: 0.85rem;
+      }
+
+      .fade-up {
+        opacity: 0;
+        transform: translateY(16px);
+        animation: fadeUp 0.9s ease forwards;
+      }
+
+      .fade-up.delay-1 {
+        animation-delay: 0.15s;
+      }
+
+      .fade-up.delay-2 {
+        animation-delay: 0.3s;
+      }
+
+      @keyframes fadeUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 720px) {
+        nav {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        nav ul {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .hero {
+          padding-top: 80px;
+        }
+
+        .cta-group {
+          justify-content: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">Marsala OS</div>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#modules">Modules</a></li>
+          <li><a href="#lab">Lab</a></li>
+          <li><a href="#cases">Cases</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="home">
+        <p class="muted fade-up">The Intelligent Growth Studio</p>
+        <h1 class="headline fade-up delay-1">
+          Marsala OS: The Intelligent Growth Studio.
+        </h1>
+        <p class="subheadline fade-up delay-2">
+          Build your digital ecosystem with modular intelligence — from brand to automation, all in one system.
+        </p>
+        <div class="cta-group fade-up delay-2">
+          <a class="cta cta-primary" href="#modules">Explore Modules</a>
+          <a class="cta" href="#contact">Contact Team</a>
+        </div>
+      </section>
+
+      <section id="what-we-build">
+        <h2>What We Build</h2>
+        <p>
+          Every business deserves its own digital operating system. Marsala OS integrates design, development, and AI to build your brand’s digital core.
+        </p>
+        <p>
+          Each service is a module — plug in, grow faster, automate smarter.
+        </p>
+      </section>
+
+      <section id="modules">
+        <h2>Modules</h2>
+        <p class="muted">
+          Five modular services crafted to power your entire growth stack.
+        </p>
+        <div class="module-grid">
+          <article class="card">
+            <h3>Brand OS</h3>
+            <p>Identity systems, visual languages, and storytelling for scalable brands.</p>
+          </article>
+          <article class="card">
+            <h3>Web OS</h3>
+            <p>High-performance web architectures — built with Next.js, Vercel &amp; Claude Code.</p>
+          </article>
+          <article class="card">
+            <h3>CRM OS</h3>
+            <p>Automated lead pipelines with AI-driven insights and customer journeys.</p>
+          </article>
+          <article class="card">
+            <h3>AI OS</h3>
+            <p>Generative workflows, copilots, and intelligent assistants for operations.</p>
+          </article>
+          <article class="card">
+            <h3>Ads OS</h3>
+            <p>Paid media and growth automation tuned to maximize your CAC/LTV ratio.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="lab">
+        <h2>The Lab</h2>
+        <p>
+          Marsala Lab is where we prototype the future — integrating new APIs, AI models, and growth tools before they hit mainstream. A living sandbox for innovation.
+        </p>
+      </section>
+
+      <section id="cases">
+        <h2>Case Studies</h2>
+        <div class="case-list">
+          <div class="case-item">
+            <strong>Fintech Launch System</strong><br />
+            10x faster GTM using modular stack.
+          </div>
+          <div class="case-item">
+            <strong>Retail Brand Automation</strong><br />
+            47% ad spend efficiency improvement.
+          </div>
+          <div class="case-item">
+            <strong>AI CRM Migration</strong><br />
+            300% engagement increase in customer flows.
+          </div>
+        </div>
+      </section>
+
+      <section id="about">
+        <h2>About</h2>
+        <p>
+          Marsala is a collective of developers, designers, and strategists building digital infrastructures that think.
+        </p>
+        <p>
+          We believe the next generation of growth comes from systems that learn.
+        </p>
+      </section>
+
+      <section id="contact">
+        <h2>Contact</h2>
+        <div class="contact">
+          <p>Let’s build your Marsala OS.</p>
+          <p><a href="mailto:hello@marsalalabs.dev">hello@marsalalabs.dev</a></p>
+          <div class="cta-group">
+            <a class="cta cta-primary" href="#">Schedule a Call</a>
+            <a class="cta" href="#">Join the Waitlist</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      © <span id="year"></span> Marsala.dev · Crafted with modular intelligence.
+    </footer>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
