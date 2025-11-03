@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CaseCard } from "@/components/CaseCard";
-import { caseStudies, casesIntro } from "@/data/cases";
+import { caseStudies } from "@/data/cases";
 
 export const metadata: Metadata = {
   title: "Case Studies",
@@ -11,11 +11,10 @@ export default function CasesPage() {
   return (
     <main className="mx-auto w-full max-w-5xl px-6 pb-24 pt-24 md:px-10">
       <header className="space-y-4">
-        <p className="text-xs uppercase tracking-[0.35em] text-foreground/60">Case Studies · Casos</p>
-        <h1 className="font-display text-4xl font-semibold text-foreground">Accelerated results · Resultados acelerados</h1>
-        <p className="text-base text-foreground-muted">
-          {casesIntro.en}
-          <span className="mt-1 block text-sm text-foreground">{casesIntro.es}</span>
+        <p className="text-xs uppercase tracking-[0.35em] text-foreground/60">Case Studies</p>
+        <h1 className="font-display text-4xl font-semibold text-foreground">Accelerated results</h1>
+        <p className="max-w-2xl text-base text-foreground-muted">
+          Real cases distilled into decisions, metrics, and timelines.
         </p>
       </header>
       <div className="mt-12 grid gap-6 sm:grid-cols-2">
