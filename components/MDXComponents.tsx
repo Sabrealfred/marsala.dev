@@ -1,5 +1,6 @@
+import type { AnchorHTMLAttributes } from "react";
 import type { MDXRemoteProps } from "next-mdx-remote/rsc";
-import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export const mdxComponents: MDXRemoteProps["components"] = {
   h1: (props) => (
@@ -83,11 +84,16 @@ export const mdxComponents: MDXRemoteProps["components"] = {
       className="my-12 border-t border-moss-200"
     />
   ),
-  a: ({ href = "#", className, ...props }) => (
-    <Link
+  a: ({ href = "#", className, target, rel, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) => (
+    <a
       href={href}
+      target={target ?? (href?.startsWith("http") ? "_blank" : undefined)}
+      rel={rel ?? (href?.startsWith("http") ? "noreferrer noopener" : undefined)}
       {...props}
-      className={`font-semibold text-moss-700 underline decoration-moss-300 decoration-2 underline-offset-4 transition-colors hover:text-moss-900 ${className ?? ""}`}
+      className={cn(
+        "font-semibold text-moss-700 underline decoration-moss-300 decoration-2 underline-offset-4 transition-colors hover:text-moss-900",
+        className
+      )}
     />
   ),
   table: (props) => (
