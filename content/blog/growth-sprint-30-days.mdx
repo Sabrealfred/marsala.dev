@@ -1,0 +1,57 @@
+---
+title: "Growth Sprints de 30 Días: Cómo Lanzar Marsala OS en Etapas"
+slug: "growth-sprint-30-days"
+type: "Playbook"
+summary: "Framework en 4 semanas para pasar de discovery a sistema operativo modular en producción."
+date: "2025-01-18"
+readingTime: "10 min read"
+author: "Marsala Team"
+tags: ["Growth", "Process", "Sprints", "Marsala OS"]
+featured: false
+image: "/blog/growth-sprint.jpg"
+---
+
+# Growth Sprints de 30 Días: Cómo Lanzar Marsala OS en Etapas
+
+Cuando un equipo adopta Marsala OS, seguimos un sprint de 30 días que entrega valor cada semana. Aquí va el blueprint.
+
+## Semana 1: Descubrimiento + Arquitectura
+
+- Workshops con marketing, producto y revenue.
+- Mapa de sistemas actuales y brechas.
+- Priorización basada en impacto vs esfuerzo.
+
+## Semana 2: Foundations
+
+| Entrega | Descripción |
+|---------|-------------|
+| Brand Kit | tokens, gradientes, componentes básicos |
+| Data Layer | tracking plan + PostHog | 
+| Infra | repositorio, CI/CD, entorno de staging |
+
+## Semana 3: Experiencias
+
+- Construimos /modules, /research, /contact con copy real.
+- APIs de Resend y tracking de entry points.
+- Automatizaciones iniciales en n8n (enviar leads a Attio + Slack).
+
+## Semana 4: Activación + QA
+
+```mermaid
+graph LR
+  A[QA Funcional] --> B[Warm Deploy]
+  B --> C[Feedback Loop]
+  C --> D[Retro + Backlog]
+```
+
+- QA cruzado (design, dev, growth).
+- Deploy parcial (sin apagar el sitio previo) y pruebas de carga.
+- Retro documentada + backlog para los siguientes 60 días.
+
+## Métricas de Éxito
+
+- Tiempo a primer lead real: **≤ 48h** después del go-live.
+- Score de satisfacción interna: **≥ 8/10**.
+- % de módulos reutilizables activados: **≥ 70%**.
+
+Los growth sprints son la forma de asegurar momentum continuo sin esperas interminables.

@@ -1,0 +1,56 @@
+---
+title: "Sales Copilot: Gong + Notion + Resend en un Solo Panel"
+slug: "ai-sales-copilot-gong"
+type: "Insight"
+summary: "Cómo conectamos Gong, Notion y Resend para que cada call genere follow-ups automáticos y accionables."
+date: "2025-02-09"
+readingTime: "8 min read"
+author: "Marsala Team"
+tags: ["Sales", "AI", "Gong", "Automation"]
+featured: false
+image: "/blog/sales-copilot.jpg"
+---
+
+# Sales Copilot: Gong + Notion + Resend en un Solo Panel
+
+Los AE pasan 30% del tiempo escribiendo resúmenes. Construimos un copilot que consume las transcripciones de Gong, actualiza el deal en Notion y dispara emails personalizados.
+
+## Integraciones Clave
+
+1. **Gong Webhooks** → Cloud Run (Node) → almacenamos JSON completo.
+2. **OpenAI** usando un prompt con contexto del deal.
+3. **Notion API** para actualizar la base "Deals" con resúmenes y next steps.
+4. **Resend** para mandar follow-up con highlights y links relevantes.
+
+```ts
+const summary = await openai.chat.completions.create({
+  model: "gpt-4o-mini",
+  messages: [
+    { role: "system", content: baseInstructions },
+    { role: "user", content: transcript },
+  ],
+});
+```
+
+## Plantilla de Output
+
+- **Top 3 Insights** (bullets).
+- **Riesgos detectados** (palabras clave: presupuesto, timing, decisor).
+- **Acciones comprometidas** con owner y fecha.
+- **Follow-up email** en tono brand-friendly.
+
+## Métricas Medidas
+
+| KPI | Antes | Después |
+|-----|-------|---------|
+| Tiempo en follow-up | 25 min | 4 min |
+| Tareas sin completar | 17% | 5% |
+| Confianza del forecast | 62% | 81% |
+
+## Buenas Prácticas
+
+- Entrena el prompt con deals cerrados ganados y perdidos.
+- Limita la longitud del email a 180 palabras para mantener foco.
+- Usa Notion AI para sugerir highlights adicionales directamente en el bloque.
+
+El resultado: los AE se enfocan en la estrategia, no en copiar-pegar notas.

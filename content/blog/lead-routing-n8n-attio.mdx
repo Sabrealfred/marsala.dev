@@ -1,0 +1,52 @@
+---
+title: "Lead Routing Inteligente con n8n + Attio"
+slug: "lead-routing-n8n-attio"
+type: "Tutorial"
+summary: "Configuramos un ruteo basado en reglas y capacidad real del equipo usando n8n, Attio y Slack."
+date: "2025-01-25"
+readingTime: "7 min read"
+author: "Marsala Team"
+tags: ["Lead Routing", "Automation", "Attio", "n8n"]
+featured: false
+image: "/blog/lead-routing.jpg"
+---
+
+# Lead Routing Inteligente con n8n + Attio
+
+Asignar leads por país ya no es suficiente. Configuramos un router que considera disponibilidad, especialidad y carga actual.
+
+## Inputs Considerados
+
+- **Segmento**: SMB, Mid-Market, Enterprise.
+- **Industria**: mapeada a owners con playbooks específicos.
+- **Carga**: número de deals abiertos asignados al owner.
+- **Zona horaria**: para priorizar respuestas en la misma jornada.
+
+## Workflow
+
+```yaml
+trigger: contact_submitted
+steps:
+  - fetch_attio_owner_load
+  - score_lead_quality
+  - choose_owner (custom code)
+  - create_attio_task
+  - notify_slack
+```
+
+- `fetch_attio_owner_load`: consulta la API de Attio y devuelve deals por owner.
+- `choose_owner`: script JS que aplica reglas (capacidad máxima, prioridad, rotación).
+- `notify_slack`: mensaje con botones para aceptar o reasignar.
+
+## Panel de Control
+
+- Dashboard en Retool muestra los owners disponibles en tiempo real.
+- Se puede pausar a alguien (vacaciones) y el router se actualiza al instante.
+
+## Resultados
+
+- Tiempo de contacto inicial: **<15 minutos** (antes 3h).
+- Tasa de aceptación de leads: **93%**.
+- Distribución equitativa (desviación estándar bajó 41%).
+
+Con reglas claras y datos en vivo, los leads dejan de perderse en el limbo.

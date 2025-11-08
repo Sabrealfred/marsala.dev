@@ -1,0 +1,54 @@
+---
+title: "Product Qualified Leads: Sistema con Snowflake + Hightouch"
+slug: "product-qualified-leads-system"
+type: "Case Study"
+summary: "Implementamos un pipeline de PQLs usando eventos de producto, modelos en Snowflake y activación vía Hightouch."
+date: "2025-02-11"
+readingTime: "10 min read"
+author: "Marsala Team"
+tags: ["PQL", "Snowflake", "Hightouch", "PLG"]
+featured: false
+image: "/blog/pql-system.jpg"
+---
+
+# Product Qualified Leads: Sistema con Snowflake + Hightouch
+
+Para empresas PLG, los mejores leads están dentro del producto. Este case muestra cómo identificarlos y mandarlos directamente a ventas.
+
+## Modelo de Scoring
+
+- Inputs: eventos (`workspace_created`, `automation_published`, `team_invited`).
+- Ponderamos señales cualitativas (industria, tamaño de equipo) con métricas de uso.
+- Fórmula final se entrenó en Snowpark usando regresión logística.
+
+```sql
+create view mart_pql_scores as
+select
+  account_id,
+  probability_success as score,
+  case when probability_success > 0.72 then 'Hot'
+       when probability_success > 0.45 then 'Warm'
+       else 'Nurture'
+  end as tier
+from ml_pql_predictions;
+```
+
+## Activation Loop
+
+1. **Hightouch** sincroniza la vista `mart_pql_scores` hacia Attio y HubSpot.
+2. Crea tareas automáticas + envía Slack DM al owner.
+3. PostHog recibe una propiedad nueva para personalizar el producto (“Probar Workflow AI”).
+
+## Governanza
+
+- Tests de dbt aseguran que solo cuentas activas entren al modelo.
+- Documentamos en Notion la lógica de cada señal y owners de mantenimiento.
+- Slack bot pregunta semanalmente a los AE si cada PQL era realmente bueno → se reentrena con feedback.
+
+## Impacto
+
+- Pipeline generado internamente: **+44%**.
+- Tiempo de reacción: **<30 minutos** tras detectar un PQL.
+- Win rate del segmento: **+18 puntos**.
+
+Con datos correctos y activación automática, los PQL dejan de ser una teoría y se convierten en tu canal principal.

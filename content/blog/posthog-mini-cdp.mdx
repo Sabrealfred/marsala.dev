@@ -1,0 +1,57 @@
+---
+title: "Convierte PostHog en un Mini CDP en 3 Pasos"
+slug: "posthog-mini-cdp"
+type: "Tutorial"
+summary: "Usamos PostHog, Kafka y Resend para activar audiencias sin pagar una CDP enterprise."
+date: "2025-02-12"
+readingTime: "9 min read"
+author: "Marsala Team"
+tags: ["PostHog", "CDP", "Activation", "Growth"]
+featured: false
+image: "/blog/posthog-cdp.jpg"
+---
+
+# Convierte PostHog en un Mini CDP en 3 Pasos
+
+Las CDPs tradicionales cuestan >$60k/año. Para la mayoría de scaleups, PostHog + un par de microservicios es suficiente. Así lo montamos.
+
+## 1. Estructura de Eventos
+
+```ts
+posthog.capture('workspace_upgrade_requested', {
+  plan: planId,
+  seat_count: seats,
+  lifecycle_stage: stage,
+});
+```
+
+- Definimos 12 eventos core y 8 propiedades obligatorias.
+- Usamos **personas** para enganchar atributos del CRM (Attio) vía API.
+
+## 2. Streaming en Tiempo Real
+
+- Activamos el **Kafka destination** de PostHog.
+- Un consumer en Cloud Run transforma el evento y lo guarda en Firestore para segmentaciones rápidas.
+- Reglas de compliance: guardamos solo IDs, el resto se trae on-demand.
+
+## 3. Activación
+
+| Canal | Herramienta | Acción |
+|-------|-------------|--------|
+| Email | Resend | Trigger de onboarding personalizado |
+| Ads | Meta API | Audiencias lookalike actualizadas cada noche |
+| Product | Next.js middleware | Feature flags dinámicos |
+
+## KPI de Éxito
+
+- Emails contextuales: **+46% CTR** vs blasts.
+- Campañas pagadas: **-28% CAC** al excluir usuarios activos.
+- Feature adoption: **+19%** al mostrar componentes solo a cohorts relevantes.
+
+## Checklist de Seguridad
+
+- [ ] Tokenizar PII antes de enviarla a PostHog.
+- [ ] Rotar claves de Kafka cada mes.
+- [ ] Registrar qué equipo puede crear nuevas audiencias.
+
+PostHog puede ser tu CDP ligero si defines bien el modelo de datos y automatizas la activación.

@@ -1,0 +1,54 @@
+---
+title: "Customer Journeys Orquestados con Resend + Segment"
+slug: "customer-journey-automation-resend"
+type: "Guide"
+summary: "Diseñamos journeys modulares usando Segment, Resend y Notion para acompañar todo el ciclo de vida."
+date: "2025-02-04"
+readingTime: "9 min read"
+author: "Marsala Team"
+tags: ["Lifecycle", "Resend", "Segment", "CX"]
+featured: false
+image: "/blog/customer-journey.jpg"
+---
+
+# Customer Journeys Orquestados con Resend + Segment
+
+El funnel no termina al cerrar. Construimos journeys que conectan onboarding, adopción y expansión usando solo herramientas modulares.
+
+## Mapa del Journey
+
+| Fase | Trigger | Objetivo |
+|------|---------|----------|
+| Onboarding | Actividad < 3 días | Ayudar a configurar |
+| Adopción | Uso consistente 3 semanas | Introducir features pro |
+| Expansión | Uso de feature premium | Detectar señales de upsell |
+
+## Stack
+
+1. **Segment**: captura eventos y hace fan-out a PostHog + warehouse.
+2. **Resend**: envía emails personalizados (usamos plantillas React Email).
+3. **Notion**: Actúa como CMS para copy + assets.
+4. **n8n**: Reglas y timers (esperar 72h, verificar actividad).
+
+```ts
+await resend.emails.send({
+  from: 'Marsala Journeys <noreply@marsala.dev>',
+  to: email,
+  subject: `Tu siguiente hito en ${productModule}`,
+  react: <JourneyEmail stage={stage} metrics={metrics} />,
+});
+```
+
+## Métricas
+
+- Activación (usuarios completan setup): **+31%**.
+- Tiempo a primer valor: **-42%**.
+- Upsell ARR trimestral: **+18%**.
+
+## Consejos
+
+- Mantén las plantillas en un repo y versiona como cualquier código.
+- Usa tokens ({{first_name}}) pero agrega contexto: “Tu equipo ya activó 2/5 módulos…”.
+- Automatiza tests (Envia cada release a mailosaur/qa inbox).
+
+Journeys claros convierten clientes en advocates sin contratar equipos enormes.

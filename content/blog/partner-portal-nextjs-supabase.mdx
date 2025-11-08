@@ -1,0 +1,58 @@
+---
+title: "Portal de Partners en 3 Semanas con Next.js + Supabase"
+slug: "partner-portal-nextjs-supabase"
+type: "Case Study"
+summary: "Blueprint para lanzar un portal de partners con autenticación, deals compartidos y notificaciones automáticas."
+date: "2025-01-22"
+readingTime: "11 min read"
+author: "Marsala Team"
+tags: ["Next.js", "Supabase", "Partners", "Resend"]
+featured: false
+image: "/blog/partner-portal.jpg"
+---
+
+# Portal de Partners en 3 Semanas con Next.js + Supabase
+
+Los canales de partners generan 35% del pipeline cuando se gestionan bien. Construimos un portal modular que centraliza deals, materiales y soporte.
+
+## Semana 1: Fundamentos
+
+- **Autenticación**: Supabase Auth con magic links + SSO opcional.
+- **Roles**: Partner Admin, Sales, Marketing. Se guardan en `user_metadata.roles`.
+- **UI**: Layout en Next.js App Router + componentes compartidos con el sitio.
+
+## Semana 2: Deals Compartidos
+
+```sql
+create table partner_deals (
+  id uuid primary key default gen_random_uuid(),
+  partner_id uuid references partners(id),
+  attio_record text,
+  status text,
+  next_action timestamptz,
+  created_at timestamptz default now()
+);
+```
+
+- Webhooks desde Attio → Supabase para reflejar cambios en tiempo real.
+- Notificaciones por Resend cuando un deal cambia de etapa.
+- Integración con Notion para materiales actualizados automáticamente.
+
+## Semana 3: Experiencia y Reporting
+
+| Módulo | Descripción |
+|--------|-------------|
+| Content Hub | Filtra assets por etapa del funnel |
+| Incentives | Calcula comisiones y muestra historial |
+| Support | Widget de chat + base de conocimiento |
+
+- Añadimos PostHog para medir adopción de features.
+- Dashboard Metabase para el equipo interno (deals activos, tiempo de respuesta, NPS).
+
+## Resultados
+
+- Tiempo de respuesta a partners: **<4h** (antes 24h).
+- Deals compartidos por mes: **+52%**.
+- Satisfacción en encuesta trimestral: **9.1/10**.
+
+El portal quedó listo para escalar: basta con duplicar el esquema en otra región y volver a apuntar los webhooks.

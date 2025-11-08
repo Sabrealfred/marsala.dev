@@ -133,11 +133,15 @@ The site is deployed to Netlify with automatic builds from the `main` branch.
 
 ## Development
 
-### Adding Research Posts
+### Adding Research + Blog Posts
 
-Edit `/data/research.ts`:
+All research content now lives in the blog system:
+
+1. **Preferred**: Add a new MDX file inside `content/blog/` with the standard frontmatter (title, slug, summary, type, tags, etc.). It will appear automatically on `/research` and `/blog/[slug]`.
+2. **Legacy research library**: Existing deep dives in `/data/research.ts` are automatically rendered into MDX at build time. You can keep editing that file if you prefer structured JSON—the entries will continue to publish under `/blog/<slug>`.
 
 ```typescript
+// data/research.ts
 export const researchPosts: ResearchPost[] = [
   {
     slug: "your-post-slug",
@@ -146,7 +150,6 @@ export const researchPosts: ResearchPost[] = [
     summary: "Brief summary",
     detail: "Extended description",
     date: "Month YYYY",
-    metrics: ["Metric 1", "Metric 2"],
     readingTime: "X min read",
     tags: ["Tag1", "Tag2"],
     sections: [/* content sections */],

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { researchPosts } from "@/data/research";
+import { formatBlogDate, getAllBlogPosts } from "@/lib/blog";
 
 export const metadata: Metadata = {
   title: "Research & Insights",
@@ -8,6 +8,8 @@ export const metadata: Metadata = {
 };
 
 export default function ResearchPage() {
+  const posts = getAllBlogPosts();
+
   return (
     <main className="min-h-screen bg-cream-50">
       {/* Hero */}
@@ -37,61 +39,52 @@ export default function ResearchPage() {
       {/* Posts Grid */}
       <section className="bg-white py-12 lg:py-16">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <div className="grid gap-6">
-            {researchPosts.map((post) => (
+          <div className="grid gap-6 lg:gap-8">
+            {posts.length === 0 && (
+              <div className="rounded-3xl border border-dashed border-moss-200 bg-white/70 p-8 text-center text-sage-600">
+                Research essays coming soon. Drop MDX files inside <code className="font-mono text-moss-800">content/blog</code>.
+              </div>
+            )}
+            {posts.map((post) => (
               <Link
                 key={post.slug}
-                href={`/research/${post.slug}`}
+                href={`/blog/${post.slug}`}
                 className="group relative overflow-hidden rounded-3xl border border-moss-200 bg-gradient-to-br from-white to-cream-50 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-moss-400 hover:shadow-hover lg:p-8"
               >
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                  {/* Content */}
-                  <div className="flex-1 space-y-3">
-                    {/* Meta */}
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className="rounded-full bg-moss-gradient px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white">
-                        {post.type}
-                      </span>
-                      <span className="text-xs font-medium uppercase tracking-wider text-sage-500">
-                        {post.date}
-                      </span>
-                      <span className="text-xs text-sage-400">·</span>
-                      <span className="text-xs font-medium text-sage-500">{post.readingTime}</span>
+                  <div className="flex-1 space-y-4">
+                    <div className="flex flex-wrap items-center gap-3 text-xs font-medium uppercase tracking-wider text-sage-500">
+                      <span className="rounded-full bg-moss-gradient px-3 py-1 text-white">{post.type}</span>
+                      <span>{formatBlogDate(post.date)}</span>
+                      {post.readingTime && (
+                        <>
+                          <span className="text-sage-400">·</span>
+                          <span>{post.readingTime}</span>
+                        </>
+                      )}
                     </div>
 
-                    {/* Title & Summary */}
-                    <h2 className="text-2xl font-bold text-moss-950 transition-colors group-hover:text-moss-700 lg:text-3xl">
-                      {post.title}
-                    </h2>
-                    <p className="text-base text-sage-700 lg:text-lg">{post.summary}</p>
+                    <div>
+                      <h2 className="text-2xl font-bold text-moss-950 transition-colors duration-300 group-hover:text-moss-700 lg:text-3xl">
+                        {post.title}
+                      </h2>
+                      <p className="mt-3 text-base text-sage-700 lg:text-lg">{post.summary}</p>
+                    </div>
 
-                    {/* Metrics */}
-                    {post.metrics.length > 0 && (
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        {post.metrics.map((metric) => (
-                          <span
-                            key={metric}
-                            className="rounded-full border border-moss-300 bg-white px-3 py-1 text-xs font-semibold text-moss-700"
-                          >
-                            {metric}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      {post.tags.map((tag) => (
-                        <span key={tag} className="text-xs text-sage-500">
+                    <div className="flex flex-wrap gap-2">
+                      {post.tags?.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-moss-200 bg-white px-3 py-1 text-xs font-semibold text-moss-700"
+                        >
                           #{tag}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  {/* CTA */}
-                  <div className="flex items-center gap-2 text-moss-700 transition-all duration-300 group-hover:translate-x-1 group-hover:text-moss-900 lg:flex-col lg:items-end lg:gap-0">
-                    <span className="text-sm font-semibold">Read more</span>
+                  <div className="flex items-center gap-2 text-moss-700 transition-all duration-300 group-hover:translate-x-1 group-hover:text-moss-900">
+                    <span className="text-sm font-semibold">Read post</span>
                     <span className="text-lg">→</span>
                   </div>
                 </div>

@@ -1,0 +1,64 @@
+---
+title: "Design Systems Modulares para Escalar 4 Marcas en Paralelo"
+slug: "modular-design-system-scaleups"
+type: "Case Study"
+summary: "Así construimos un sistema de diseño en Figma + Storybook que sirve a 4 marcas hermanas sin duplicar componentes."
+date: "2025-01-28"
+readingTime: "8 min read"
+author: "Marsala Team"
+tags: ["Design System", "Figma", "Storybook", "Brand"]
+featured: false
+image: "/blog/design-system.jpg"
+---
+
+# Design Systems Modulares para Escalar 4 Marcas en Paralelo
+
+Cuando un grupo empresarial tiene varias marcas, el mayor riesgo es terminar con 4 equipos diseñando lo mismo. Resolvimos esto creando un sistema de diseño multi-tenancy inspirado en tokens y capas.
+
+## Principios
+
+1. **Tokens compartidos, capas brand-specific**.
+2. **Bibliotecas versionadas** con release notes semanal.
+3. **Code parity**: cada componente de Figma vive en Storybook antes del release.
+
+## Arquitectura de Tokens
+
+| Nivel | Ejemplo | Uso |
+|-------|---------|-----|
+| Core | `color.moss.500`, `radius.24` | Inmutable, aplica a todas las marcas |
+| Brand | `brand.alpha.gradient.hero` | Ajustes de color, ilustraciones |
+| Context | `module.card.analytics` | Variantes específicas de producto |
+
+```json
+{
+  "color": {
+    "core": {
+      "moss": { "500": "#6a8a6c" }
+    },
+    "brand": {
+      "aurora": { "gradient": "linear-gradient(...)" }
+    }
+  }
+}
+```
+
+## Flujo Operativo
+
+1. **Monday**: review de requests → se decide si es net new o una variante.
+2. **Martes-Miércoles**: diseño en Figma con tokens + playground.
+3. **Jueves**: dev implementa en Storybook + Chromatic.
+4. **Viernes**: publicación vía Git tags y actualización automática en las 4 webs (Next.js + Turborepo).
+
+## Métricas
+
+- Tiempo de lanzamiento de landing nueva: **2.5 días** (antes 8 días).
+- Porcentaje de componentes reutilizados: **78%**.
+- Tickets de QA visual: **-63%**.
+
+## Checklist para tu equipo
+
+- [ ] Define Jerarquía de tokens y nombra con prefijos.
+- [ ] Asegura que diseño y dev trabajen en la misma rama.
+- [ ] Documenta ejemplos de cuándo NO usar un componente.
+
+Un design system multi-brand es el multiplicador de velocidad para marketing + producto. Empieza por tokens, no por componentes aislados.

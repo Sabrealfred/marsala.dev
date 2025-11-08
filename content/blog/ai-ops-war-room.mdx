@@ -1,0 +1,54 @@
+---
+title: "AI Ops War Room: Tablero Unificado para Operaciones"
+slug: "ai-ops-war-room"
+type: "Insight"
+summary: "Construimos un war room digital que mezcla métricas, alertas y acciones AI para reaccionar en minutos."
+date: "2025-02-08"
+readingTime: "8 min read"
+author: "Marsala Team"
+tags: ["AI Ops", "Automation", "Dashboards", "Operations"]
+featured: false
+image: "/blog/ai-ops-war-room.jpg"
+---
+
+# AI Ops War Room: Tablero Unificado para Operaciones
+
+Cuando los equipos crecen, cada área usa su propio dashboard. El resultado: decisiones tardías. Lanzamos un war room digital que combina datos en vivo con asistentes AI.
+
+## Componentes
+
+| Módulo | Herramienta | Descripción |
+|--------|-------------|-------------|
+| Timeline | Linear + Notion | Estado de proyectos críticos |
+| métricas | Metabase | KPIs diarios (pipeline, MRR, churn) |
+| Alertas | PagerDuty + Slack | Eventos críticos |
+| Copilot | OpenAI Function Calling | Genera planes de acción |
+
+## Flujo de Trabajo
+
+1. Los datos se sincronizan cada 5 minutos desde PostHog y Snowflake.
+2. Un bot resume cambios importantes y sugiere focos.
+3. Los líderes pueden ejecutar playbooks (ej. "activar nurture" o "pausar campaña").
+
+```ts
+const response = await openai.responses.create({
+  model: 'gpt-4.1-mini',
+  reasoning: { effort: 'medium' },
+  tool_choice: { type: 'function', name: 'triggerPlaybook' },
+  input: { metrics, incidents }
+});
+```
+
+## Resultados
+
+- Reunión diaria pasó de 45 a 18 minutos.
+- Alertas atendidas en <10 minutos, incluso fuera de horario.
+- Más accountability: cada acción queda registrada y versionada.
+
+## Tips
+
+- Empieza con 3 métricas críticas (MRR, leads, soporte).
+- Usa layouts oscuros + tipografía grande para Modo Sala.
+- Registra todas las configuraciones en Git para auditar cambios.
+
+El war room convierte datos dispersos en decisiones rápidas alimentadas por AI.

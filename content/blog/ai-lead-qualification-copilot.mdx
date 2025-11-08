@@ -1,0 +1,66 @@
+---
+title: "Construyendo un Copilot de Calificación de Leads con LLMs"
+slug: "ai-lead-qualification-copilot"
+type: "Playbook"
+summary: "Cómo combinamos LLMs, Airtable y n8n para calificar leads en 90 segundos sin tocar el CRM manualmente."
+date: "2025-02-05"
+readingTime: "9 min read"
+author: "Marsala Team"
+tags: ["AI", "Lead Scoring", "Automation", "LLM"]
+featured: false
+image: "/blog/ai-copilot.jpg"
+---
+
+# Construyendo un Copilot de Calificación de Leads con LLMs
+
+Los equipos de revenue quieren respuestas instantáneas: ¿vale la pena hablar con este lead? Antes tomaba horas. Ahora, con un flujo modular usando LLMs + datos propios, podemos calificar en 90 segundos y registrar todo en el CRM.
+
+## Arquitectura General
+
+| Capa | Herramienta | Rol |
+|------|-------------|-----|
+| Data Lake | BigQuery | Consolida señales históricas |
+| Orquestación | n8n | Ejecuta workflow cada vez que llega un lead |
+| Inteligencia | OpenAI GPT-4 Turbo | Razona sobre el perfil |
+| Registro | Airtable + Attio | Persisten score y notas |
+
+```typescript
+// Paso clave: prompt dinámico con contexto
+const prompt = `
+Contexto:
+- ACV promedio: ${acv}
+- ICP: ${icpProfile}
+- Señales del lead: ${signals}
+
+Asigna un score de 1 a 5 y explica por qué en 2 bullets.`;
+```
+
+## Workflow Paso a Paso
+
+1. **Trigger**: Form submission en `/contact` llega a la API.
+2. **Normalización**: Una función en Cloud Run limpia y estructura los campos.
+3. **Enriquecimiento**: Clearbit y Apollo agregan datos de industria, tamaño y stack.
+4. **LLM Reasoning**: GPT evalúa contra el ICP y devuelve score + motivos + objeciones potenciales.
+5. **Ruteo**: Si el score ≥4, se crea tarjeta en el pipeline hot; si es 2-3, entra en nurtures automatizados.
+
+## Lecciones Clave
+
+- **Contexto > Modelo**: El mismo modelo produce respuestas 4× mejores cuando incluimos datos del deal desk y deals ganados.
+- **Human-in-the-loop**: SDRs pueden marcar correcciones. Esas correcciones alimentan un dataset que retrena el prompt semanalmente.
+- **Visibilidad**: Un dashboard en Metabase expone el tiempo total por lead y la tasa de aceptación de ventas.
+
+## Métricas Obtenidas
+
+- Tiempo promedio de respuesta al lead: **90 segundos** (antes 3h).
+- Tasa de aceptación por ventas: **+34%**.
+- Rechazos manuales: **-62%**.
+
+## Próximos Pasos
+
+1. Entrenar un modelo pequeño para detectar señales negativas recurrentes.
+2. Sincronizar la retroalimentación con Gong para mejorar respuestas.
+3. Abrir una API para que partners envíen leads y reciban el score en tiempo real.
+
+---
+
+¿Quieres replicar este copilot? Escríbenos y te compartimos el prompt completo más el template de n8n.

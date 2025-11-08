@@ -1,0 +1,52 @@
+---
+title: "Observabilidad de Datos para RevOps: dbt + Metaplane"
+slug: "revops-analytics-observability"
+type: "Insight"
+summary: "Cómo evitar sorpresas en tu pipeline de revenue monitoreando freshness, volumen y lógica de tus modelos."
+date: "2025-02-07"
+readingTime: "7 min read"
+author: "Marsala Team"
+tags: ["Analytics", "dbt", "Observability", "RevOps"]
+featured: false
+image: "/blog/data-observability.jpg"
+---
+
+# Observabilidad de Datos para RevOps: dbt + Metaplane
+
+Revenue se cae cuando un campo falta o una métrica se duplica. En lugar de esperar a que ventas reporte un error, implementamos observabilidad nativa para todo el pipeline.
+
+## Señales Que Monitoreamos
+
+| Métrica | Configuración | Alertas |
+|---------|---------------|---------|
+| Freshness | `leads_enriched` < 15 min | Slack #rev-data |
+| Volumen | ±15% vs promedio móvil | PagerDuty (solo si es crítica) |
+| Distribución | KS-test sobre campos numéricos | Email semanal |
+
+## Integración Técnica
+
+```yaml
+# models/schema.yml
+tests:
+  - dbt_utils.recency:
+      datepart: minute
+      field: updated_at
+      interval: 15
+```
+
+- Metaplane escucha los artifacts de dbt Cloud y aprende las expectativas de manera automática.
+- Configuramos Webhooks → n8n → Notion para crear tickets con contexto.
+
+## Resultado
+
+- Incidentes detectados **35 minutos antes** que el equipo humano.
+- 0 lanzamientos bloqueados por métricas incorrectas en Q1.
+- Rompimos la dependencia de “solo Carlos entiende los modelos”.
+
+## Recomendaciones
+
+1. Empieza monitoreando solo 3 tablas críticas (leads, pipeline, revenue real).
+2. Documenta los umbrales en un README para que cualquier persona los ajuste.
+3. Nunca hagas paging nocturno por métricas no críticas; usa Digest semanal.
+
+Con observabilidad modular, RevOps deja de reaccionar y empieza a predecir.
