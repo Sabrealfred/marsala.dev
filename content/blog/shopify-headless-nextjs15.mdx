@@ -1,0 +1,138 @@
+---
+title: "Shopify Headless with Next.js 15 and Edge Rendering"
+slug: "shopify-headless-nextjs15"
+type: "Guide"
+summary: "How we rebuilt a Shopify Plus storefront on Next.js 15 with edge rendering, modular CMS, and observability baked in."
+description: "Detailed playbook covering architecture, deployment, governance, and telemetry for shipping a headless commerce experience that stays fast under launch pressure."
+date: "2025-02-20"
+readingTime: "11 min read"
+author: "Marsala Engineering Team"
+tags:
+  - "Commerce"
+  - "Headless"
+  - "Next.js"
+  - "Shopify"
+keywords:
+  - "shopify headless"
+  - "nextjs 15"
+  - "edge rendering"
+  - "commerce"
+featured: true
+image: "/blog/shopify-headless.jpg"
+---
+
+# Shopify Headless with Next.js 15 and Edge Rendering
+
+> We stopped fighting liquid templates and turned Shopify into a fast edge-driven experience that marketing can actually ship against.
+
+## Context
+
+Shopify Plus gave us a reliable checkout and ops tooling, but every marketing launch felt like a hostage negotiation with sections, metafields, and duplicated code. Hero campaigns needed layout freedom, PDPs needed bespoke bundles, and localization required more than copy/pasting strings into metafields. The CMS story was equally painful; the team wanted to stage hero copy, brand modules, and bundles without touching the Shopify admin. We also needed to ship new experiences weekly without the dreaded “refresh to see cache bust” pattern.
+
+Instead of bolting on more scripts, we rebuilt the storefront as a headless architecture: Next.js 15 App Router for UI, Shopify Storefront API for commerce data, Sanity as the content brain, and a thin synchronization layer for inventory and merchandising. The goal was not just visual freedom; we wanted SLOs, observability, preview environments, and modular components that marketing can orchestrate without pinging engineering.
+
+This guide distills how we implemented the stack, governed releases, and hit <2s largest contentful paint globally. If you are planning to take Shopify headless with Next.js, this is the blueprint we wish we had on day one.
+
+## Stack / Architecture
+
+1. **Next.js 15 App Router + Edge Runtime** for streaming PDPs/collections, image optimization, and route-level caching with revalidation policies per resource (hero 60s, inventory 5s, marketing sections manual).
+2. **Shopify Storefront + Admin APIs** to fetch product, collection, pricing, inventory, and to push merchandising rules. We normalize responses inside tRPC routes to keep components agnostic of Shopify’s schema quirks.
+3. **Sanity (with Presentation API)** as the structured content layer. Authors model “experience slices” (hero, bundle grid, launch story) with references to Shopify IDs to keep commerce data canonical.
+4. **Fastly + Vercel**: Fastly handles bot/firewall duties; Vercel handles edge rendering and previews. Incremental adoption means we can migrate page types one at a time.
+5. **n8n Integration Hub** synchronizes Shopify webhooks (inventory, price, translation updates) to Sanity and Algolia, keeping search and content aware of merchandising changes.
+6. **Observability**: Datadog synthetics for key flows, Vercel analytics for edge timings, Logtail for API logs, and Metaplane for data freshness on the product catalog.
+7. **Feature governance** through LaunchDarkly for checkout experiments, PostHog for on-site behavioral insights, and a release train documented in Notion.
+
+The architecture treats Shopify as the commerce kernel, Sanity as the storytelling engine, and Next.js as the rendering brain. Each layer has explicit contracts: content models reference Shopify IDs, Shopify webhooks trigger n8n flows, and Next.js components consume a normalized graph of “experience slots.”
+
+## Playbook
+
+### 1. Model the content graph
+
+- Mirror the customer journey in Sanity: hero, merch grid, bundle callout, social proof, PDP tabs, FAQs.
+- Each slice stores a `shopifyReference` so we can hydrate price/inventory server-side, avoiding stale content.
+- Authors get preview mode via Sanity Presentation API, which loads Next.js preview routes with draft data plus live commerce info.
+
+### 2. Normalize Shopify data at the edge
+
+- Create `/lib/shopify.ts` with typed queries for product, collection, inventory, metafields, subscription selling plans.
+- Wrap Storefront responses in a stable interface so UI never deals with nested nodes/edges. We add computed fields like `isLowInventory`, `subscriptionEligible`, `badge`.
+- Cache responses with `revalidateTag` per resource. Price/inventory uses `stale-while-revalidate` with 5-second TTL; marketing copy can live for minutes.
+
+### 3. Build modular UI tokens
+
+- Convert Figma tokens to Tailwind + Radix primitives. All sections share spacing, typography, and animation tokens so marketing can mix them freely.
+- Write client components only where necessary (carousels, add-to-cart). Everything else renders as async server components to minimize JS.
+- Use RSC streaming for PDP (hero arrives first, then recommendation carousel, reviews). Customers see meaningful content under 1.2s even on 3G.
+
+### 4. Synchronize inventory and merchandising
+
+- Shopify webhooks → n8n workflows → Supabase + Sanity. We update Algolia, trigger Slack notifications (“Size M < 10 units”), and revalidate relevant caches via Vercel API.
+- For bundles and preorders, Sanity stores the narrative while Shopify keeps the truth. n8n ensures both stay aligned.
+
+### 5. Implement preview + release hygiene
+
+- Vercel preview deployments connect to Sanity draft + Shopify staging store. Stakeholders click a magic link and see their campaign with live prices.
+- Release checklist lives in Notion: content QA, i18n, SEO metadata, accessibility sweep, synthetic monitor update.
+- LaunchDarkly flag gates the runtime switch. When we ship a new PDP template, we roll it out to 10% traffic, watch logs, then flip to 100%.
+
+### 6. Instrument everything
+
+- Add Datadog RUM, Synthetics for checkout flows, and custom metrics (`edge-render.ms`, `shopify-fetch.ms`, `sanity-blocks.count`).
+- PostHog tracks hero variant, bundle CTA, scroll depth, and ties events to actual revenue via Segment → warehouse.
+- Merchants get dashboards in Metabase showing conversion, attach rate, low inventory alerts, and localization performance.
+
+### 7. Govern translations + locales
+
+- Sanity stores copy, Shopify handles localized price/availability. A translation pipeline (DeepL + reviewer) writes localized values into Sanity.
+- Next.js middleware detects locale from path (`/es`, `/de`). All dynamic data fetches include `Accept-Language` to Shopify plus `locale` param to Sanity.
+- Visual QA uses Percy snapshots for each locale before every major drop.
+
+## Metrics & Telemetry
+
+- **LCP:** 1.5s 75th percentile globally (3.7s before). Edge rendering + streaming sections cut hero paint by 60%.
+- **Conversion:** +18% on campaigns because PDPs load interactive pieces faster and can show real-time bundles.
+- **Time-to-launch:** Campaign briefs go live in 2 days (down from 8) because teams work out of Sanity with preview links.
+- **Content velocity:** 41 modular sections shipped in a quarter without touching code.
+- **Cache efficiency:** 92% hit rate on edge caches thanks to revalidation tags and targeted invalidations from n8n.
+- **Observability:** 100% of product fetches and Shopify calls report latency to Datadog, so on-call sees issues before CS does.
+
+## Lessons
+
+1. **Treat content and commerce equally.** The bridge between Sanity and Shopify is where projects die; define ownership for each piece and automate syncs.
+2. **Edge caching needs discipline.** Use tags (`revalidateTag('product-123')`) instead of global revalidate; otherwise you nuke performance with every update.
+3. **Preview is non-negotiable.** If authors cannot see their work in context, they will revert to Shopify sections. Preview and stable tokens built trust.
+4. **Invest in automation early.** Webhooks + n8n prevented human error. When inventory changes, caches and search updated automatically.
+5. **Observability is part of UX.** Fast pages mean nothing if metrics silently break. Data freshness dashboards made revops comfortable referencing commerce data.
+
+## FAQ
+
+**How do you handle cart and checkout?**  
+Shopify still runs checkout for PCI/Tax reasons. We pass cart state via Storefront API plus the `/cart` endpoints, and use Shopify’s accelerated checkout plus our own mini-cart UI.
+
+**What about POS or marketplace inventory?**  
+Inventory remains in Shopify. We mirror just enough data into Supabase for analytics, but Shopify is the source of truth. n8n workflows keep Algolia and Sanity references updated.
+
+**How do you localize product data?**  
+Prices, availability, and variants remain in Shopify locales. Marketing copy, imagery, and modular sections live in Sanity. We send the locale down the stack so both systems return the right data.
+
+**Can non-technical teams ship?**  
+Yes. Marketers drag sections in Sanity, connect them to products/collections, and schedule releases. Engineering maintains the component library and ensures each block validates metadata before publish.
+
+## Implementation Timeline (30/60/90)
+
+- **Week 1-2 — Discovery & Contracts:** catalog every template, list required content models, document Shopify dependencies (discounts, bundles, shipping rules). Draft the interface between Sanity slices and Shopify IDs, plus define KPIs (LCP, conversion, launch cadence).
+- **Week 3-4 — Foundation Build:** scaffold Next.js App Router project, implement base layout, typography, and Sanity schema. Ship the first two slices (hero + merch grid) plus PDP skeleton, wired to mock data.
+- **Week 5-6 — Shopify Integration:** replace mocks with Storefront queries, add cart/checkout bridge, create middleware for locale detection, and configure n8n workflows for price/inventory webhooks.
+- **Week 7-8 — Preview, QA, and LaunchDarkly:** enable Sanity preview mode, wire LaunchDarkly flag for new PDP template, run accessibility/performance audits, and set up Datadog synthetics for checkout. End the phase with a private beta (10% traffic).
+- **Week 9+ — Scale & Optimize:** migrate remaining sections, introduce streaming sections, add Algolia search, and roll out localization markets. Publish the public launch once SLA dashboards stay green for two weeks.
+
+## What I'm building next
+
+We are extending the kit with:
+
+- **Composable loyalty programs**: hooking into Smile.io and Journey builder so loyalty tiers surface directly in Sanity sections.
+- **AI-driven merchandising assistants**: GPT-4o reads Shopify reports + PostHog experiments and suggests new hero/bundle combos.
+- **Edge AB testing**: leveraging Vercel Edge Config + PostHog to split traffic without shipping extra JS, so hero experiments stay fast.
+
+Want to remix this architecture for your brand? [Drop me a note](/contact) and we’ll adapt the kit to your roadmap.

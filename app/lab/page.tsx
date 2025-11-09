@@ -21,7 +21,7 @@ const experiments = [
     status: "production" as const,
     updated: "1 week ago",
     tech: ["OpenAI", "Supabase", "Next.js"],
-    link: "/blog/ai-sales-desk",
+    link: "/blog/ai-sales-desk-notebook",
   },
   {
     title: "Shopify Headless + Next.js 15",
@@ -29,7 +29,7 @@ const experiments = [
     status: "graduating" as const,
     updated: "2 weeks ago",
     tech: ["Shopify", "Next.js", "Vercel"],
-    link: "#",
+    link: "/blog/shopify-headless-nextjs15",
   },
   {
     title: "n8n RevOps Router",
