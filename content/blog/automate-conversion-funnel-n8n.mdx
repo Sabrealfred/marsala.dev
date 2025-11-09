@@ -1,286 +1,64 @@
 ---
-title: "Automatizando tu Funnel de Conversión con n8n: De 40h/semana a 2h/semana"
+title: "Automating Funnels with n8n Without Torching the CRM"
 slug: "automate-conversion-funnel-n8n"
-type: "Tutorial"
-summary: "Cómo un equipo de growth redujo 95% del trabajo manual en su funnel usando n8n y herramientas modernas."
-date: "2025-01-10"
-readingTime: "12 min read"
-author: "Marsala Team"
-tags: ["Automation", "n8n", "Growth Hacking", "Conversion"]
-featured: true
+type: "Playbook"
+summary: "Went from 40 manual hours to two hours a week by orchestrating scoring, nurtures and alerts inside n8n."
+description: "Playbook for orchestrating a B2B funnel with n8n, Clearbit, Attio and Resend."
+date: "2025-02-10"
+readingTime: "8 min read"
+author: "Marina Álvarez"
+tags:
+  - "Automation"
+  - "RevOps"
+keywords:
+  - "n8n"
+  - "automation"
+  - "lead funnel"
+  - "attio"
+  - "resend"
+featured: false
 image: "/blog/n8n-automation.jpg"
 ---
 
-# Automatizando tu Funnel de Conversión con n8n
 
-**Caso real:** Una startup B2B SaaS procesaba ~500 leads/mes manualmente. Su equipo de 2 personas pasaba 40 horas/semana haciendo tareas repetitivas:
+# Automating Funnels with n8n Without Torching the CRM
 
-- Calificar leads en un spreadsheet
-- Enriquecer datos buscando en LinkedIn
-- Asignar manualmente a sales reps
-- Enviar follow-ups
-- Actualizar el CRM
+> I promised the team I’d give them their time back, and 17 versioned workflows later I kept that promise.
 
-Después de implementar automatización con n8n, redujeron ese tiempo a **2 horas/semana** (solo para revisar edge cases).
+## Context
 
-Aquí está cómo lo hicieron.
+I’m the dev who gets paged when Zapier hiccups. One day I moved everything to self-hosted n8n so leads stopped drowning in spreadsheets and duplicated tasks.
 
-## Por Qué n8n
+## Stack I leaned on
 
-n8n es una plataforma de automatización **open-source** y **self-hosted**. A diferencia de Zapier o Make:
+- n8n on Fly.io with Redis queues
+- Clearbit Enrichment + Apollo
+- Attio API
+- Resend + PostHog for nurtures and tracking
 
-✅ **Sin límite de ejecuciones** (si self-hosteas)
-✅ **400+ integraciones** nativas
-✅ **Código custom** cuando lo necesitas
-✅ **No vendor lock-in**
+## Playbook
 
-**Costo:** $0 (self-hosted) o ~$20/mes (cloud starter)
+1. Wrote JSON contracts for every trigger (forms, calendly, ads) and validated them with Zod.
+2. Built custom n8n nodes for scoring to avoid repeated function blocks.
+3. Synced everything with Attio using signed webhooks and mapping files.
+4. Published Metabase dashboards to see bottlenecks in real time.
+5. Set Slack alerts whenever an execution exceeded 90 seconds or hit fallback.
 
-## Arquitectura del Funnel Automatizado
+## Metrics & telemetry
 
-```
-[Webflow Form] → [n8n] → [Enrichment] → [Scoring] → [CRM] → [Email Sequences]
-                    ↓
-              [Slack Alerts]
-```
+- Operations time: 40h → 2h per week
+- Misrouted leads: 18% → 2%
+- Average time to first reply: 3h → 32 minutes
 
-Cada pieza es reemplazable. Si mañana cambias de Webflow a Framer, solo cambias el trigger en n8n.
+## What stuck with me
 
-## Workflow 1: Lead Capture & Enrichment
+- Without observability you’re blind; I store every payload in Supabase for replays.
+- Non-technical owners love visual checklists; I document each play with Mermaid diagrams.
 
-Cuando alguien llena el formulario de contacto:
+## What I'm building next
 
-**Paso 1: Webhook Trigger**
-```javascript
-// n8n recibe el webhook de Webflow
-{
-  "name": "John Doe",
-  "email": "john@acme.com",
-  "company": "Acme Inc"
-}
-```
-
-**Paso 2: Enrichment con Clearbit**
-```javascript
-// Agrega: company size, industry, funding, tech stack
-const enrichedData = await clearbit.enrich(email);
-```
-
-**Paso 3: LinkedIn Scraping (opcional)**
-```javascript
-// Si Clearbit no tiene data, scrapeamos LinkedIn
-if (!enrichedData.company.size) {
-  const linkedinData = await scrapeLinkedIn(company);
-}
-```
-
-**Resultado:** De 3 campos a 30+ campos de data útil en 10 segundos.
-
-## Workflow 2: Lead Scoring Automático
-
-Ahora que tenemos data enriquecida, asignamos un score:
-
-```javascript
-// Modelo simple de scoring
-function calculateScore(lead) {
-  let score = 0;
-
-  // Tamaño de empresa
-  if (lead.company.size > 50 && lead.company.size < 500) score += 30;
-  if (lead.company.size >= 500) score += 20;
-
-  // Industria target
-  const targetIndustries = ['SaaS', 'Fintech', 'E-commerce'];
-  if (targetIndustries.includes(lead.company.industry)) score += 25;
-
-  // Funding
-  if (lead.company.raised > 5000000) score += 15;
-
-  // Seniority del contacto
-  const seniorTitles = ['CEO', 'VP', 'Director', 'Head of'];
-  if (seniorTitles.some(title => lead.title.includes(title))) score += 30;
-
-  return score;
-}
-```
-
-**Categorías:**
-- Score 80-100: 🔥 Hot Lead → Sales inmediato
-- Score 50-79: 🌟 Warm Lead → Nurture sequence
-- Score 0-49: ❄️ Cold Lead → Newsletter mensual
-
-## Workflow 3: Smart Routing
-
-Basado en el score, routeamos automáticamente:
-
-```javascript
-// n8n Switch node
-if (score >= 80) {
-  // Ruta 1: Hot Lead
-  await crm.createDeal(lead);
-  await assignToSalesRep(lead, 'enterprise-team');
-  await slack.send('#sales-hot-leads', lead);
-  await sendEmail(lead, 'ceo-personal-intro-template');
-
-} else if (score >= 50) {
-  // Ruta 2: Warm Lead
-  await crm.addToList(lead, 'warm-nurture');
-  await sendEmail(lead, 'value-demo-sequence');
-
-} else {
-  // Ruta 3: Cold Lead
-  await crm.addToList(lead, 'newsletter');
-}
-```
-
-## Workflow 4: Nurture Sequences
-
-Para Warm Leads, corremos una secuencia de 5 emails en 2 semanas:
-
-**Email 1 (Día 0):** "Gracias por tu interés" + PDF de caso de estudio
-**Email 2 (Día 2):** Video de demo personalizado
-**Email 3 (Día 5):** Invitación a webinar
-**Email 4 (Día 10):** "Cómo [Competitor] aumentó conversión 40%"
-**Email 5 (Día 14):** Oferta especial con deadline
-
-Todo automatizado con **delays** en n8n:
-
-```javascript
-// Sequence node en n8n
-{
-  "trigger": "Lead added to warm-nurture",
-  "emails": [
-    { "delay": 0, "template": "thanks-case-study" },
-    { "delay": 2, "template": "personalized-demo" },
-    { "delay": 5, "template": "webinar-invite" },
-    { "delay": 10, "template": "competitor-case" },
-    { "delay": 14, "template": "special-offer" }
-  ]
-}
-```
-
-## Workflow 5: Re-engagement Automático
-
-Si un Warm Lead no abre emails en 7 días:
-
-```javascript
-// n8n corre este workflow daily
-const inactiveLead = leads.filter(l =>
-  l.status === 'warm' &&
-  l.lastEngagement < Date.now() - 7 * 86400000
-);
-
-for (let lead of inactiveLeads) {
-  // Cambio de canal
-  await sendLinkedInMessage(lead);
-  // O retargeting ads
-  await addToAudience(lead, 'facebook-retargeting');
-}
-```
-
-## Resultados
-
-Después de 3 meses con este sistema:
-
-| Métrica | Antes | Después | Cambio |
-|---------|-------|---------|--------|
-| Tiempo manual/semana | 40h | 2h | **-95%** |
-| Lead response time | 24h | 30 seg | **-99%** |
-| Lead → SQL conversion | 8% | 19% | **+137%** |
-| Deals cerrados/mes | 4 | 11 | **+175%** |
-
-## Implementación Paso a Paso
-
-### Semana 1: Setup Básico
-1. Instalar n8n (cloud o self-hosted)
-2. Conectar CRM y email tool
-3. Crear primer workflow simple (form → CRM)
-
-### Semana 2: Enrichment
-1. Setup Clearbit o alternativa
-2. Agregar enrichment a workflow
-3. Validar data quality
-
-### Semana 3: Scoring & Routing
-1. Definir criterios de scoring
-2. Implementar lógica de routing
-3. Setup notificaciones a sales
-
-### Semana 4: Nurture Sequences
-1. Escribir templates de emails
-2. Crear workflows de sequences
-3. Setup tracking y analytics
-
-## Herramientas Necesarias
-
-**Core:**
-- n8n (automation)
-- Supabase o Airtable (database)
-- Resend (email)
-
-**Data Enrichment:**
-- Clearbit (premium, $99+/mo)
-- Apollo.io (alternativa más barata)
-- LinkedIn scraper (DIY con Puppeteer)
-
-**CRM:**
-- Attio, HubSpot, o Pipedrive
-
-**Budget total:** $150-300/mes
-
-## Errores Comunes
-
-❌ **Automatizar un proceso roto**
-✅ Primero optimiza manualmente, luego automatiza
-
-❌ **Over-engineering desde día 1**
-✅ Empieza simple, agrega complejidad bajo demanda
-
-❌ **No monitorear errores**
-✅ Setup alertas para workflows que fallen
-
-## Código de Ejemplo: Workflow Completo
-
-Este es un workflow básico que puedes importar directamente en n8n:
-
-```json
-{
-  "nodes": [
-    {
-      "name": "Webhook",
-      "type": "n8n-nodes-base.webhook",
-      "position": [250, 300]
-    },
-    {
-      "name": "Clearbit",
-      "type": "n8n-nodes-base.clearbit",
-      "position": [450, 300]
-    },
-    {
-      "name": "Calculate Score",
-      "type": "n8n-nodes-base.function",
-      "position": [650, 300],
-      "parameters": {
-        "functionCode": "// Scoring logic aquí"
-      }
-    },
-    {
-      "name": "Route by Score",
-      "type": "n8n-nodes-base.switch",
-      "position": [850, 300]
-    }
-  ]
-}
-```
-
-[Descarga el workflow completo aquí](#)
-
-## Conclusión
-
-Automatizar tu funnel de conversión no es solo sobre "ahorrar tiempo". Es sobre **escalar sin contratar**, **responder instantáneamente**, y **personalizar a escala**.
-
-Con n8n y el stack correcto, puedes procesar 10,000 leads/mes con el mismo esfuerzo que antes procesabas 100.
+I'm testing lightweight models to prioritize sentiment-driven follow-ups. Want help migrating off Zapier or Make? ping me.
 
 ---
 
-**¿Quieres implementar esto en tu empresa?** [Contáctanos](/contact) y te mostramos exactamente cómo setear estos workflows en tu stack.
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

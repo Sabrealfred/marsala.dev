@@ -1,0 +1,64 @@
+---
+title: "Privacy Layer for Growth Teams"
+slug: "privacy-layer-for-growth"
+type: "Insight"
+summary: "I built a privacy layer that lets us experiment without scaring legal."
+description: "Insight on how I structured consent, tokenization and governance for growth teams."
+date: "2024-12-18"
+readingTime: "7 min read"
+author: "Marina Álvarez"
+tags:
+  - "Data"
+  - "Compliance"
+keywords:
+  - "privacy"
+  - "growth"
+  - "compliance"
+  - "gdpr"
+  - "data"
+featured: false
+image: "/blog/privacy-layer.jpg"
+---
+
+
+# Privacy Layer for Growth Teams
+
+> There’s no sustainable growth without trust; the privacy layer is my insurance policy.
+
+## Context
+
+I work with sensitive data. To move quickly without violating GDPR or SOC2, I created a privacy layer that abstracts PII and documents every use.
+
+## Stack I leaned on
+
+- Supabase + Row Level Security
+- HashiCorp Vault for keys and secrets
+- Segment consent mode + OneTrust
+- PostHog proxy for anonymous events
+
+## Playbook
+
+1. Classified data by sensitivity and defined access rules.
+2. Tokenized emails/IDs before sending them to external tools.
+3. Implemented a legal-owned consent panel.
+4. Documented data purposes with automatic expiry rules.
+5. Automated audit reports each sprint.
+
+## Metrics & telemetry
+
+- Deletion requests served in <48h
+- Privacy incidents in 2024: 0
+- Time to approve new tools: -40%
+
+## What stuck with me
+
+- Legal needs real-time visibility of where data travels.
+- Teams accept constraints when they see the upside (fewer endless forms).
+
+## What I'm building next
+
+I’m building a CLI that lists which services touch PII. Want to beta test it? ping me.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

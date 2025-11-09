@@ -1,0 +1,64 @@
+---
+title: "Automation SRE for RevOps"
+slug: "automation-sre-revops"
+type: "Insight"
+summary: "Treating RevOps automations like services with SRE discipline and SLAs."
+description: "Insight on how I borrowed SRE practices for revenue automations."
+date: "2024-12-09"
+readingTime: "7 min read"
+author: "Marina Álvarez"
+tags:
+  - "Ops"
+  - "Automation"
+keywords:
+  - "sre"
+  - "revops"
+  - "automation"
+  - "reliability"
+  - "n8n"
+featured: false
+image: "/blog/automation-sre.jpg"
+---
+
+
+# Automation SRE for RevOps
+
+> My RevOps workflows now have SLAs, alerts and on-call rotations just like any critical service.
+
+## Context
+
+Every time a workflow failed, sales chased us. I implemented SRE practices to stabilize automations and sleep better.
+
+## Stack I leaned on
+
+- n8n + healthchecks.io
+- Grafana + Loki for logs
+- PagerDuty for shared on-call
+- Supabase for audit trails
+
+## Playbook
+
+1. Defined SLOs for every critical workflow (latency, availability).
+2. Instrumented structured logging and centralized storage.
+3. Built error-budget dashboards and maintenance plans.
+4. Wrote runbooks and executed quarterly drills.
+5. Shared on-call rotations between automation and RevOps.
+
+## Metrics & telemetry
+
+- Incident response time: 25 min → 7 min
+- Critical errors/month: -70%
+- Sales satisfaction with automations: 9/10
+
+## What stuck with me
+
+- Workflows need owners, alerts and documentation just like microservices.
+- Sharing on-call builds empathy between dev and RevOps.
+
+## What I'm building next
+
+I'm releasing runbook + SLO templates for RevOps. Want the bundle? drop your email.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

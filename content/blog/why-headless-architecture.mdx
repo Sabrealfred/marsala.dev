@@ -1,291 +1,65 @@
 ---
-title: "Por Qué las Empresas que Crecen Rápido Están Migrando a Arquitecturas Headless"
+title: "Why I Only Push Headless When It Hurts (and Pays)"
 slug: "why-headless-architecture"
 type: "Insight"
-summary: "El modelo tradicional de plataformas all-in-one está muriendo. Aquí está por qué headless es el futuro y cómo migrar sin romper nada."
-date: "2024-12-28"
+summary: "Lessons from migrating DTC brands to headless architectures without burning the team."
+description: "Honest look at when headless is worth it, how I plan releases and what mistakes to avoid."
+date: "2025-01-28"
 readingTime: "7 min read"
-author: "Marsala Team"
-tags: ["Headless", "Architecture", "Jamstack", "Modern Stack"]
-featured: true
+author: "Marina Álvarez"
+tags:
+  - "Architecture"
+  - "Commerce"
+  - "Web"
+keywords:
+  - "headless"
+  - "ecommerce"
+  - "nextjs"
+  - "sanity"
+  - "architecture"
+featured: false
 image: "/blog/headless.jpg"
 ---
 
-# Por Qué las Empresas que Crecen Rápido Están Migrando a Arquitecturas Headless
 
-En 2020, construías tu sitio con WordPress o Shopify y vivías feliz.
+# Why I Only Push Headless When It Hurts (and Pays)
 
-En 2025, las empresas que crecen rápido están migrando a **arquitecturas headless**. ¿Por qué?
+> I'm not dogmatic—I only push headless when it accelerates experiments and kills toxic fees.
 
-No es por moda. Es porque las plataformas monolíticas no escalan con la velocidad que requiere el mercado moderno.
+## Context
 
-## Qué Es "Headless"
+I've guided three migrations where Shopify exhausted its runway. This piece shares my mental checklists and how I defend the investment to finance.
 
-**Arquitectura tradicional (monolítica):**
-```
-[Frontend + Backend + Database + CMS] → Todo en una plataforma
-```
-Ejemplos: WordPress, Shopify (tradicional), Squarespace
+## Stack I leaned on
 
-**Arquitectura headless:**
-```
-[Frontend] ← API ← [Backend] ← [Database]
-                   ← [CMS]
-                   ← [Auth]
-                   ← [Payments]
-```
-Cada pieza es independiente y se conecta vía APIs.
+- Next.js 15 + edge runtime
+- Sanity + Portable Text
+- Medusa.js or Shopify Storefront API
+- Vercel + Netlify hybrid deploy
 
-## El Problema con las Plataformas All-in-One
+## Playbook
 
-### 1. Vendor Lock-In
+1. Start with performance, content and governance audit to ensure it's worth it.
+2. Lay out incremental roadmap (frontend, CMS, backend) with feature flags and dark launches.
+3. Version the design system in Figma + Storybook before touching production.
+4. Integrate analytics and SEO from day zero to avoid losing ranking.
+5. Plan module-level rollback runbooks so no one pulls all-nighters.
 
-Construyes todo en Shopify. En año 2, quieres migrar a una solución custom porque:
-- Las fees de Shopify son 2% de revenue (=$100K/año)
-- Necesitas features que Shopify no soporta
-- Quieres más control sobre UX
+## Metrics & telemetry
 
-**Costo de migración:** 6-12 meses de trabajo.
+- Lighthouse score: 42 → 96
+- Platform fees: $60k → $2.4k per year
+- Deploy time: 2 weeks → 5 minutes
 
-Con headless: cambias el backend en 2 semanas, el frontend sigue igual.
+## What stuck with me
 
-### 2. Performance Limitado
+- Headless without content ownership is a ticking bomb; I train editors and build playgrounds.
+- SEO cannot be an afterthought; migrations include URLs and redirects in every sprint.
 
-WordPress carga 47 scripts que no necesitas porque "están incluidos en el theme".
+## What I'm building next
 
-**Resultado:**
-- Lighthouse score: 40/100
-- Core Web Vitals: Todos en rojo
-- SEO penalizado por Google
-
-**Con headless (Next.js + Contentful):**
-- Lighthouse score: 95/100
-- Core Web Vitals: Verde
-- SEO optimizado
-
-### 3. No Puedes Experimentar Rápido
-
-Quieres A/B testear una nueva homepage.
-
-**Con Shopify:** Contratas un developer Shopify, editas Liquid templates, esperas 2 semanas, deployeas a todos.
-
-**Con headless:** Tu frontend developer cambia Next.js components, deployeas en Vercel en 5 minutos, corres experimento en 10% del tráfico.
-
-### 4. Multi-Platform Es Imposible
-
-Tu contenido está en WordPress. Ahora quieres:
-- App mobile
-- Email campaigns
-- In-app notifications
-- Podcast descriptions
-
-**Con WordPress:** Copy-paste manual a cada plataforma.
-
-**Con headless CMS:** API call. Todo sincronizado.
-
-## Casos de Uso: Cuándo Usar Headless
-
-### ✅ Usa Headless Si...
-
-**1. Necesitas Performance**
-- E-commerce con alto tráfico
-- Sites con mucho contenido
-- Apps que requieren SEO perfecto
-
-**2. Multi-Canal**
-- Website + app + email + PoS físico
-- Contenido que se consume en 5+ plataformas
-
-**3. Experimentos Frecuentes**
-- Corres A/B tests semanales
-- Necesitas deployear features rápido
-- Testing de UX constante
-
-**4. Equipos Técnicos**
-- Tienes developers in-house
-- Quieres control total del código
-
-### ❌ NO Uses Headless Si...
-
-**1. Proyecto Simple**
-- Blog personal
-- Landing page estática
-- No necesitas customización
-
-**2. Sin Equipo Técnico**
-- Solo marketers, no developers
-- Presupuesto &lt;$5K
-- No quieres mantener infraestructura
-
-**3. MVP Rápido**
-- Necesitas lanzar en 1 semana
-- Validando idea
-- Pivotearás pronto
-
-## Stack Headless Recomendado (2025)
-
-### Para E-commerce
-
-**Frontend:**
-- Next.js 15 + React
-- Tailwind CSS
-- Deploy: Vercel
-
-**Backend/API:**
-- Medusa.js (Shopify alternative, open source)
-- Stripe (payments)
-- Supabase (database)
-
-**CMS:**
-- Sanity o Contentful
-- Para product descriptions, blogs, etc
-
-**Costo:** ~$200/mes hasta $1M GMV
-
-### Para Marketing Site / Blog
-
-**Frontend:**
-- Next.js o Astro
-- Tailwind CSS
-- Deploy: Vercel o Netlify
-
-**CMS:**
-- Sanity (flexible)
-- Contentful (enterprise)
-- Payload CMS (open source, self-hosted)
-
-**Backend:**
-- Supabase (auth, database)
-- Resend (email)
-
-**Costo:** ~$50/mes hasta 100K visitors/mes
-
-### Para SaaS Product
-
-**Frontend:**
-- Next.js App Router
-- Radix UI + Tailwind
-
-**Backend:**
-- Next.js API routes
-- Supabase (database + auth)
-- Stripe (billing)
-
-**CMS:**
-- Sanity (para blog, docs, changelog)
-
-**Costo:** ~$100-300/mes hasta escala
-
-## Migración Sin Romper Nada
-
-¿Ya tienes un site en WordPress/Shopify y quieres migrar?
-
-### Estrategia: Migración Gradual
-
-**Fase 1: Frontend Primero (Semana 1-2)**
-```
-Old: [WordPress] → Frontend + Backend juntos
-New: [Next.js] ← API ← [WordPress REST API]
-```
-
-Construyes nuevo frontend en Next.js que consume WordPress vía API.
-
-**Beneficios:**
-- Performance mejora inmediatamente
-- Puedes A/B testear nuevo frontend vs viejo
-- Backend sigue igual (low risk)
-
-**Fase 2: CMS Headless (Semana 3-4)**
-```
-Old: [Next.js] ← API ← [WordPress]
-New: [Next.js] ← API ← [Sanity CMS]
-```
-
-Migras contenido de WordPress a Sanity.
-
-**Fase 3: Backend Custom (Mes 2-3)**
-```
-Final: [Next.js] ← API ← [Custom Backend (Supabase/Medusa)]
-```
-
-Solo si lo necesitas. Para muchos, Fase 2 es suficiente.
-
-## Caso Real: E-commerce Migration
-
-**Cliente:** E-commerce de fashion, $3M GMV/año
-
-**Stack Original:**
-- Shopify + apps (reviews, email, etc)
-- Lighthouse: 42/100
-- Shopify fees: ~$60K/año
-
-**Stack Headless:**
-- Frontend: Next.js + Vercel
-- Backend: Medusa.js + Stripe
-- CMS: Sanity
-- Reviews: Custom + Supabase
-- Email: Klaviyo (API)
-
-**Migración:** 6 semanas con 2 developers
-
-**Resultados después de 6 meses:**
-
-| Métrica | Antes | Después | Cambio |
-|---------|-------|---------|--------|
-| Lighthouse Score | 42 | 96 | +129% |
-| Conversion Rate | 1.8% | 2.7% | +50% |
-| Platform Fees | $60K/año | $2.4K/año | -96% |
-| Deploy Time | 2 semanas | 5 minutos | -99% |
-| Experiment Velocity | 1/mes | 15/mes | +1400% |
-
-**ROI:** Ahorro de $57K/año en fees + aumento de conversión = payback en &lt;3 meses.
-
-## Errores Comunes en Migraciones
-
-❌ **Big bang migration**
-"Vamos a reescribir todo desde cero"
-→ Migración toma 9 meses, features críticas se rompen
-
-✅ **Incremental migration**
-Fase 1: Frontend, Fase 2: CMS, Fase 3: Backend (si necesario)
-
-❌ **No considerar SEO**
-Migras, pero pierdes 50% del tráfico orgánico
-→ URLs rotas, meta tags perdidos, redirects mal hechos
-
-✅ **SEO migration plan**
-Mapeo completo de URLs, redirects 301, meta tags migrados
-
-❌ **Optimizar antes de migrar**
-"Vamos a mejorar TODO en la migración"
-→ Scope creep infinito
-
-✅ **Migra primero, optimiza después**
-Feature parity primero, mejoras después
-
-## Headless No Es Silver Bullet
-
-Headless **no** resuelve automáticamente:
-- Contenido malo
-- Processes rotos
-- Falta de estrategia
-
-Headless te da **velocidad** y **flexibilidad** para iterar rápido. Pero sigues necesitando:
-- Buen contenido
-- Estrategia de growth
-- Analytics y experimentación
-
-## Conclusión
-
-Las empresas están migrando a headless no por moda, sino por **necesidad**:
-
-- **Velocidad:** Deploy en minutos, no semanas
-- **Performance:** Core Web Vitals verdes = más conversión
-- **Flexibilidad:** Cambia piezas sin romper todo
-- **Costo:** -90% en platform fees en muchos casos
-
-Si estás creciendo rápido y tu plataforma actual es un bottleneck, headless es la respuesta.
+I'm iterating on a headless commerce kit optimized for LATAM. Want to be a beta partner? reach out.
 
 ---
 
-**¿Considerando migrar a headless?** [Habla con nosotros](/contact) y te mostramos exactamente qué stack necesitas y cómo migrar sin romper nada.
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

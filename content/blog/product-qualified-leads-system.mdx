@@ -1,54 +1,65 @@
 ---
-title: "Product Qualified Leads: Sistema con Snowflake + Hightouch"
+title: "Product Qualified Leads System with Snowflake + Hightouch"
 slug: "product-qualified-leads-system"
 type: "Case Study"
-summary: "Implementamos un pipeline de PQLs usando eventos de producto, modelos en Snowflake y activación vía Hightouch."
-date: "2025-02-11"
+summary: "I detect PQLs inside the product and hand them to sales in under 30 minutes."
+description: "Case study on building a PQL pipeline using product events, Snowflake models and Hightouch activation."
+date: "2025-01-08"
 readingTime: "10 min read"
-author: "Marsala Team"
-tags: ["PQL", "Snowflake", "Hightouch", "PLG"]
+author: "Marina Álvarez"
+tags:
+  - "PLG"
+  - "Data"
+  - "Automation"
+keywords:
+  - "pql"
+  - "snowflake"
+  - "hightouch"
+  - "plg"
+  - "activation"
 featured: false
 image: "/blog/pql-system.jpg"
 ---
 
-# Product Qualified Leads: Sistema con Snowflake + Hightouch
 
-Para empresas PLG, los mejores leads están dentro del producto. Este case muestra cómo identificarlos y mandarlos directamente a ventas.
+# Product Qualified Leads System with Snowflake + Hightouch
 
-## Modelo de Scoring
+> The best leads were already inside the product; they just needed a spotlight.
 
-- Inputs: eventos (`workspace_created`, `automation_published`, `team_invited`).
-- Ponderamos señales cualitativas (industria, tamaño de equipo) con métricas de uso.
-- Fórmula final se entrenó en Snowpark usando regresión logística.
+## Context
 
-```sql
-create view mart_pql_scores as
-select
-  account_id,
-  probability_success as score,
-  case when probability_success > 0.72 then 'Hot'
-       when probability_success > 0.45 then 'Warm'
-       else 'Nurture'
-  end as tier
-from ml_pql_predictions;
-```
+I own PLG and hated seeing hot accounts ignored. So I built a pipeline that listens to product activity, predicts intent and pings the right owner.
 
-## Activation Loop
+## Stack I leaned on
 
-1. **Hightouch** sincroniza la vista `mart_pql_scores` hacia Attio y HubSpot.
-2. Crea tareas automáticas + envía Slack DM al owner.
-3. PostHog recibe una propiedad nueva para personalizar el producto (“Probar Workflow AI”).
+- Snowflake + Snowpark for models
+- Hightouch for syncing to Attio/HubSpot
+- PostHog for feature flags and traits
+- Slack bots for instant alerts
 
-## Governanza
+## Playbook
 
-- Tests de dbt aseguran que solo cuentas activas entren al modelo.
-- Documentamos en Notion la lógica de cada señal y owners de mantenimiento.
-- Slack bot pregunta semanalmente a los AE si cada PQL era realmente bueno → se reentrena con feedback.
+1. Defined usage signals (workspaces, automations, seats) and built dbt views.
+2. Trained a logistic regression and exposed it as a consumable view.
+3. Synced scores to CRM, Slack and product via Hightouch.
+4. Added a weekly survey so AEs tag whether the PQL was legit.
+5. Retrained the model quarterly with real outcomes.
 
-## Impacto
+## Metrics & telemetry
 
-- Pipeline generado internamente: **+44%**.
-- Tiempo de reacción: **&lt;30 minutos** tras detectar un PQL.
-- Win rate del segmento: **+18 puntos**.
+- Pipeline generated internally: +44%
+- Win rate on hot PQLs: +18 points
+- Reaction time: <30 minutes
 
-Con datos correctos y activación automática, los PQL dejan de ser una teoría y se convierten en tu canal principal.
+## What stuck with me
+
+- Human feedback matters; without AE notes the model gets arrogant.
+- Document the logic behind each signal to avoid myths.
+
+## What I'm building next
+
+I'm releasing dbt templates for teams that want to launch PQLs fast. Want them? let me know.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

@@ -1,0 +1,63 @@
+---
+title: "Data Quality Fire Drills for Growth Teams"
+slug: "data-quality-fire-drills"
+type: "Guide"
+summary: "I run data fire drills so nobody panics when a real incident hits."
+description: "Guide for executing data-quality fire drills: scripts, roles and learnings."
+date: "2024-12-06"
+readingTime: "7 min read"
+author: "Marina Álvarez"
+tags:
+  - "Data"
+  - "Ops"
+keywords:
+  - "data quality"
+  - "fire drill"
+  - "analytics"
+  - "ops"
+featured: false
+image: "/blog/data-drills.jpg"
+---
+
+
+# Data Quality Fire Drills for Growth Teams
+
+> Data crises are easier when you already rehearsed them.
+
+## Context
+
+Whenever a dashboard broke Slack turned into chaos. I instituted monthly drills to train the response muscle.
+
+## Stack I leaned on
+
+- Supabase clones for staging
+- dbt seeds with corrupt data
+- PagerDuty for simulations
+- Notion as the incident logbook
+
+## Playbook
+
+1. Plan realistic scenarios (freshness, duplicates, schema changes).
+2. Inject controlled bad data and trigger fake alerts.
+3. Run the drill with clear roles (incident commander, scribe, comms).
+4. Close with a retro and PRs to improve scripts/tests.
+5. Archive learnings and repeat monthly with variations.
+
+## Metrics & telemetry
+
+- Time to detect real incidents: -40%
+- Team confidence during incidents: 9/10
+- Runbooks updated after drills: 100%
+
+## What stuck with me
+
+- Warn leadership ahead of time to avoid unnecessary escalations.
+- Document immediately or the drill evaporates from memory.
+
+## What I'm building next
+
+I'm publishing a library of ready-made scenarios. Want to contribute? DM me.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

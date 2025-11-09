@@ -1,58 +1,65 @@
 ---
-title: "Portal de Partners en 3 Semanas con Next.js + Supabase"
+title: "Partner Portal in 3 Weeks with Next.js + Supabase"
 slug: "partner-portal-nextjs-supabase"
 type: "Case Study"
-summary: "Blueprint para lanzar un portal de partners con autenticación, deals compartidos y notificaciones automáticas."
-date: "2025-01-22"
+summary: "Blueprint for launching a partner portal with auth, shared deals and automatic notifications."
+description: "Case study detailing how I built a partner portal with authentication, shared pipeline, incentives and reporting."
+date: "2025-01-18"
 readingTime: "11 min read"
-author: "Marsala Team"
-tags: ["Next.js", "Supabase", "Partners", "Resend"]
+author: "Marina Álvarez"
+tags:
+  - "Web"
+  - "RevOps"
+  - "Product"
+keywords:
+  - "partners"
+  - "nextjs"
+  - "supabase"
+  - "resend"
+  - "b2b portal"
 featured: false
 image: "/blog/partner-portal.jpg"
 ---
 
-# Portal de Partners en 3 Semanas con Next.js + Supabase
 
-Los canales de partners generan 35% del pipeline cuando se gestionan bien. Construimos un portal modular que centraliza deals, materiales y soporte.
+# Partner Portal in 3 Weeks with Next.js + Supabase
 
-## Semana 1: Fundamentos
+> Partners deserved a proper UX; no more endless spreadsheets.
 
-- **Autenticación**: Supabase Auth con magic links + SSO opcional.
-- **Roles**: Partner Admin, Sales, Marketing. Se guardan en `user_metadata.roles`.
-- **UI**: Layout en Next.js App Router + componentes compartidos con el sitio.
+## Context
 
-## Semana 2: Deals Compartidos
+Channel drives 35% of our pipeline. I crafted a portal because we needed speed and transparency.
 
-```sql
-create table partner_deals (
-  id uuid primary key default gen_random_uuid(),
-  partner_id uuid references partners(id),
-  attio_record text,
-  status text,
-  next_action timestamptz,
-  created_at timestamptz default now()
-);
-```
+## Stack I leaned on
 
-- Webhooks desde Attio → Supabase para reflejar cambios en tiempo real.
-- Notificaciones por Resend cuando un deal cambia de etapa.
-- Integración con Notion para materiales actualizados automáticamente.
+- Next.js App Router + Tailwind
+- Supabase Auth and RLS
+- Attio + Notion APIs
+- Resend for notifications
 
-## Semana 3: Experiencia y Reporting
+## Playbook
 
-| Módulo | Descripción |
-|--------|-------------|
-| Content Hub | Filtra assets por etapa del funnel |
-| Incentives | Calcula comisiones y muestra historial |
-| Support | Widget de chat + base de conocimiento |
+1. Designed role model (Admin, Sales, Marketing) with Supabase policies.
+2. Built modules: shared deals, content hub, incentives, support.
+3. Synced Attio webhooks to keep statuses aligned.
+4. Added Metabase dashboards for channel metrics.
+5. Tested releases with real partners via feature flags.
 
-- Añadimos PostHog para medir adopción de features.
-- Dashboard Metabase para el equipo interno (deals activos, tiempo de respuesta, NPS).
+## Metrics & telemetry
 
-## Resultados
+- Partner response time: 24h → <4h
+- Shared deals per month: +52%
+- Quarterly partner satisfaction: 9.1/10
 
-- Tiempo de respuesta a partners: **&lt;4h** (antes 24h).
-- Deals compartidos por mes: **+52%**.
-- Satisfacción en encuesta trimestral: **9.1/10**.
+## What stuck with me
 
-El portal quedó listo para escalar: basta con duplicar el esquema en otra región y volver a apuntar los webhooks.
+- Partners crave clarity in incentives; expose calculations and statuses.
+- Documenting APIs and flows reduced random support tickets.
+
+## What I'm building next
+
+I'm preparing a starter kit for teams using Attio. Want early access? ping me.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

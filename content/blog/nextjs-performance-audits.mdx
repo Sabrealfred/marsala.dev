@@ -1,0 +1,64 @@
+---
+title: "Next.js Performance Audits Without the Drama"
+slug: "nextjs-performance-audits"
+type: "Guide"
+summary: "The checklist I follow to keep Core Web Vitals green across complex Next.js properties."
+description: "Practical performance guide: budgets, tooling and runbooks to keep Next.js fast."
+date: "2024-12-20"
+readingTime: "7 min read"
+author: "Marina Álvarez"
+tags:
+  - "Web"
+  - "Performance"
+keywords:
+  - "nextjs"
+  - "performance"
+  - "core web vitals"
+  - "audits"
+  - "lighthouse"
+featured: false
+image: "/blog/next-performance.jpg"
+---
+
+
+# Next.js Performance Audits Without the Drama
+
+> Give me clear budgets over last-minute hacks any day.
+
+## Context
+
+I maintain landing pages and content-heavy apps. To avoid nuking Web Vitals I run frequent audits with repeatable processes.
+
+## Stack I leaned on
+
+- Lighthouse CI + GitHub Actions
+- WebPageTest for real scenarios
+- Calibre for continuous monitoring
+- Next.js analyzer + bundle buddy
+
+## Playbook
+
+1. Define budgets (LCP, CLS, JS weight) and document them in the repo.
+2. Run Lighthouse on every PR and block merges on regressions.
+3. Use optimized images and streaming for heavy assets.
+4. Review shared bundles and convert heavy libs into dynamic imports.
+5. Share results weekly via a simple dashboard.
+
+## Metrics & telemetry
+
+- Average LCP: <2.2s desktop, <2.6s mobile
+- JS shipped per page: -35%
+- Post-release performance bugs: near zero
+
+## What stuck with me
+
+- Audits must live inside the sprint, not as an extra chore.
+- Budgets only work if every squad knows them by heart.
+
+## What I'm building next
+
+I’m sharing a GitHub Actions workflow template with configurable budgets. Want it? let me know.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

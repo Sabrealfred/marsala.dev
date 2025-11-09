@@ -1,66 +1,65 @@
 ---
-title: "Construyendo un Copilot de Calificación de Leads con LLMs"
+title: "AI Lead Qualification Copilot"
 slug: "ai-lead-qualification-copilot"
 type: "Playbook"
-summary: "Cómo combinamos LLMs, Airtable y n8n para calificar leads en 90 segundos sin tocar el CRM manualmente."
+summary: "My copilot mixes LLMs, enrichment and scoring to answer leads in 90 seconds."
+description: "Playbook for building a copilot that qualifies leads with real context and respects the CRM."
 date: "2025-02-05"
 readingTime: "9 min read"
-author: "Marsala Team"
-tags: ["AI", "Lead Scoring", "Automation", "LLM"]
+author: "Marina Álvarez"
+tags:
+  - "AI"
+  - "RevOps"
+  - "Automation"
+keywords:
+  - "LLM"
+  - "lead scoring"
+  - "copilot"
+  - "attio"
+  - "openai"
 featured: false
 image: "/blog/ai-copilot.jpg"
 ---
 
-# Construyendo un Copilot de Calificación de Leads con LLMs
 
-Los equipos de revenue quieren respuestas instantáneas: ¿vale la pena hablar con este lead? Antes tomaba horas. Ahora, con un flujo modular usando LLMs + datos propios, podemos calificar en 90 segundos y registrar todo en el CRM.
+# AI Lead Qualification Copilot
 
-## Arquitectura General
+> I gave the sales team an assistant that thinks like we do, not like a bot.
 
-| Capa | Herramienta | Rol |
-|------|-------------|-----|
-| Data Lake | BigQuery | Consolida señales históricas |
-| Orquestación | n8n | Ejecuta workflow cada vez que llega un lead |
-| Inteligencia | OpenAI GPT-4 Turbo | Razona sobre el perfil |
-| Registro | Airtable + Attio | Persisten score y notas |
+## Context
 
-```typescript
-// Paso clave: prompt dinámico con contexto
-const prompt = `
-Contexto:
-- ACV promedio: ${acv}
-- ICP: ${icpProfile}
-- Señales del lead: ${signals}
+I didn’t want another generic template. I trained a copilot on real deals, objections and CRM chaos so it responds the way I would.
 
-Asigna un score de 1 a 5 y explica por qué en 2 bullets.`;
-```
+## Stack I leaned on
 
-## Workflow Paso a Paso
+- OpenAI GPT-4o mini + versioned prompts
+- Airtable as an editable buffer
+- Attio API to write notes and scores
+- Cloud Run + Redis for snappy queues
 
-1. **Trigger**: Form submission en `/contact` llega a la API.
-2. **Normalización**: Una función en Cloud Run limpia y estructura los campos.
-3. **Enriquecimiento**: Clearbit y Apollo agregan datos de industria, tamaño y stack.
-4. **LLM Reasoning**: GPT evalúa contra el ICP y devuelve score + motivos + objeciones potenciales.
-5. **Ruteo**: Si el score ≥4, se crea tarjeta en el pipeline hot; si es 2-3, entra en nurtures automatizados.
+## Playbook
 
-## Lecciones Clave
+1. Collected examples of good/bad emails and annotated them with context (ICP, stage, objections).
+2. Built modular prompts with data from the warehouse and recent activity.
+3. Added human-in-the-loop when the score crosses a threshold.
+4. Synced outputs back to the CRM and triggered personalized follow-ups in Resend.
+5. Held weekly retros with sales to tweak tone and fields.
 
-- **Contexto > Modelo**: El mismo modelo produce respuestas 4× mejores cuando incluimos datos del deal desk y deals ganados.
-- **Human-in-the-loop**: SDRs pueden marcar correcciones. Esas correcciones alimentan un dataset que retrena el prompt semanalmente.
-- **Visibilidad**: Un dashboard en Metabase expone el tiempo total por lead y la tasa de aceptación de ventas.
+## Metrics & telemetry
 
-## Métricas Obtenidas
+- Time to first reply: 3h → 90 seconds
+- Sales acceptance rate: +34%
+- Manual corrections: -62%
 
-- Tiempo promedio de respuesta al lead: **90 segundos** (antes 3h).
-- Tasa de aceptación por ventas: **+34%**.
-- Rechazos manuales: **-62%**.
+## What stuck with me
 
-## Próximos Pasos
+- The dataset dictates everything; without deal-desk context the model hallucinated optimism.
+- Version prompts with change control; I store every edit in Git.
 
-1. Entrenar un modelo pequeño para detectar señales negativas recurrentes.
-2. Sincronizar la retroalimentación con Gong para mejorar respuestas.
-3. Abrir una API para que partners envíen leads y reciban el score en tiempo real.
+## What I'm building next
+
+I'm experimenting with small models trained on closed-won/lost tickets. Want to co-build? DM me.
 
 ---
 
-¿Quieres replicar este copilot? Escríbenos y te compartimos el prompt completo más el template de n8n.
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

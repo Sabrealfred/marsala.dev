@@ -1,0 +1,64 @@
+---
+title: "Merging CRMs: HubSpot + Attio Without Losing History"
+slug: "crm-merge-attio-hubspot"
+type: "Case Study"
+summary: "How I unified two CRMs and rebuilt the pipeline in a single trustworthy view."
+description: "Practical case for merging HubSpot and Attio: ID reconciliation, owners and automations."
+date: "2024-12-30"
+readingTime: "9 min read"
+author: "Marina Álvarez"
+tags:
+  - "RevOps"
+  - "Data"
+keywords:
+  - "crm merge"
+  - "attio"
+  - "hubspot"
+  - "revops"
+  - "data"
+featured: false
+image: "/blog/crm-merge.jpg"
+---
+
+
+# Merging CRMs: HubSpot + Attio Without Losing History
+
+> I had to clean the mess of parallel CRMs—and lived to tell the tale.
+
+## Context
+
+After an acquisition we ended up with two CRMs fighting each other. I designed a controlled merge with staging, QA and clear comms.
+
+## Stack I leaned on
+
+- Airbyte + dbt for extraction and mapping
+- Supabase staging with RLS rules
+- Attio API to create final records
+- Notion playbooks + Slack updates
+
+## Playbook
+
+1. Cataloged properties and flagged equivalences/conflicts.
+2. Designed dedupe rules with fuzzy + deterministic matches.
+3. Migrated in waves by account segments to reduce risk.
+4. Rebuilt critical automations in Attio with unit tests.
+5. Delivered training and health dashboards post-merge.
+
+## Metrics & telemetry
+
+- Records migrated successfully: 118k (98.7%)
+- Automations re-enabled: 15 in two weeks
+- Support tickets post-migration: <10
+
+## What stuck with me
+
+- Merges fail due to poor communication; send daily status and public dashboards.
+- Owners must validate their own data before anything gets deleted.
+
+## What I'm building next
+
+I'm building reusable merge scripts; need one? reach out and we’ll adapt it.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

@@ -1,67 +1,65 @@
 ---
-title: "Migrar de HubSpot a Attio en 10 Días"
+title: "Attio Migration Playbook"
 slug: "attio-migration-playbook"
-type: "Guide"
-summary: "Playbook detallado para mover 120k records de HubSpot a Attio sin downtime y con mejores automatizaciones."
-date: "2025-02-02"
+type: "Case Study"
+summary: "Checklists and scripts I used to move 120k records from HubSpot to Attio without downtime."
+description: "Playbook covering data, automations, QA and enablement for a high-stakes Attio migration."
+date: "2025-01-26"
 readingTime: "10 min read"
-author: "Marsala Team"
-tags: ["CRM", "Attio", "Migration", "RevOps"]
+author: "Marina Álvarez"
+tags:
+  - "RevOps"
+  - "Data"
+  - "Automation"
+keywords:
+  - "attio"
+  - "hubspot"
+  - "migration"
+  - "crm"
+  - "revops"
 featured: false
 image: "/blog/attio-migration.jpg"
 ---
 
-# Migrar de HubSpot a Attio en 10 Días
 
-Attio se convirtió en el CRM favorito para equipos modulares. Pero mover todos los datos desde HubSpot puede ser una pesadilla si no hay estrategia. Este es el plan que usamos para una empresa SaaS de Latinoamérica.
+# Attio Migration Playbook
 
-## Día 0: Alineación de Éxito
+> I promised zero all-nighters and delivered a clean cutover.
 
-- Definimos **criterios de éxito**: tiempos de carga, flujos críticos y reporting.
-- Etiquetamos los objetos esenciales: contactos, compañías, deals, notas y actividades.
-- Bloqueamos una ventana de congelamiento de cambios de 6 horas para el cut-over.
+## Context
 
-## Días 1-4: Extracción y Normalización
+I love Attio because I can shape it to my process. This migration was my final exam: 120k records, 37 properties and multi-team workflows.
 
-```bash
-# Export contactos con propiedades personalizadas
-hs export contacts --properties 'lifecyclestage,industry,product_tier'
-```
+## Stack I leaned on
 
-- Transformamos CSV en Parquet y lo subimos a un bucket temporal.
-- Creamos un diccionario de campos; 37 propiedades se consolidaron en 15 con nombres consistentes.
-- Documentamos las reglas de duplicados (preferimos la fuente con timestamp más reciente).
+- Airbyte + dbt for extraction and normalization
+- Attio API + TypeScript scripts
+- Supabase for staging/QA
+- Notion + Loom for enablement
 
-## Días 5-7: Construcción del Espejo en Attio
+## Playbook
 
-| Bloque | Acción |
-|--------|--------|
-| Objetos | Creamos colecciones para cuentas, deals y pipelines paralelos |
-| Workflows | Replicamos 12 automatizaciones usando Attio Actions (webhooks y Webflow forms) |
-| Integraciones | Conectamos Slack, Clearbit y Resend para notificaciones |
+1. Defined success criteria and blocked a freeze window.
+2. Created field mapping and dedupe rules versioned in Git.
+3. Ran a dress rehearsal with 5% of data and documented gaps.
+4. Rebuilt automations with Attio Actions and tests.
+5. Delivered trainings and a health dashboard after cutover.
 
-## Día 8: Ensayo General
+## Metrics & telemetry
 
-- Cargamos 5% de los datos reales en un espacio sandbox.
-- SDR + Success validaron 50 registros al azar.
-- Ajustamos 3 fórmulas y 1 automation que se disparaba dos veces.
+- Data completeness: 99.3%
+- Automations rebuilt: 12 in three days
+- Annual stack cost: -42%
 
-## Día 9: Cut-over
+## What stuck with me
 
-1. Se pausa HubSpot durante 60 minutos.
-2. Se ejecuta la importación incremental (orden: compañías → contactos → deals → actividades).
-3. Lanzamos un script que reescribe los IDs en Notion, ClickUp y Supabase.
+- Owners need 5-minute video walk-throughs per flow.
+- Never ignore obscure properties; there's always a hidden integration.
 
-## Día 10: Post-mortem
+## What I'm building next
 
-- Dashboard con métricas diarias de uso (logins, registros editados, deals movidos).
-- Retroalimentación inmediata en Slack → backlog priorizado.
-- Documento vivo con “maneras Attio” vs “maneras HubSpot” para el equipo.
+I'm packaging this playbook into a CLI. Want to test it? DM me.
 
-## Resultados
+---
 
-- Tiempo de carga de pipelines: **230ms** (vs 2.3s en HubSpot).
-- Automatizaciones principales: **-58%** de pasos gracias a fórmulas + acciones condicionales.
-- Costo anual: **-42%**.
-
-La migración no es solo mover datos: es re-diseñar cómo trabaja el equipo. Con este playbook puedes hacerlo sin fricciones.
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

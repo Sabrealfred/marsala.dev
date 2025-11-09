@@ -1,0 +1,64 @@
+---
+title: "Guardrails for a Marketing CMS in Production"
+slug: "marketing-site-cms-guardrails"
+type: "Guide"
+summary: "How I let marketing edit freely without breaking the site or SEO."
+description: "Guide for adding guardrails to a headless CMS: roles, previews and automated tests."
+date: "2024-11-25"
+readingTime: "7 min read"
+author: "Marina Álvarez"
+tags:
+  - "Web"
+  - "CMS"
+keywords:
+  - "cms"
+  - "guardrails"
+  - "marketing site"
+  - "sanity"
+  - "nextjs"
+featured: false
+image: "/blog/cms-guardrails.jpg"
+---
+
+
+# Guardrails for a Marketing CMS in Production
+
+> I love when marketing edits without fear because I know the site is protected.
+
+## Context
+
+Marketing asked for full autonomy but I refused to babysit releases. I built guardrails for Sanity/Contentful and Next.js.
+
+## Stack I leaned on
+
+- Sanity Studio with granular permissions
+- Next.js preview mode + Vercel
+- Playwright for visual QA
+- Resend notifications on publish
+
+## Playbook
+
+1. Defined roles and approval workflows directly in the CMS.
+2. Implemented pixel-perfect previews wired to Slack approvals.
+3. Added SEO, accessibility and broken-link validators inside the editor.
+4. Ran end-to-end tests before publishing critical pages.
+5. Published a marketing handbook with best practices and no-gos.
+
+## Metrics & telemetry
+
+- Incidents caused by content changes: 0
+- Time to launch campaigns: -50%
+- Marketing satisfaction: 9.4/10
+
+## What stuck with me
+
+- Previews must be identical to prod; 'close enough' is not enough.
+- The CMS should educate with clear messages when something breaks.
+
+## What I'm building next
+
+Next I'll add AI-powered SEO suggestions in real time. Want a demo? send me a note.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

@@ -1,54 +1,65 @@
 ---
-title: "Customer Journeys Orquestados con Resend + Segment"
+title: "Customer Journeys Orchestrated with Resend + Segment"
 slug: "customer-journey-automation-resend"
 type: "Guide"
-summary: "Diseñamos journeys modulares usando Segment, Resend y Notion para acompañar todo el ciclo de vida."
-date: "2025-02-04"
+summary: "I designed modular journeys that accompany onboarding, adoption and expansion."
+description: "Guide for coordinating Segment, Resend, Notion and n8n to automate customer-first journeys."
+date: "2025-01-10"
 readingTime: "9 min read"
-author: "Marsala Team"
-tags: ["Lifecycle", "Resend", "Segment", "CX"]
+author: "Marina Álvarez"
+tags:
+  - "CX"
+  - "Automation"
+  - "Email"
+keywords:
+  - "resend"
+  - "segment"
+  - "journeys"
+  - "automation"
+  - "cx"
 featured: false
 image: "/blog/customer-journey.jpg"
 ---
 
-# Customer Journeys Orquestados con Resend + Segment
 
-El funnel no termina al cerrar. Construimos journeys que conectan onboarding, adopción y expansión usando solo herramientas modulares.
+# Customer Journeys Orchestrated with Resend + Segment
 
-## Mapa del Journey
+> Journeys stopped being generic blasts and became useful conversations.
 
-| Fase | Trigger | Objetivo |
-|------|---------|----------|
-| Onboarding | Actividad &lt; 3 días | Ayudar a configurar |
-| Adopción | Uso consistente 3 semanas | Introducir features pro |
-| Expansión | Uso de feature premium | Detectar señales de upsell |
+## Context
 
-## Stack
+I lead growth but think like a dev. I created modular journeys where each stage uses real data and living copy managed in Notion.
 
-1. **Segment**: captura eventos y hace fan-out a PostHog + warehouse.
-2. **Resend**: envía emails personalizados (usamos plantillas React Email).
-3. **Notion**: Actúa como CMS para copy + assets.
-4. **n8n**: Reglas y timers (esperar 72h, verificar actividad).
+## Stack I leaned on
 
-```ts
-await resend.emails.send({
-  from: 'Marsala Journeys <noreply@marsala.dev>',
-  to: email,
-  subject: `Tu siguiente hito en ${productModule}`,
-  react: <JourneyEmail stage={stage} metrics={metrics} />,
-});
-```
+- Segment for event capture and fan-out
+- Resend + React Email for versioned templates
+- Notion as an editable CMS
+- n8n for timers and conditions
 
-## Métricas
+## Playbook
 
-- Activación (usuarios completan setup): **+31%**.
-- Tiempo a primer valor: **-42%**.
-- Upsell ARR trimestral: **+18%**.
+1. Mapped stages (onboarding, adoption, expansion) with triggers and KPIs.
+2. Stored copy/assets in Notion with stable IDs that Resend reads.
+3. Configured n8n flows that watch activity and fire the right email.
+4. Ran QA with Mailosaur and real inboxes before launch.
+5. Tracked impact in PostHog to see which modules move metrics.
 
-## Consejos
+## Metrics & telemetry
 
-- Mantén las plantillas en un repo y versiona como cualquier código.
-- Usa tokens (`{{first_name}}`) pero agrega contexto: “Tu equipo ya activó 2/5 módulos…”.
-- Automatiza tests (Envia cada release a mailosaur/qa inbox).
+- Activation rate: +31%
+- Time-to-value: -42%
+- Quarterly upsell ARR: +18%
 
-Journeys claros convierten clientes en advocates sin contratar equipos enormes.
+## What stuck with me
+
+- Versioning templates is mandatory; we use Git + PRs for copy changes.
+- Journeys need off-ramps; always offer a path to support or the CSM.
+
+## What I'm building next
+
+I'm building email components marketing can remix without touching code. Want to see it? reach out.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

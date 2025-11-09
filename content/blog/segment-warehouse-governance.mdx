@@ -1,0 +1,64 @@
+---
+title: "Segment-to-Warehouse Governance"
+slug: "segment-warehouse-governance"
+type: "Guide"
+summary: "My framework so Segment and the warehouse speak the same language."
+description: "Guide for coordinating the tracking plan, ownership and syncs between Segment and your warehouse."
+date: "2024-12-11"
+readingTime: "7 min read"
+author: "Marina Álvarez"
+tags:
+  - "Data"
+  - "Analytics"
+keywords:
+  - "segment"
+  - "warehouse"
+  - "governance"
+  - "tracking plan"
+  - "analytics"
+featured: false
+image: "/blog/segment-governance.jpg"
+---
+
+
+# Segment-to-Warehouse Governance
+
+> Without governance Segment is trash; with process it’s magic.
+
+## Context
+
+I lead analytics and have seen too many tracking plans scribbled on napkins. Here’s how I keep ours alive and aligned with the warehouse.
+
+## Stack I leaned on
+
+- Segment tracking plan stored as YAML
+- dbt tests + Elementary alerts
+- Supabase ownership table
+- Slack bots for approvals
+
+## Playbook
+
+1. Catalog events with owners and publish them in a repo.
+2. Automate validations comparing production payloads vs plan.
+3. Route every change through a PR with data + product reviewers.
+4. Version downstream transformations and reflect them in dbt.
+5. Sync critical fields to the warehouse with consistent naming.
+
+## Metrics & telemetry
+
+- Events without an owner: 0
+- Tickets for inconsistent data: -65%
+- Time to approve new events: 48h → 12h
+
+## What stuck with me
+
+- Governance needs champions—rotate ownership to avoid burnout.
+- Document good/bad event examples so teams learn faster.
+
+## What I'm building next
+
+I'm releasing a versionable tracking-plan template. Drop your email and I’ll share it.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

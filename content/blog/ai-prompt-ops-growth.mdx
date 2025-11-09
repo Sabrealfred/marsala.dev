@@ -1,0 +1,64 @@
+---
+title: "Prompt Ops for Growth: How I Version Prompts"
+slug: "ai-prompt-ops-growth"
+type: "Insight"
+summary: "My system for versioning prompts, monitoring outputs and avoiding hallucinations in growth flows."
+description: "Practical insight for running prompt operations: repos, linters and review rituals."
+date: "2024-12-23"
+readingTime: "7 min read"
+author: "Marina Álvarez"
+tags:
+  - "AI"
+  - "Process"
+keywords:
+  - "prompt ops"
+  - "ai"
+  - "growth"
+  - "versioning"
+  - "automation"
+featured: false
+image: "/blog/prompt-ops.jpg"
+---
+
+
+# Prompt Ops for Growth: How I Version Prompts
+
+> I treat prompts like code: tests, PRs and success metrics.
+
+## Context
+
+After breaking a nurture because of a poorly edited prompt, I established Prompt Ops with engineering-grade standards.
+
+## Stack I leaned on
+
+- Git repo dedicated to prompts
+- Playwright + custom evals
+- Linear issues with cross-functional reviewers
+- Datadog for usage metrics
+
+## Playbook
+
+1. Tag every prompt with context, inputs and expected outputs.
+2. Create automated tests that validate length, tone and critical fields.
+3. Run monthly evals against real datasets to detect drift.
+4. Version templates and publish release notes for marketing.
+5. Handle incidents as if it were broken code (postmortem + fixes).
+
+## Metrics & telemetry
+
+- Incidents caused by prompt edits: -80%
+- Approval time for updates: 3 days → 8h
+- Team confidence in AI-guided flows: 9/10
+
+## What stuck with me
+
+- Ownerless prompts become Frankenstein monsters; assign module captains.
+- Documentation needs negative examples so people know what to avoid.
+
+## What I'm building next
+
+I'm shipping a repo template with linting built in. Want early access? send me your GitHub.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

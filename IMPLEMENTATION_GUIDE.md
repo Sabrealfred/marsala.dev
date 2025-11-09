@@ -103,101 +103,56 @@ Los emails llegan a `sales@marsala.dev` con:
 
 ## 📝 Posts de Blog en MDX
 
-### Posts Creados (17 en total):
+Actualmente hay **37 posts** curados (17 temáticos + 20 nuevos para SEO). Todos se generan a partir de un único dataset:
 
-**Inventario completo:**
+1. Edita/crea un objeto en `content/blog-data.mjs` (título, slug, resumen, keywords, bullets de stack/playbook/metrics).
+2. Corre `npm run blog:generate`. El script compone todos los `.mdx` con voz uniforme, CTA y metadatos SEO.
+3. Los archivos resultantes viven en `content/blog/*.mdx` y automáticamente aparecen en `/research` y `/blog/[slug]`.
 
-1. `modular-marketing-stack-guide.mdx` — Stack modular 2025 (Guide, 8 min).
-2. `automate-conversion-funnel-n8n.mdx` — Automatización de funnel con n8n (Tutorial, 12 min).
-3. `spreadsheets-to-dashboards.mdx` — Dashboards en tiempo real (Case Study, 10 min).
-4. `why-headless-architecture.mdx` — Migrar a headless (Insight, 7 min).
-5. `reduce-cac-data-activation.mdx` — Data activation para bajar CAC (Playbook, 11 min).
-6. `ai-lead-qualification-copilot.mdx` — Copilot de calificación con LLMs.
-7. `attio-migration-playbook.mdx` — Migración HubSpot → Attio.
-8. `modular-design-system-scaleups.mdx` — Design system multi-brand.
-9. `revops-analytics-observability.mdx` — Observabilidad dbt + Metaplane.
-10. `posthog-mini-cdp.mdx` — PostHog convertido en mini CDP.
-11. `partner-portal-nextjs-supabase.mdx` — Portal de partners con Next.js.
-12. `ai-sales-copilot-gong.mdx` — Copilot de resúmenes para Gong.
-13. `growth-sprint-30-days.mdx` — Sprint completo de 30 días.
-14. `lead-routing-n8n-attio.mdx` — Lead routing inteligente.
-15. `customer-journey-automation-resend.mdx` — Journeys lifecycle con Resend.
-16. `product-qualified-leads-system.mdx` — Sistema de PQLs con Snowflake + Hightouch.
-17. `ai-ops-war-room.mdx` — War room operativo con AI.
+> El contenido legacy de `data/research.ts` sigue siendo soportado. Cada entrada se renderiza con el nuevo layout directamente desde la data estructurada.
 
-> Nota: El catálogo histórico de la pestaña Research sigue viviendo en `data/research.ts`. Cada entrada se convierte automáticamente a contenido del blog y aparece en `/research` y `/blog/<slug>` sin necesidad de crear archivos adicionales.
+### Frontmatter generado
 
-### Estructura de los Posts
-
-Cada post incluye:
-- ✅ **Frontmatter** completo (metadata)
-- ✅ Contenido técnico detallado
-- ✅ Ejemplos de código
-- ✅ Tablas comparativas
-- ✅ Casos reales con métricas
-- ✅ CTAs al final para contacto
-
-### Frontmatter de Ejemplo:
+El script produce un frontmatter como este:
 
 ```yaml
 ---
-title: "Título del Post"
-slug: "url-slug"
-type: "Guide | Tutorial | Case Study | Insight | Playbook"
-summary: "Descripción corta para listados"
-date: "2025-01-15"
+title: "Automatizando funnels con n8n sin incendiar el CRM"
+slug: "automate-conversion-funnel-n8n"
+type: "Playbook"
+summary: "Pasé de 40 horas manuales a 2 horas/semana orquestando scoring, nurtures y alertas en n8n."
+description: "Playbook paso a paso para orquestar un funnel B2B sin depender de Zapier."
+date: "2025-02-10"
 readingTime: "8 min read"
-author: "Marsala Team"
-tags: ["Tag1", "Tag2", "Tag3"]
-featured: true
-image: "/blog/image.jpg"
+author: "Marina Álvarez"
+tags:
+  - "Automation"
+  - "RevOps"
+keywords:
+  - "n8n"
+  - "attio"
+featured: false
+image: "/blog/n8n-automation.jpg"
 ---
 ```
+
+Debajo del frontmatter encontrarás el layout uniforme:
+
+- `Contexto` (voz en primera persona).
+- `Stack que usé`.
+- `Playbook paso a paso`.
+- `Métricas y telemetría`.
+- `Lo que aprendí`.
+- `Próximo experimento` + CTA hacia `/contact`.
 
 ---
 
 ## 🔄 Próximos Pasos para el Blog
 
-Para integrar estos posts MDX en el sitio, necesitas:
-
-### Opción A: Con next-mdx-remote (Recomendado)
-
-```bash
-npm install next-mdx-remote gray-matter
-```
-
-Crear `/app/blog/[slug]/page.tsx`:
-
-```typescript
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import { MDXRemote } from 'next-mdx-remote/rsc';
-
-export async function generateStaticParams() {
-  const files = fs.readdirSync(path.join('content/blog'));
-  return files.map((filename) => ({
-    slug: filename.replace('.mdx', ''),
-  }));
-}
-
-export default async function BlogPost({ params }) {
-  const { slug } = params;
-  const markdown = fs.readFileSync(
-    path.join('content/blog', slug + '.mdx'),
-    'utf-8'
-  );
-
-  const { data: frontmatter, content } = matter(markdown);
-
-  return (
-    <article>
-      <h1>{frontmatter.title}</h1>
-      <MDXRemote source={content} />
-    </article>
-  );
-}
-```
+1. **Editar datos:** agrega/actualiza tu entrada en `content/blog-data.mjs`.
+2. **Regenerar contenido:** `npm run blog:generate`.
+3. **Validar:** `npm run lint && npm run build`.
+4. **Deploy:** `netlify deploy --prod` (o pipeline preferido).
 
 ### Opción B: Con Contentlayer
 

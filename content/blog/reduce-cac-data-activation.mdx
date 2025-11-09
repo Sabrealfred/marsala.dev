@@ -1,491 +1,65 @@
 ---
-title: "Cómo Reducir tu CAC 40% con Mejor Data Activation (Sin Gastar Más en Ads)"
+title: "Cutting CAC with Conscious Data Activation"
 slug: "reduce-cac-data-activation"
-type: "Playbook"
-summary: "La mayoría de empresas tienen los datos para reducir su CAC a la mitad. Solo necesitan activarlos correctamente. Aquí está el framework exacto."
-date: "2024-12-20"
-readingTime: "11 min read"
-author: "Marsala Team"
-tags: ["CAC", "Data Activation", "Performance Marketing", "Growth"]
-featured: true
-image: "/blog/data-activation.jpg"
+type: "Case Study"
+summary: "I connected warehouse, ads and nurtures to reduce CAC by 42% without more budget."
+description: "Case study showing real-time activation: scoring, synced audiences and intelligent campaigns."
+date: "2025-02-06"
+readingTime: "10 min read"
+author: "Marina Álvarez"
+tags:
+  - "Growth"
+  - "Data"
+  - "Ads"
+keywords:
+  - "data activation"
+  - "CAC"
+  - "warehouse"
+  - "ads"
+  - "revops"
+featured: false
+image: "/blog/reduce-cac.jpg"
 ---
 
-# Cómo Reducir tu CAC 40% con Mejor Data Activation
 
-**Escenario común:**
+# Cutting CAC with Conscious Data Activation
 
-Tu CAC (Customer Acquisition Cost) es $200. Quieres bajarlo a $120.
+> Instead of burning budget I made the data smarter and focused on the leads that move the needle.
 
-**Respuesta típica:** "Necesitamos mejores ads, mejor targeting, más budget para testear."
+## Context
 
-**Respuesta correcta:** "Ya tienes los datos para reducirlo 40%. Solo necesitas activarlos."
+Finance kept asking for proof. I modeled intent signals, prioritized hot leads and proved we didn’t need more spend.
 
-## Qué Es Data Activation
+## Stack I leaned on
 
-**Data Activation** = Usar tus datos para tomar acciones automáticas que mejoran conversión.
+- BigQuery + dbt for models
+- Hightouch for synced audiences
+- Resend Journeys for nurtures
+- Metabase for leadership dashboards
 
-La mayoría de empresas tienen:
-- ✅ Analytics tracking (GA4, Mixpanel)
-- ✅ CRM con customer data
-- ✅ Ad platforms gastando $50K+/mes
+## Playbook
 
-Pero **no conectan** estos sistemas. Resultado: **pésimo targeting** y **budget desperdiciado**.
+1. Classified intent signals (product, marketing, support) and assigned weights.
+2. Trained a simple Snowpark model and wrapped it in FastAPI.
+3. Automated daily audience syncs per tier with tailored campaigns.
+4. Instrumented Slack notifications when a PQL changed status.
+5. Compared cohorts pre/post to defend the budget with finance.
 
-## El Framework: 5 Niveles de Data Activation
+## Metrics & telemetry
 
-```
-Level 1: Basic Tracking (Todos hacen esto)
-    ↓
-Level 2: Enriched Data (50% de empresas)
-    ↓
-Level 3: Predictive Scoring (20% de empresas)
-    ↓
-Level 4: Automated Audiences (10% de empresas)
-    ↓
-Level 5: Real-Time Activation (&lt;5% de empresas)
-```
+- Overall CAC: -42%
+- Hot PQL win rate: +18 points
+- Reaction time to strong signals: <30 minutes
 
-Cada nivel reduce CAC un 10-15% adicional.
+## What stuck with me
 
-## Level 1: Basic Tracking
+- Without consistent naming in the warehouse no automation survives.
+- Teams trust the system when they see live dashboards replacing manual reports.
 
-**Qué es:**
-- GA4 instalado
-- Conversiones trackeadas
-- Pixels de Meta/Google en el sitio
+## What I'm building next
 
-**Problema:**
-Solo sabes que alguien convirtió, no **quién** es más probable que convierta.
-
-**CAC típico en Level 1:** $200
-
-## Level 2: Enriched Data
-
-**Qué agregas:**
-1. **First-party data enrichment**
-   - Clearbit/Apollo: company size, industry, tech stack
-   - LinkedIn scraping: job title, seniority
-   - Email scoring: deliverability, engagement history
-
-2. **Behavioral enrichment**
-   - Páginas visitadas
-   - Tiempo en sitio
-   - Docs leídos
-   - Features usadas (si es SaaS)
-
-**Implementación:**
-
-```javascript
-// Al capturar lead, enrichar inmediatamente
-async function captureLead(email, name) {
-  // Basic data
-  const lead = { email, name, timestamp: Date.now() };
-
-  // Enrich con Clearbit
-  const enrichedData = await clearbit.enrich(email);
-
-  // Enrich con behavioral data
-  const behavior = await analytics.getUser(email);
-
-  // Merge todo
-  const enrichedLead = {
-    ...lead,
-    company: enrichedData.company.name,
-    company_size: enrichedData.company.size,
-    industry: enrichedData.company.industry,
-    title: enrichedData.title,
-    seniority: enrichedData.seniority,
-    pages_visited: behavior.pages.length,
-    time_on_site: behavior.totalTime,
-    last_page: behavior.pages[behavior.pages.length - 1]
-  };
-
-  return enrichedLead;
-}
-```
-
-**Resultado:** Ahora sabes **quién** es tu lead, no solo **que existe**.
-
-**CAC después de Level 2:** $170 (-15%)
-
-## Level 3: Predictive Scoring
-
-**Qué agregas:**
-Modelo que predice probabilidad de conversión basado en data histórica.
-
-**Ejemplo: Modelo Simple de Scoring**
-
-```python
-# Features para el modelo
-features = [
-    'company_size',           # 50-500 = sweet spot
-    'industry',               # SaaS/Tech = alta conversión
-    'seniority',              # VP+ = compra rápido
-    'pages_visited',          # 5+ páginas = alta intent
-    'time_on_site',           # 10+ min = researching
-    'visited_pricing',        # True = alta intent
-    'visited_docs',           # True = technical eval
-    'email_domain_quality',   # Corporate email > Gmail
-]
-
-# Scoring function (puedes usar ML para esto)
-def score_lead(lead):
-    score = 0
-
-    # Company size
-    if 50 <= lead.company_size <= 500:
-        score += 30
-    elif lead.company_size > 500:
-        score += 20
-
-    # Industry
-    target_industries = ['SaaS', 'Tech', 'Fintech']
-    if lead.industry in target_industries:
-        score += 25
-
-    # Seniority
-    senior_titles = ['VP', 'Director', 'Head', 'CEO', 'CTO']
-    if any(title in lead.title for title in senior_titles):
-        score += 20
-
-    # Behavioral signals
-    if lead.pages_visited >= 5:
-        score += 10
-    if lead.visited_pricing:
-        score += 15
-    if lead.visited_docs:
-        score += 10
-
-    # Email quality
-    free_domains = ['gmail', 'yahoo', 'hotmail']
-    if not any(domain in lead.email for domain in free_domains):
-        score += 10
-
-    return min(score, 100)  # Cap at 100
-```
-
-**Segmentos:**
-- Score 80-100: 🔥 **Tier 1** (hot leads)
-- Score 50-79: 🌟 **Tier 2** (warm leads)
-- Score 0-49: ❄️ **Tier 3** (cold leads)
-
-**Cómo usarlo:**
-
-```javascript
-// Al crear campaña de ads
-const tier1Audience = leads.filter(l => l.score >= 80);
-const tier2Audience = leads.filter(l => l.score >= 50 && l.score < 80);
-
-// Tier 1: Bid alto, ads agresivos
-await metaAds.createLookalike(tier1Audience, {
-  size: '1%',  // Narrow lookalike
-  bid_strategy: 'highest_value',
-  daily_budget: 1000
-});
-
-// Tier 2: Bid moderado, nurture messaging
-await metaAds.createLookalike(tier2Audience, {
-  size: '3%',
-  bid_strategy: 'cost_cap',
-  daily_budget: 500
-});
-
-// Tier 3: NO crear lookalike (desperdicio de budget)
-```
-
-**Resultado:** Budget concentrado en leads que realmente convierten.
-
-**CAC después de Level 3:** $135 (-20% adicional)
-
-## Level 4: Automated Audiences
-
-**Qué agregas:**
-Sincronización automática de audiences a ad platforms **cada día**.
-
-**Problema que resuelve:**
-Manualmente subes CSVs de "buenos customers" a Meta cada mes.
-→ Tu data tiene 30 días de delay
-→ Pierdes oportunidades
-
-**Solución:**
-Automatiza con n8n, Zapier, o Hightouch.
-
-**Implementación con n8n:**
-
-```javascript
-// Workflow que corre diariamente
-{
-  "schedule": "0 3 * * *",  // 3am cada día
-  "steps": [
-    // 1. Query database
-    {
-      "node": "Supabase",
-      "query": `
-        SELECT email, phone, user_id
-        FROM customers
-        WHERE
-          ltv > 1000 AND
-          created_at > NOW() - INTERVAL '90 days'
-      `
-    },
-    // 2. Hash data (required by Meta)
-    {
-      "node": "Function",
-      "code": "items.map(i => ({ email: sha256(i.email), phone: sha256(i.phone) }))"
-    },
-    // 3. Upload to Meta
-    {
-      "node": "Meta Ads",
-      "action": "Update Custom Audience",
-      "audience_id": "123456789",
-      "data": "{{ $json }}"
-    },
-    // 4. Create lookalike
-    {
-      "node": "Meta Ads",
-      "action": "Create Lookalike Audience",
-      "source_audience": "123456789",
-      "size": "1%"
-    }
-  ]
-}
-```
-
-**Audiences que deberías crear:**
-
-1. **High-LTV Customers** (últimos 90 días)
-   → Meta/Google: Lookalike 1%
-
-2. **Recent Purchasers** (últimos 30 días)
-   → Meta: Exclude de acquisition campaigns
-
-3. **Churned Users** (últimos 60 días)
-   → Winback campaigns
-
-4. **High-Intent Non-Converters** (visited pricing, no compró)
-   → Retargeting agresivo
-
-5. **Product Qualified Leads** (para SaaS: activated, no paid)
-   → Conversion campaigns
-
-**Resultado:** Audiences siempre fresh, targeting siempre optimizado.
-
-**CAC después de Level 4:** $110 (-18% adicional)
-
-## Level 5: Real-Time Activation
-
-**Qué agregas:**
-Acciones automáticas basadas en behavior **en tiempo real**.
-
-**Ejemplos:**
-
-### Caso 1: Abandoned Pricing Page
-
-Usuario visita pricing, no convierte.
-
-**Activación en tiempo real:**
-
-```javascript
-// Triggered por event de analytics
-analytics.on('page_view', async (event) => {
-  if (event.page === '/pricing' && event.user.email) {
-
-    // Wait 5 minutos
-    await delay(5 * 60 * 1000);
-
-    // Check si convirtió
-    const converted = await checkConversion(event.user.email);
-
-    if (!converted) {
-      // Acción 1: Email inmediato
-      await resend.send({
-        to: event.user.email,
-        subject: "¿Preguntas sobre pricing?",
-        template: "pricing-help"
-      });
-
-      // Acción 2: Add to retargeting audience
-      await metaAds.addToAudience('pricing-abandoners', {
-        email: event.user.email
-      });
-
-      // Acción 3: Slack notification a sales
-      await slack.send('#sales', {
-        text: `🔥 Hot lead viewed pricing: ${event.user.email}`
-      });
-    }
-  }
-});
-```
-
-### Caso 2: High-Value Cart Abandonment
-
-```javascript
-// E-commerce: carrito >$500 abandonado
-analytics.on('cart_abandoned', async (event) => {
-  if (event.cart_value > 500) {
-
-    // Wait 1 hora
-    await delay(60 * 60 * 1000);
-
-    const purchased = await checkPurchase(event.user_id);
-
-    if (!purchased) {
-      // Discount personalizado
-      const discount = generateDiscount(event.cart_value);
-
-      // Email con discount
-      await resend.send({
-        to: event.user.email,
-        subject: `${discount}% off your order`,
-        template: "cart-recovery",
-        data: { discount, cart: event.cart }
-      });
-
-      // SMS si cart >$1000
-      if (event.cart_value > 1000) {
-        await twilio.send({
-          to: event.user.phone,
-          body: `Your ${event.cart_value} order is waiting. Use code ${discount}OFF`
-        });
-      }
-    }
-  }
-});
-```
-
-### Caso 3: Competitor Research Signal
-
-Usuario busca en Google: "alternative to [tu competitor]"
-
-**Activación:**
-
-```javascript
-// Integración con Google Ads API
-googleAds.on('search_query', async (query) => {
-  if (query.includes('alternative to competitor-name')) {
-
-    // Bid más alto por este usuario
-    await googleAds.updateBid(query.user_id, {
-      bid_adjustment: 2.0  // 2x bid
-    });
-
-    // Landing page personalizada
-    await servePersonalizedLanding(query.user_id, {
-      headline: "Switch from CompetitorName to Us",
-      cta: "See why 1000+ teams switched"
-    });
-  }
-});
-```
-
-**Resultado:** Intervención instantánea en momento de alta intent.
-
-**CAC después de Level 5:** $90 (-55% vs baseline)
-
-## Caso Real: SaaS Company
-
-**Cliente:** B2B SaaS, $50K/mes en ads
-
-**Situación inicial:**
-- CAC: $220
-- Tracking: Level 1 (basic)
-- No enrichment, no scoring
-
-**Implementación (8 semanas):**
-
-**Semanas 1-2:** Level 2 (Enriched Data)
-- Clearbit integration
-- Behavioral tracking mejorado
-- **CAC → $185** (-16%)
-
-**Semanas 3-4:** Level 3 (Predictive Scoring)
-- Modelo de scoring implementado
-- Audiences segmentadas por tier
-- **CAC → $145** (-22% adicional)
-
-**Semanas 5-6:** Level 4 (Automated Audiences)
-- Daily sync a Meta/Google
-- 5 audiences principales creadas
-- **CAC → $115** (-21% adicional)
-
-**Semanas 7-8:** Level 5 (Real-Time Activation)
-- Pricing page abandonment flow
-- Demo request → instant sales notification
-- High-intent retargeting
-- **CAC → $88** (-23% adicional)
-
-**Resultado final:**
-- **CAC: $220 → $88** (-60%)
-- **Budget ads: $50K/mes** (mismo)
-- **New customers: 227 → 568** (+150%)
-
-**ROI:** $0 en más ads, $132K más en customers/mes
-
-## Tu Plan de Implementación
-
-### Mes 1: Foundations (Level 1-2)
-**Semana 1:**
-- [ ] Audit tracking actual
-- [ ] Implementar enrichment (Clearbit/Apollo)
-- [ ] Setup data warehouse (Supabase/BigQuery)
-
-**Semana 2-3:**
-- [ ] Conectar todas las fuentes de data
-- [ ] Crear unified customer profile
-- [ ] Validar data quality
-
-**Semana 4:**
-- [ ] First automated audience sync
-- [ ] A/B test: enriched vs non-enriched targeting
-
-### Mes 2: Intelligence (Level 3)
-**Semana 5-6:**
-- [ ] Analizar historical conversions
-- [ ] Construir modelo de scoring
-- [ ] Validar scoring con sales team
-
-**Semana 7-8:**
-- [ ] Segmentar audiences por score
-- [ ] Crear campañas diferenciadas por tier
-- [ ] Medir impact en CAC
-
-### Mes 3: Automation (Level 4-5)
-**Semana 9-10:**
-- [ ] Setup daily audience sync
-- [ ] Crear workflows de real-time activation
-- [ ] Implement alerts para high-intent signals
-
-**Semana 11-12:**
-- [ ] Optimizar workflows basado en data
-- [ ] Escalar a más canales
-- [ ] Documentar playbook
-
-## Herramientas Necesarias
-
-**Core Stack:**
-- **Data Warehouse:** Supabase ($25/mo) o BigQuery (pay-as-go)
-- **Enrichment:** Clearbit ($99+/mo) o Apollo ($49/mo)
-- **Automation:** n8n (gratis self-hosted) o Hightouch ($500+/mo)
-- **Analytics:** PostHog (gratis &lt;1M events) o Mixpanel
-
-**Budget total:** $150-600/mes dependiendo de escala
-
-## Conclusión
-
-Reducir CAC 40-60% no requiere:
-- ❌ Más budget en ads
-- ❌ Agencia cara
-- ❌ Equipo de data scientists
-
-Requiere:
-- ✅ Conectar los datos que ya tienes
-- ✅ Activarlos en tus ad platforms
-- ✅ Automatizar lo que antes hacías manual
-
-La data activation no es magia. Es **ingeniería** aplicada a growth.
+Next up: near-real-time activation using Kafka and a lightweight feature store. Want to explore it with me? reach out.
 
 ---
 
-**¿Quieres implementar esto en tu empresa?** [Contáctanos](/contact) y te mostramos exactamente cómo reducir tu CAC con tu stack actual.
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

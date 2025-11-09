@@ -1,0 +1,64 @@
+---
+title: "Feature Flags with PostHog Without Breaking Prod"
+slug: "posthog-feature-flags-playbook"
+type: "Tutorial"
+summary: "How I manage flags, experiments and cohorts directly inside PostHog."
+description: "Tutorial for scaling feature flags with PostHog: naming, segmentation and metrics."
+date: "2024-12-13"
+readingTime: "8 min read"
+author: "Marina Álvarez"
+tags:
+  - "Product"
+  - "Experimentation"
+keywords:
+  - "posthog"
+  - "feature flags"
+  - "experimentation"
+  - "nextjs"
+  - "cohorts"
+featured: false
+image: "/blog/feature-flags.jpg"
+---
+
+
+# Feature Flags with PostHog Without Breaking Prod
+
+> Flags stopped being random strings—they’re governed like code now.
+
+## Context
+
+We needed cohort-based rollouts without LaunchDarkly pricing. PostHog plus a bit of discipline did the trick.
+
+## Stack I leaned on
+
+- PostHog feature flags and cohorts
+- Next.js middleware for gating
+- Supabase edge functions for server toggles
+- Slack + Linear for communication
+
+## Playbook
+
+1. Defined naming conventions and expiration dates for every flag.
+2. Use dynamic cohorts built from real events.
+3. Wire flags into middleware to guard entire routes.
+4. Track in Linear which flags must be removed post-experiment.
+5. Measure impact directly in PostHog and close the loop in dashboards.
+
+## Metrics & telemetry
+
+- Orphaned flags: 0 (automatic expiry FTW)
+- Time to launch an experiment: 1 day
+- Incidents caused by misconfigured flags: zero in 6 months
+
+## What stuck with me
+
+- Every flag needs an owner and a death date.
+- Document activation/deactivation steps to avoid late-night nerves.
+
+## What I'm building next
+
+I'm writing reusable middleware snippets. Want them? let me know and I’ll share.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

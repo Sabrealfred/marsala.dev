@@ -1,0 +1,63 @@
+---
+title: "AI Support Sandbox for Healthtech"
+slug: "ai-support-sandbox"
+type: "Case Study"
+summary: "I rolled out AI in support without upsetting compliance by building a sandbox first."
+description: "Case study on deploying AI in support with a controlled sandbox, guardrails and monitoring."
+date: "2024-11-20"
+readingTime: "8 min read"
+author: "Marina Álvarez"
+tags:
+  - "AI"
+  - "Support"
+keywords:
+  - "ai support"
+  - "sandbox"
+  - "healthtech"
+  - "compliance"
+featured: false
+image: "/blog/ai-support.jpg"
+---
+
+
+# AI Support Sandbox for Healthtech
+
+> Support begged for AI, compliance had nightmares—the sandbox became our common ground.
+
+## Context
+
+In healthtech you do not experiment in production. I built a sandbox where AI can suggest replies but everything goes through auditable controls.
+
+## Stack I leaned on
+
+- OpenAI GPT-4o with trimmed context windows
+- Encrypted Supabase for transcript storage
+- Zendesk webhooks for routing
+- Metlo for monitoring + feedback
+
+## Playbook
+
+1. Classified ticket types that were safe for AI and routed them to the sandbox.
+2. Trained prompts with de-identified data and regulatory rules baked in.
+3. Built a panel where agents approve/edit suggestions before sending.
+4. Measured accuracy and satisfaction before expanding coverage.
+5. Logged every action for audits with tamper-proof timestamps.
+
+## Metrics & telemetry
+
+- Resolution time: -52%
+- Deflection rate: 87%
+- CSAT: 4.7/5
+
+## What stuck with me
+
+- Legal only trusts what it can inspect—show value in a sandbox before scaling.
+- Agents adopt the tool when they keep final control.
+
+## What I'm building next
+
+I'm packaging this sandbox as a starter kit. If you run health or fintech support, DM me for early access.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

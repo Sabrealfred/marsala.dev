@@ -1,0 +1,64 @@
+---
+title: "Figma to Production Without Friction"
+slug: "figma-to-production-pipeline"
+type: "Guide"
+summary: "How I connect Figma, Storybook and Next.js to ship UI with zero surprises."
+description: "Guide for syncing design and code: tokens, visual linters and joint releases."
+date: "2025-01-02"
+readingTime: "8 min read"
+author: "Marina Álvarez"
+tags:
+  - "Design"
+  - "Frontend"
+keywords:
+  - "figma"
+  - "storybook"
+  - "design handoff"
+  - "nextjs"
+  - "tokens"
+featured: false
+image: "/blog/figma-pipeline.jpg"
+---
+
+
+# Figma to Production Without Friction
+
+> I made peace with Figma when the handoff literally became a PR.
+
+## Context
+
+I'm a developer who loves visual craft. I built a pipeline where every Figma change mirrors Storybook and lands as a tagged release.
+
+## Stack I leaned on
+
+- Figma variables + tokens
+- Style Dictionary for exports
+- Storybook 8 with Chromatic
+- Next.js + Tailwind token utilities
+
+## Playbook
+
+1. Sync color/type variables weekly into a private npm package.
+2. Create design PRs just like code, with assigned reviewers.
+3. Run visual tests in Chromatic and publish release notes for product.
+4. Coach marketing on how to play inside the playground before go-live.
+5. Version assets and mission-critical copy alongside the code release.
+
+## Metrics & telemetry
+
+- Visual bugs in production: -70%
+- Handoff time: 4 days → 1.5 days
+- Token adoption across squads: 100%
+
+## What stuck with me
+
+- Variables need owners; design ops without guardrails is chaos.
+- Storybook becomes the single source of truth only if everything gets reviewed there.
+
+## What I'm building next
+
+I'm adding linters that compare frames vs components and raise PRs. Want in? I'll loop you when it's ready.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

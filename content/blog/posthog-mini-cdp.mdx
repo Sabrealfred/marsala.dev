@@ -1,57 +1,65 @@
 ---
-title: "Convierte PostHog en un Mini CDP en 3 Pasos"
+title: "Turn PostHog into a Mini CDP"
 slug: "posthog-mini-cdp"
 type: "Tutorial"
-summary: "Usamos PostHog, Kafka y Resend para activar audiencias sin pagar una CDP enterprise."
-date: "2025-02-12"
+summary: "I use PostHog, Kafka and Resend to activate audiences without a six-figure CDP."
+description: "Tutorial for structuring events, streaming into Kafka and activating channels directly from PostHog."
+date: "2025-01-20"
 readingTime: "9 min read"
-author: "Marsala Team"
-tags: ["PostHog", "CDP", "Activation", "Growth"]
+author: "Marina Álvarez"
+tags:
+  - "Analytics"
+  - "Growth"
+  - "Automation"
+keywords:
+  - "posthog"
+  - "cdp"
+  - "activation"
+  - "kafka"
+  - "resend"
 featured: false
 image: "/blog/posthog-cdp.jpg"
 ---
 
-# Convierte PostHog en un Mini CDP en 3 Pasos
 
-Las CDPs tradicionales cuestan >$60k/año. Para la mayoría de scaleups, PostHog + un par de microservicios es suficiente. Así lo montamos.
+# Turn PostHog into a Mini CDP
 
-## 1. Estructura de Eventos
+> I hacked PostHog until it behaved like a mini CDP and saved us $60k a year.
 
-```ts
-posthog.capture('workspace_upgrade_requested', {
-  plan: planId,
-  seat_count: seats,
-  lifecycle_stage: stage,
-});
-```
+## Context
 
-- Definimos 12 eventos core y 8 propiedades obligatorias.
-- Usamos **personas** para enganchar atributos del CRM (Attio) vía API.
+We needed audiencies that update in real time without enterprise pricing. PostHog plus microservices delivered.
 
-## 2. Streaming en Tiempo Real
+## Stack I leaned on
 
-- Activamos el **Kafka destination** de PostHog.
-- Un consumer en Cloud Run transforma el evento y lo guarda en Firestore para segmentaciones rápidas.
-- Reglas de compliance: guardamos solo IDs, el resto se trae on-demand.
+- PostHog Cloud with custom properties
+- Kafka + Cloud Run consumers
+- Firestore for rapid segmentation
+- Resend + Meta Marketing API for activation
 
-## 3. Activación
+## Playbook
 
-| Canal | Herramienta | Acción |
-|-------|-------------|--------|
-| Email | Resend | Trigger de onboarding personalizado |
-| Ads | Meta API | Audiencias lookalike actualizadas cada noche |
-| Product | Next.js middleware | Feature flags dinámicos |
+1. Defined a tracking plan with 12 canonical events and owners.
+2. Activated the Kafka destination and built a consumer that validates payloads.
+3. Synced CRM attributes through the API to enrich profiles.
+4. Created microservices to generate audiences and trigger nurtures.
+5. Automated QA scripts that simulate cohorts weekly.
 
-## KPI de Éxito
+## Metrics & telemetry
 
-- Emails contextuales: **+46% CTR** vs blasts.
-- Campañas pagadas: **-28% CAC** al excluir usuarios activos.
-- Feature adoption: **+19%** al mostrar componentes solo a cohorts relevantes.
+- Contextual email CTR: +46%
+- Paid CAC by excluding active users: -28%
+- Feature adoption on flagged cohorts: +19%
 
-## Checklist de Seguridad
+## What stuck with me
 
-- [ ] Tokenizar PII antes de enviarla a PostHog.
-- [ ] Rotar claves de Kafka cada mes.
-- [ ] Registrar qué equipo puede crear nuevas audiencias.
+- Without governance PostHog becomes a junk drawer.
+- Tokenize PII before sending it anywhere; privacy isn't optional.
 
-PostHog puede ser tu CDP ligero si defines bien el modelo de datos y automatizas la activación.
+## What I'm building next
+
+I'll open-source part of the pipeline. Want the repo link when it's ready? let me know.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

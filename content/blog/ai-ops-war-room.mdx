@@ -1,54 +1,65 @@
 ---
-title: "AI Ops War Room: Tablero Unificado para Operaciones"
+title: "AI Ops War Room: Live Control Board for Operations"
 slug: "ai-ops-war-room"
 type: "Insight"
-summary: "Construimos un war room digital que mezcla métricas, alertas y acciones AI para reaccionar en minutos."
-date: "2025-02-08"
+summary: "I built a war room that blends metrics, alerts and AI assistants to react in minutes."
+description: "Insight on centralizing critical metrics, alerts and actionable playbooks with AI."
+date: "2025-01-06"
 readingTime: "8 min read"
-author: "Marsala Team"
-tags: ["AI Ops", "Automation", "Dashboards", "Operations"]
+author: "Marina Álvarez"
+tags:
+  - "Operations"
+  - "AI"
+  - "Dashboards"
+keywords:
+  - "ai ops"
+  - "war room"
+  - "operations"
+  - "dashboards"
+  - "automation"
 featured: false
 image: "/blog/ai-ops-war-room.jpg"
 ---
 
-# AI Ops War Room: Tablero Unificado para Operaciones
 
-Cuando los equipos crecen, cada área usa su propio dashboard. El resultado: decisiones tardías. Lanzamos un war room digital que combina datos en vivo con asistentes AI.
+# AI Ops War Room: Live Control Board for Operations
 
-## Componentes
+> The war room lives in a dark dashboard where AI summarizes and suggests actions.
 
-| Módulo | Herramienta | Descripción |
-|--------|-------------|-------------|
-| Timeline | Linear + Notion | Estado de proyectos críticos |
-| métricas | Metabase | KPIs diarios (pipeline, MRR, churn) |
-| Alertas | PagerDuty + Slack | Eventos críticos |
-| Copilot | OpenAI Function Calling | Genera planes de acción |
+## Context
 
-## Flujo de Trabajo
+As we grew every team brought its own dashboard. I designed a digital war room with unified metrics and copilots that propose plans.
 
-1. Los datos se sincronizan cada 5 minutos desde PostHog y Snowflake.
-2. Un bot resume cambios importantes y sugiere focos.
-3. Los líderes pueden ejecutar playbooks (ej. "activar nurture" o "pausar campaña").
+## Stack I leaned on
 
-```ts
-const response = await openai.responses.create({
-  model: 'gpt-4.1-mini',
-  reasoning: { effort: 'medium' },
-  tool_choice: { type: 'function', name: 'triggerPlaybook' },
-  input: { metrics, incidents }
-});
-```
+- Metabase + Notion for timeline and metrics
+- PostHog + Snowflake for fresh data
+- OpenAI function calling for playbooks
+- PagerDuty/Slack for incidents
 
-## Resultados
+## Playbook
 
-- Reunión diaria pasó de 45 a 18 minutos.
-- Alertas atendidas en &lt;10 minutos, incluso fuera de horario.
-- Más accountability: cada acción queda registrada y versionada.
+1. Pick three critical metrics per front (MRR, leads, support) and set budgets.
+2. Automate daily summaries with AI to highlight relevant changes.
+3. Add buttons to execute playbooks (activate nurture, pause campaign).
+4. Version every playbook in Git and surface it in the dashboard.
+5. Log actions and owners for historical accountability.
 
-## Tips
+## Metrics & telemetry
 
-- Empieza con 3 métricas críticas (MRR, leads, soporte).
-- Usa layouts oscuros + tipografía grande para Modo Sala.
-- Registra todas las configuraciones en Git para auditar cambios.
+- Daily stand-up: 45 min → 18 min
+- Alerts handled in <10 minutes
+- Actions with documented owners: 100%
 
-El war room convierte datos dispersos en decisiones rápidas alimentadas por AI.
+## What stuck with me
+
+- The war room doesn’t replace human decisions—it accelerates them.
+- Playbooks must be editable from the dashboard, not buried in a doc.
+
+## What I'm building next
+
+Next step: use small local models for early anomaly detection. Want to try it with me? let me know.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

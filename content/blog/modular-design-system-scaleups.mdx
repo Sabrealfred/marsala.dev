@@ -1,64 +1,64 @@
 ---
-title: "Design Systems Modulares para Escalar 4 Marcas en Paralelo"
+title: "Modular Design Systems for Scaleups"
 slug: "modular-design-system-scaleups"
 type: "Case Study"
-summary: "Así construimos un sistema de diseño en Figma + Storybook que sirve a 4 marcas hermanas sin duplicar componentes."
-date: "2025-01-28"
+summary: "How I built a multi-brand design system that serves marketing and product without duplicating components."
+description: "Case study outlining tokens, Storybook federation and release cadence for a multi-brand design system."
+date: "2025-01-24"
 readingTime: "8 min read"
-author: "Marsala Team"
-tags: ["Design System", "Figma", "Storybook", "Brand"]
+author: "Marina Álvarez"
+tags:
+  - "Design"
+  - "Process"
+keywords:
+  - "design system"
+  - "figma"
+  - "storybook"
+  - "tokens"
+  - "brand"
 featured: false
 image: "/blog/design-system.jpg"
 ---
 
-# Design Systems Modulares para Escalar 4 Marcas en Paralelo
 
-Cuando un grupo empresarial tiene varias marcas, el mayor riesgo es terminar con 4 equipos diseñando lo mismo. Resolvimos esto creando un sistema de diseño multi-tenancy inspirado en tokens y capas.
+# Modular Design Systems for Scaleups
 
-## Principios
+> I refuse to maintain four copy-paste libraries; layered architectures keep us sane.
 
-1. **Tokens compartidos, capas brand-specific**.
-2. **Bibliotecas versionadas** con release notes semanal.
-3. **Code parity**: cada componente de Figma vive en Storybook antes del release.
+## Context
 
-## Arquitectura de Tokens
+Marketing and product both needed speed. I designed a layered system: core, brand and context components.
 
-| Nivel | Ejemplo | Uso |
-|-------|---------|-----|
-| Core | `color.moss.500`, `radius.24` | Inmutable, aplica a todas las marcas |
-| Brand | `brand.alpha.gradient.hero` | Ajustes de color, ilustraciones |
-| Context | `module.card.analytics` | Variantes específicas de producto |
+## Stack I leaned on
 
-```json
-{
-  "color": {
-    "core": {
-      "moss": { "500": "#6a8a6c" }
-    },
-    "brand": {
-      "aurora": { "gradient": "linear-gradient(...)" }
-    }
-  }
-}
-```
+- Figma variables + Style Dictionary
+- Storybook ๘ with Chromatic
+- Tailwind tokens
+- Linear + Notion release notes
 
-## Flujo Operativo
+## Playbook
 
-1. **Monday**: review de requests → se decide si es net new o una variante.
-2. **Martes-Miércoles**: diseño en Figma con tokens + playground.
-3. **Jueves**: dev implementa en Storybook + Chromatic.
-4. **Viernes**: publicación vía Git tags y actualización automática en las 4 webs (Next.js + Turborepo).
+1. Classified tokens into core, brand and context layers and versioned them in Git.
+2. Synced Figma to code via Style Dictionary.
+3. Defined request board with SLAs and weekly rituals.
+4. Automated Storybook releases with semantic tags.
+5. Documented anti-patterns to avoid rogue components.
 
-## Métricas
+## Metrics & telemetry
 
-- Tiempo de lanzamiento de landing nueva: **2.5 días** (antes 8 días).
-- Porcentaje de componentes reutilizados: **78%**.
-- Tickets de QA visual: **-63%**.
+- Landing launch time: 8 days → 2.5 days
+- Component reuse: 78%
+- Visual QA tickets: -63%
 
-## Checklist para tu equipo
+## What stuck with me
 
-- [ ] Define Jerarquía de tokens y nombra con prefijos.
-- [ ] Asegura que diseño y dev trabajen en la misma rama.
-- [ ] Documenta ejemplos de cuándo NO usar un componente.
+- Design systems need storytelling; otherwise teams think it's a blocker.
+- Document when NOT to use a component—it avoids endless debates.
 
-Un design system multi-brand es el multiplicador de velocidad para marketing + producto. Empieza por tokens, no por componentes aislados.
+## What I'm building next
+
+I'm preparing a starter kit for teams adopting multi-brand systems. Want in? send me a note.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

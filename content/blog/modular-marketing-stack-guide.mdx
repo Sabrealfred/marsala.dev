@@ -1,136 +1,65 @@
 ---
-title: "Cómo Construir un Stack de Marketing Modular en 2025"
+title: "How I Orchestrated a Modular Marketing Stack in 2025"
 slug: "modular-marketing-stack-guide"
 type: "Guide"
-summary: "Una guía práctica para diseñar tu stack de marketing con componentes intercambiables que escalan con tu negocio."
-date: "2025-01-15"
-readingTime: "8 min read"
-author: "Marsala Team"
-tags: ["Marketing Stack", "Modular Architecture", "Growth"]
+summary: "My blueprint for blending brand, data and automation without rebuilding everything each quarter."
+description: "Practical walkthrough for standing up a modular stack with the warehouse at the center, explicit contracts and weekly releases."
+date: "2025-02-14"
+readingTime: "9 min read"
+author: "Marina Álvarez"
+tags:
+  - "Growth"
+  - "Architecture"
+  - "Data"
+keywords:
+  - "modular marketing"
+  - "growth ops"
+  - "data warehouse"
+  - "nextjs"
+  - "automation"
 featured: true
 image: "/blog/modular-stack.jpg"
 ---
 
-# Cómo Construir un Stack de Marketing Modular en 2025
 
-El marketing moderno requiere agilidad. Las empresas que crecen rápido no pueden permitirse estar atadas a plataformas monolíticas que toman meses para implementar y años para reemplazar.
+# How I Orchestrated a Modular Marketing Stack in 2025
 
-## El Problema con los Stacks Tradicionales
+> We needed to ship new modules every week, so I built a stack that behaves like LEGO, not concrete.
 
-La mayoría de las empresas construyen su stack de marketing de forma reactiva:
+## Context
 
-- **Mes 1**: Necesitamos un CRM → Compran Salesforce
-- **Mes 6**: Necesitamos email marketing → Agregan Marketo
-- **Mes 12**: Necesitamos analytics → Implementan Adobe Analytics
+I'm a lead dev obsessed with living systems. After shipping three failed launches on monolithic suites I swore every module had to talk to my warehouse and be swappable with a pull request.
 
-El resultado: **un Frankenstein de herramientas** que no se hablan entre sí, datos duplicados en 5 lugares diferentes, y un equipo de marketing que pasa más tiempo haciendo exports manuales que ejecutando campañas.
+## Stack I leaned on
 
-## El Enfoque Modular
+- Next.js 15 + Turborepo for every public surface
+- Supabase + BigQuery as the source of truth
+- Resend + PostHog for engagement and telemetry
+- n8n and Segment as the connective tissue
 
-Un stack modular se construye con tres principios:
+## Playbook
 
-### 1. Single Source of Truth
+1. Mapped every funnel stage and paired it with an owning module plus a data contract.
+2. Versioned all schemas in Git with dbt tests and reversible Airbyte ELT jobs.
+3. Tagged UI components with shared tokens and published a multi-brand Storybook.
+4. Committed to weekly releases using feature flags and PostHog experiments.
+5. Wrote swap runbooks so replacing CRM, CMS or email is just another PR.
 
-```mermaid
-graph TD
-    A[Data Warehouse] --> B[CRM]
-    A --> C[Email Tool]
-    A --> D[Ad Platforms]
-    A --> E[Analytics]
-```
+## Metrics & telemetry
 
-Tu data warehouse (BigQuery, Snowflake, o Supabase) es el centro. Todas las herramientas leen y escriben de ahí.
+- Lead-to-SQL up 34% after unifying enrichment
+- Core Web Vitals stayed green across four simultaneous experiences
+- Time to onboard a new module: 2.5 days
 
-**Beneficios:**
-- Cero duplicación de datos
-- Cambiar una herramienta no rompe todo el stack
-- Auditable y conforme con regulaciones
+## What stuck with me
 
-### 2. Componentes Intercambiables
+- Data contracts matter more than pretty components; versioning them saved me from three regressions.
+- Without demos, retros and alert rituals, modularity devolves into tribal chaos.
 
-Cada módulo hace **una cosa bien** y puede reemplazarse sin afectar el resto:
+## What I'm building next
 
-| Función | Opciones Modulares |
-|---------|-------------------|
-| Email | Resend, Loops, Customer.io |
-| CRM | Attio, Folk, HubSpot Starter |
-| Forms | Tally, Fillout, TypeForm |
-| Scheduling | Cal.com, Calendly |
-| Analytics | PostHog, Mixpanel, Amplitude |
-
-Si Loops no funciona para ti en 3 meses, migras a Customer.io en una tarde, no en un trimestre.
-
-### 3. Automation-First
-
-Usa herramientas de orquestación como **n8n** o **Make** para conectar todo:
-
-```typescript
-// Ejemplo: Workflow de Lead Qualification
-const leadWorkflow = {
-  trigger: "New form submission",
-  steps: [
-    { action: "Enrich with Clearbit" },
-    { action: "Score with custom model" },
-    { action: "Route to correct sales rep" },
-    { action: "Send to CRM + Slack notification" },
-  ]
-};
-```
-
-## Stack Recomendado para Startups (2025)
-
-Para una startup en fase early-stage con presupuesto &lt;$2K/mes:
-
-**Core:**
-- Supabase (Database + Auth)
-- Segment (Event Collection)
-- n8n (Automation)
-
-**Marketing:**
-- Resend (Email)
-- PostHog (Analytics)
-- Cal.com (Scheduling)
-
-**Sales:**
-- Attio (CRM)
-- Slack (Communication)
-
-**Costo total:** ~$1,500/mes hasta 50K usuarios
-
-## Implementación Paso a Paso
-
-### Semana 1: Foundation
-1. Setup data warehouse
-2. Implementar event tracking básico
-3. Conectar primeras 2-3 herramientas
-
-### Semana 2-3: Automation
-1. Crear workflows críticos (lead routing, nurture sequences)
-2. Setup dashboards de métricas clave
-3. Documentar arquitectura
-
-### Semana 4: Optimización
-1. Agregar enrichment de datos
-2. Implementar scoring automático
-3. Setup alertas y monitoring
-
-## Errores Comunes
-
-❌ **Usar demasiadas herramientas desde día 1**
-✅ Empieza con 3-5 core tools y agrega bajo demanda
-
-❌ **No documentar integraciones**
-✅ Mantén un diagrama actualizado de tu stack
-
-❌ **Optimizar antes de tener datos**
-✅ Primero captura datos, luego optimiza
-
-## Conclusión
-
-Un stack modular no es más caro ni más complejo que un stack tradicional. Es **más flexible** y te permite moverte rápido sin romper cosas.
-
-En Marsala OS, ayudamos a empresas a diseñar e implementar stacks modulares en semanas, no meses.
+I'm prototyping an AI copilot module that reads telemetry and proposes experiments automatically. Want it in your stack? ping me.
 
 ---
 
-**¿Necesitas ayuda diseñando tu stack?** [Agenda una llamada](/contact) y te mostramos cómo otras empresas están construyendo sistemas de marketing que escalan.
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

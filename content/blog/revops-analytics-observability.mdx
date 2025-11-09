@@ -1,52 +1,65 @@
 ---
-title: "Observabilidad de Datos para RevOps: dbt + Metaplane"
+title: "Observability for RevOps Analytics"
 slug: "revops-analytics-observability"
 type: "Insight"
-summary: "Cómo evitar sorpresas en tu pipeline de revenue monitoreando freshness, volumen y lógica de tus modelos."
-date: "2025-02-07"
+summary: "Monitoring freshness, volume and logic of RevOps models so sales never finds out first."
+description: "How I implemented observability for the revenue pipeline using dbt, Metaplane and actionable alerts."
+date: "2025-01-22"
 readingTime: "7 min read"
-author: "Marsala Team"
-tags: ["Analytics", "dbt", "Observability", "RevOps"]
+author: "Marina Álvarez"
+tags:
+  - "Data"
+  - "RevOps"
+  - "Monitoring"
+keywords:
+  - "observability"
+  - "dbt"
+  - "revops"
+  - "metaplane"
+  - "analytics"
 featured: false
 image: "/blog/data-observability.jpg"
 ---
 
-# Observabilidad de Datos para RevOps: dbt + Metaplane
 
-Revenue se cae cuando un campo falta o una métrica se duplica. En lugar de esperar a que ventas reporte un error, implementamos observabilidad nativa para todo el pipeline.
+# Observability for RevOps Analytics
 
-## Señales Que Monitoreamos
+> I'd rather be the one telling sales about an incident, not the other way around.
 
-| Métrica | Configuración | Alertas |
-|---------|---------------|---------|
-| Freshness | `leads_enriched` &lt; 15 min | Slack #rev-data |
-| Volumen | ±15% vs promedio móvil | PagerDuty (solo si es crítica) |
-| Distribución | KS-test sobre campos numéricos | Email semanal |
+## Context
 
-## Integración Técnica
+Revenue lives and dies by clean metrics. I implemented observability so anomalies show up minutes—not hours—later.
 
-```yaml
-# models/schema.yml
-tests:
-  - dbt_utils.recency:
-      datepart: minute
-      field: updated_at
-      interval: 15
-```
+## Stack I leaned on
 
-- Metaplane escucha los artifacts de dbt Cloud y aprende las expectativas de manera automática.
-- Configuramos Webhooks → n8n → Notion para crear tickets con contexto.
+- dbt Core + Elementary
+- Metaplane listening to artifacts
+- Notion + PagerDuty for runbooks
+- Slack alerts with context
 
-## Resultado
+## Playbook
 
-- Incidentes detectados **35 minutos antes** que el equipo humano.
-- 0 lanzamientos bloqueados por métricas incorrectas en Q1.
-- Rompimos la dependencia de “solo Carlos entiende los modelos”.
+1. Tag critical tables (leads, pipeline, recognized revenue) and assign budgets.
+2. Add freshness, volume and schema tests in dbt.
+3. Let Metaplane learn expectations and reduce alert noise.
+4. Automate incident tickets with n8n after two consecutive failures.
+5. Publish pipeline-health dashboards so everyone sees the same truth.
 
-## Recomendaciones
+## Metrics & telemetry
 
-1. Empieza monitoreando solo 3 tablas críticas (leads, pipeline, revenue real).
-2. Documenta los umbrales en un README para que cualquier persona los ajuste.
-3. Nunca hagas paging nocturno por métricas no críticas; usa Digest semanal.
+- Incidents detected before business notices: 35 minutes earlier
+- Blocked launches from bad metrics: 0 in Q1
+- Model ownership coverage: 3 engineers can maintain all tables
 
-Con observabilidad modular, RevOps deja de reaccionar y empieza a predecir.
+## What stuck with me
+
+- Alerts need context; I include queries and next steps every time.
+- Document budgets so teams stop arguing about severity.
+
+## What I'm building next
+
+I'm exploring GitHub hooks that block PRs when contracts break. Want to beta it? reach out.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

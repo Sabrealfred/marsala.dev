@@ -1,56 +1,65 @@
 ---
-title: "Sales Copilot: Gong + Notion + Resend en un Solo Panel"
+title: "Sales Copilot: Gong, Notion and Resend in One Panel"
 slug: "ai-sales-copilot-gong"
 type: "Insight"
-summary: "Cómo conectamos Gong, Notion y Resend para que cada call genere follow-ups automáticos y accionables."
-date: "2025-02-09"
+summary: "I built a copilot that summarizes calls, updates the deal and drafts ready-to-send follow-ups."
+description: "Insight on combining Gong, OpenAI, Notion and Resend so every call ends with clear next steps."
+date: "2025-01-16"
 readingTime: "8 min read"
-author: "Marsala Team"
-tags: ["Sales", "AI", "Gong", "Automation"]
+author: "Marina Álvarez"
+tags:
+  - "AI"
+  - "Sales"
+  - "Automation"
+keywords:
+  - "gong"
+  - "ai"
+  - "sales"
+  - "copilot"
+  - "notion"
 featured: false
 image: "/blog/sales-copilot.jpg"
 ---
 
-# Sales Copilot: Gong + Notion + Resend en un Solo Panel
 
-Los AE pasan 30% del tiempo escribiendo resúmenes. Construimos un copilot que consume las transcripciones de Gong, actualiza el deal en Notion y dispara emails personalizados.
+# Sales Copilot: Gong, Notion and Resend in One Panel
 
-## Integraciones Clave
+> My AEs no longer spend half an hour writing recaps; the copilot delivers human-sounding drafts.
 
-1. **Gong Webhooks** → Cloud Run (Node) → almacenamos JSON completo.
-2. **OpenAI** usando un prompt con contexto del deal.
-3. **Notion API** para actualizar la base "Deals" con resúmenes y next steps.
-4. **Resend** para mandar follow-up con highlights y links relevantes.
+## Context
 
-```ts
-const summary = await openai.chat.completions.create({
-  model: "gpt-4o-mini",
-  messages: [
-    { role: "system", content: baseInstructions },
-    { role: "user", content: transcript },
-  ],
-});
-```
+I was tired of half-written notes. I developed a copilot that understands our process and fills the gaps.
 
-## Plantilla de Output
+## Stack I leaned on
 
-- **Top 3 Insights** (bullets).
-- **Riesgos detectados** (palabras clave: presupuesto, timing, decisor).
-- **Acciones comprometidas** con owner y fecha.
-- **Follow-up email** en tono brand-friendly.
+- Gong webhooks + secure storage
+- OpenAI GPT-4o mini with versioned prompts
+- Notion API for deals and next steps
+- Resend for follow-ups built with React Email
 
-## Métricas Medidas
+## Playbook
 
-| KPI | Antes | Después |
-|-----|-------|---------|
-| Tiempo en follow-up | 25 min | 4 min |
-| Tareas sin completar | 17% | 5% |
-| Confianza del forecast | 62% | 81% |
+1. Cached transcripts in encrypted Supabase for auditability.
+2. Fed prompts with deal history, stage and risks.
+3. Generated summaries, risks and actions straight into Notion.
+4. Drafted follow-up emails AEs can tweak in seconds.
+5. Collected feedback and retrained prompts weekly.
 
-## Buenas Prácticas
+## Metrics & telemetry
 
-- Entrena el prompt con deals cerrados ganados y perdidos.
-- Limita la longitud del email a 180 palabras para mantener foco.
-- Usa Notion AI para sugerir highlights adicionales directamente en el bloque.
+- Time to follow-up: 25 min → 4 min
+- Open tasks per deal: 17% → 5%
+- Forecast confidence: 62% → 81%
 
-El resultado: los AE se enfocan en la estrategia, no en copiar-pegar notas.
+## What stuck with me
+
+- AI needs guardrails; I cap length, tone and required fields.
+- AEs adopt faster when they can edit before sending.
+
+## What I'm building next
+
+I'm exploring automatic coaching based on conversation metrics. Want to join the beta? tell me.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

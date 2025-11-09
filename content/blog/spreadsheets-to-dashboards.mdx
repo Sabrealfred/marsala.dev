@@ -1,321 +1,65 @@
 ---
-title: "De Spreadsheets a Dashboards en Tiempo Real: Guía de Migración"
+title: "From Spreadsheets to Living Dashboards in 21 Days"
 slug: "spreadsheets-to-dashboards"
-type: "Case Study"
-summary: "Cómo una empresa de e-commerce migró de 47 spreadsheets desactualizados a un dashboard unificado en tiempo real en 2 semanas."
-date: "2025-01-05"
-readingTime: "10 min read"
-author: "Marsala Team"
-tags: ["Analytics", "Data Visualization", "Business Intelligence"]
+type: "Guide"
+summary: "How I transformed the CEO's spreadsheets into self-serve dashboards."
+description: "Guide for migrating manual reporting to a governed analytics stack with versioning, alerts and storytelling."
+date: "2025-01-22"
+readingTime: "8 min read"
+author: "Marina Álvarez"
+tags:
+  - "Data"
+  - "Analytics"
+  - "Ops"
+keywords:
+  - "dashboards"
+  - "analytics"
+  - "metabase"
+  - "supabase"
+  - "automation"
 featured: false
 image: "/blog/dashboards.jpg"
 ---
 
-# De Spreadsheets a Dashboards en Tiempo Real
 
-**El escenario:** Una empresa de e-commerce con $5M ARR tenía su "analytics" distribuido en 47 diferentes Google Sheets. Su CEO pasaba 6 horas cada semana consolidando datos manualmente para el board meeting.
+# From Spreadsheets to Living Dashboards in 21 Days
 
-**Versión completa:** Después de 2 semanas, tenían un dashboard en tiempo real que actualizaba automáticamente cada hora.
+> My Mondays no longer start with copy/paste—every metric lives in a trustworthy board.
 
-Este es el proceso exacto que seguimos.
+## Context
 
-## El Problema con los Spreadsheets
+I inherited 14 spreadsheets with fragile macros. Instead of crying I turned them into reproducible pipelines and self-service panels.
 
-Los spreadsheets son perfectos para empezar, pero se vuelven insostenibles cuando:
+## Stack I leaned on
 
-### 1. Múltiples Fuentes de Verdad
-```
-ventas-enero.xlsx (versión del CFO)
-ventas-enero-final.xlsx (versión de COO)
-ventas-enero-FINAL-FINAL.xlsx (???)
-```
+- Supabase as staging DB
+- BigQuery for consolidated facts
+- dbt + Elementary for tests and alerts
+- Metabase + Looker Studio for viz
 
-### 2. Updates Manuales
-Cada lunes: descargar CSVs de 5 plataformas, copiar-pegar, rezar que no se rompan las fórmulas.
+## Playbook
 
-### 3. Datos Desactualizados
-Tu dashboard muestra datos de hace 3 días. ¿Cómo tomas decisiones así?
+1. Audited every spreadsheet and mapped owners, columns and definitions.
+2. Built intermediate tables in dbt with schema + freshness tests.
+3. Redesigned KPIs in Metabase with filterable narratives.
+4. Automated PDF snapshots and Slack alerts for ±15% swings.
+5. Trained the team on safe exploration using curated collections.
 
-### 4. No Escalable
-Funciona con 10 filas. Con 10,000 filas, Excel crashea.
+## Metrics & telemetry
 
-## La Solución: Modern Data Stack
+- Hours spent on reporting: 24h/month → 3h/month
+- Manual errors detected: ~10% → <1%
+- Time to answer CEO questions: 'tomorrow' → 'right now'
 
-```
-[Data Sources] → [Data Warehouse] → [Transformation] → [Visualization]
-     ↓                 ↓                  ↓                  ↓
-  Shopify         Supabase           dbt              Metabase
-  Google Ads      BigQuery           SQL              Looker
-  Meta Ads                                            Grafana
-  Stripe
-```
+## What stuck with me
 
-Cada pieza hace una cosa bien y es reemplazable.
+- Don't delete spreadsheets until the new layer has champions.
+- Storytelling matters; each dashboard includes notes and FAQs.
 
-## Arquitectura Implementada
+## What I'm building next
 
-Para esta empresa de e-commerce, implementamos:
-
-**Data Sources:**
-- Shopify (ventas)
-- Google Analytics (tráfico)
-- Meta Ads + Google Ads (marketing spend)
-- Stripe (subscripciones)
-- Zendesk (support tickets)
-
-**ETL Layer:**
-- Airbyte (open source, gratis si self-hosted)
-- Corre cada hora automáticamente
-
-**Data Warehouse:**
-- Supabase Postgres ($25/mes)
-- Alternativas: BigQuery, Snowflake
-
-**Transformation:**
-- SQL queries guardadas como views
-- dbt para transformaciones más complejas (opcional)
-
-**Visualization:**
-- Metabase (open source, gratis)
-- Alternativas: Grafana, Superset, Looker
-
-**Costo total:** ~$100/mes (vs $0 en spreadsheets, pero 40h/mes ahorradas)
-
-## Paso a Paso: Migración en 2 Semanas
-
-### Semana 1: Setup Infraestructura
-
-**Día 1-2: Setup Data Warehouse**
-
-```sql
--- Crear schema básico en Supabase
-CREATE TABLE raw_orders (
-  id TEXT PRIMARY KEY,
-  created_at TIMESTAMP,
-  customer_email TEXT,
-  total_amount DECIMAL,
-  status TEXT,
-  source TEXT
-);
-
-CREATE TABLE raw_ad_spend (
-  date DATE,
-  platform TEXT,
-  campaign TEXT,
-  spend DECIMAL,
-  impressions INTEGER,
-  clicks INTEGER
-);
-```
-
-**Día 3-4: Conectar Data Sources**
-
-Con Airbyte, conectamos cada plataforma:
-
-```yaml
-# Shopify → Supabase
-source: shopify
-destination: supabase
-sync_mode: incremental
-schedule: "0 * * * *"  # Cada hora
-```
-
-**Día 5: Primer Dashboard**
-
-Creamos el primer dashboard con métricas básicas:
-- Revenue (today, WoW, MoM)
-- Orders count
-- AOV (Average Order Value)
-- Top products
-
-### Semana 2: Transformaciones y Dashboards Avanzados
-
-**Transformación 1: Customer Cohorts**
-
-```sql
--- Cohort analysis por mes de primera compra
-WITH first_purchase AS (
-  SELECT
-    customer_email,
-    DATE_TRUNC('month', MIN(created_at)) as cohort_month
-  FROM raw_orders
-  WHERE status = 'completed'
-  GROUP BY customer_email
-),
-cohort_revenue AS (
-  SELECT
-    fp.cohort_month,
-    DATE_TRUNC('month', o.created_at) as revenue_month,
-    COUNT(DISTINCT o.customer_email) as customers,
-    SUM(o.total_amount) as revenue
-  FROM raw_orders o
-  JOIN first_purchase fp ON o.customer_email = fp.customer_email
-  WHERE o.status = 'completed'
-  GROUP BY fp.cohort_month, revenue_month
-)
-SELECT * FROM cohort_revenue;
-```
-
-**Transformación 2: Marketing Attribution**
-
-```sql
--- ROI por canal de marketing
-WITH ad_spend AS (
-  SELECT
-    DATE_TRUNC('day', date) as day,
-    platform,
-    SUM(spend) as total_spend
-  FROM raw_ad_spend
-  GROUP BY day, platform
-),
-attributed_sales AS (
-  SELECT
-    DATE_TRUNC('day', created_at) as day,
-    source as platform,
-    SUM(total_amount) as revenue,
-    COUNT(*) as orders
-  FROM raw_orders
-  WHERE status = 'completed'
-  GROUP BY day, platform
-)
-SELECT
-  s.day,
-  s.platform,
-  s.total_spend,
-  COALESCE(a.revenue, 0) as revenue,
-  COALESCE(a.orders, 0) as orders,
-  CASE
-    WHEN s.total_spend > 0
-    THEN ROUND((COALESCE(a.revenue, 0) / s.total_spend - 1) * 100, 2)
-    ELSE NULL
-  END as roas_percentage
-FROM ad_spend s
-LEFT JOIN attributed_sales a
-  ON s.day = a.day AND s.platform = a.platform
-ORDER BY s.day DESC;
-```
-
-**Dashboard Final:**
-
-Creamos 5 dashboards principales:
-
-1. **Executive Dashboard**
-   - Revenue, Growth %, Burn rate
-   - Top-line metrics para CEO/board
-
-2. **Marketing Dashboard**
-   - CAC por canal
-   - ROAS
-   - Attribution model
-
-3. **Product Dashboard**
-   - Top products
-   - Inventory alerts
-   - Return rates
-
-4. **Customer Dashboard**
-   - Cohort retention
-   - LTV por segmento
-   - Churn prediction
-
-5. **Operations Dashboard**
-   - Fulfillment times
-   - Support ticket volume
-   - Refund rates
-
-## Resultados
-
-| Métrica | Antes (Spreadsheets) | Después (Dashboard) |
-|---------|----------------------|---------------------|
-| Tiempo para actualizar datos | 6h/semana manual | Automático cada hora |
-| Data freshness | 2-3 días old | Tiempo real |
-| Tiempo para insight | "Te lo mando mañana" | Instantáneo |
-| Errores en reporting | ~10% de las veces | &lt;1% |
-| Cost | $0 (pero 24h/mes de trabajo) | $100/mes ($0 en tiempo) |
-
-**ROI:** Si valoramos el tiempo del CEO en $100/h, ahorramos $2,400/mes por $100/mes de costo.
-
-## Dashboards Interactivos
-
-Con Metabase, el equipo puede:
-
-**Filtrar sin SQL:**
-- "Muéstrame solo ventas de California"
-- "Solo productos de categoría X"
-- "Últimos 30 días"
-
-**Drill-down:**
-Click en cualquier métrica para ver detalle:
-- Revenue → Ver órdenes individuales
-- CAC → Ver campañas específicas
-
-**Alertas Automáticas:**
-```javascript
-// Alerta si revenue cae 20% vs yesterday
-if (todayRevenue < yesterdayRevenue * 0.8) {
-  slack.send('#executive', '🚨 Revenue down 20% today!');
-}
-```
-
-## Herramientas Alternativas
-
-Dependiendo de tu stack:
-
-### Budget &lt;$100/mes (Startup)
-- **Warehouse:** Supabase
-- **ETL:** Airbyte (self-hosted)
-- **Viz:** Metabase (self-hosted)
-
-### Budget $500-1K/mes (Growth Stage)
-- **Warehouse:** BigQuery o Snowflake
-- **ETL:** Fivetran o Airbyte Cloud
-- **Viz:** Looker Studio (gratis) o Metabase Cloud
-
-### Budget $5K+/mes (Enterprise)
-- **Warehouse:** Snowflake
-- **ETL:** Fivetran
-- **Viz:** Looker, Tableau, o Mode
-
-## Implementación: Tu Checklist
-
-**Semana 1:**
-- [ ] Elegir y setup data warehouse
-- [ ] Conectar 1-2 data sources principales
-- [ ] Crear primer dashboard con métricas básicas
-- [ ] Validar que los números coincidan con spreadsheets
-
-**Semana 2:**
-- [ ] Conectar resto de data sources
-- [ ] Crear transformaciones (cohorts, attribution, etc)
-- [ ] Construir dashboards por departamento
-- [ ] Setup alertas automáticas
-
-**Semana 3:**
-- [ ] Entrenar al equipo en cómo usar dashboards
-- [ ] Documentar queries importantes
-- [ ] Deprecar spreadsheets viejos
-- [ ] Celebrar 🎉
-
-## Errores Comunes
-
-❌ **Migrar todos los spreadsheets a la vez**
-✅ Empieza con las 5 métricas más importantes
-
-❌ **Replicar exactamente los spreadsheets en SQL**
-✅ Re-piensa qué métricas realmente importan
-
-❌ **No validar los números**
-✅ Compara dashboard vs spreadsheets durante 2 semanas
-
-❌ **Hacer todo custom-coded**
-✅ Usa herramientas existentes, customiza solo lo crítico
-
-## Conclusión
-
-La migración de spreadsheets a dashboards no es solo un upgrade técnico. Es un cambio cultural: de **reportar el pasado** a **actuar en el presente**.
-
-Con el stack correcto, puedes tener dashboards enterprise-grade por &lt;$100/mes.
+I'm experimenting with interactive notebooks so product and growth build their own deep dives. Want a tour? schedule it on /contact.
 
 ---
 
-**¿Quieres ayuda migrando tu analytics?** [Agenda una llamada](/contact) y te mostramos exactamente qué stack necesitas para tu caso.
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

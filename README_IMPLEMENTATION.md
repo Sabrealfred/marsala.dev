@@ -20,34 +20,13 @@ app/waitlist/page.tsx          ← Nueva página (creada)
 
 ---
 
-### 2. Blog + Research: 35 Posts Totales
+### 2. Blog + Research: 37 Posts Totales
 
-**Ubicación:** `/content/blog/`
-
-**Inventario completo (todos comparten el mismo frontmatter y formato MDX):**
-
-1. `modular-marketing-stack-guide.mdx` — Stack modular 2025 (8 min).
-2. `automate-conversion-funnel-n8n.mdx` — Automatización de funnels (12 min).
-3. `spreadsheets-to-dashboards.mdx` — Dashboards en tiempo real (10 min).
-4. `why-headless-architecture.mdx` — Migración headless (7 min).
-5. `reduce-cac-data-activation.mdx` — Data activation para bajar CAC (11 min).
-6. `ai-lead-qualification-copilot.mdx` — Copilot LLM para calificar leads.
-7. `attio-migration-playbook.mdx` — HubSpot → Attio en 10 días.
-8. `modular-design-system-scaleups.mdx` — Design system multi-brand.
-9. `revops-analytics-observability.mdx` — Observabilidad dbt + Metaplane.
-10. `posthog-mini-cdp.mdx` — PostHog como mini CDP.
-11. `partner-portal-nextjs-supabase.mdx` — Portal de partners en 3 semanas.
-12. `ai-sales-copilot-gong.mdx` — Follow-ups automáticos con Gong.
-13. `growth-sprint-30-days.mdx` — Sprint de implementación Marsala OS.
-14. `lead-routing-n8n-attio.mdx` — Ruteo inteligente con capacidad real.
-15. `customer-journey-automation-resend.mdx` — Journeys lifecycle con Resend.
-16. `product-qualified-leads-system.mdx` — Sistema de PQLs con Snowflake + Hightouch.
-17. `ai-ops-war-room.mdx` — War room operativo alimentado por AI.
-
-**Research legacy** (`/data/research.ts`):
-- 18 estudios adicionales (case studies, whitepapers e insights) se convierten automáticamente a contenido del blog. Solo edita la estructura en `data/research.ts` y se publicarán en `/blog/<slug>` y en la pestaña Research.
-
-**Estado:** Todo el contenido está integrado en `/research` (listado principal) y `/blog/[slug]` con `next-mdx-remote`, componentes MDX personalizados y metadata OG/Twitter listas para compartir. `/blog` redirige automáticamente a `/research`.
+- **Dataset único:** `content/blog-data.mjs` contiene la metadata y los bullets que alimentan cada artículo. Todos comparten voz humana (Marina Álvarez), estructura uniforme y keywords SEO.
+- **Generador:** `npm run blog:generate` escribe/actualiza automáticamente los `.mdx` dentro de `content/blog/`. Puedes editar el dataset, correr el script y listo.
+- **Temáticas cubiertas:** modular stack, automation, revops, AI copilots, design systems, portals, privacy, performance, experimentación, enablement, etc. (17 posts core + 20 nuevos enfocados a SEO).
+- **Research legacy:** las entradas de `data/research.ts` siguen disponibles; el renderizador las transforma al nuevo layout sin que tengas que escribir MDX.
+- **Estado:** `/research` es ahora el listado principal (mezcla posts y research). `/blog` redirige ahí, y `/blog/[slug]` muestra cada artículo con hero SEO, metadata OG/Twitter y CTA hacia contacto.
 
 ---
 
@@ -55,9 +34,11 @@ app/waitlist/page.tsx          ← Nueva página (creada)
 
 **Configuración:**
 ```env
-RESEND_API_KEY=re_N6xTgpoE_QDU8r3hnxjtXZD7EmTTeRQiS
-RESEND_FULL_ACCESS_KEY=re_DKQFRvcT_Hb5hXRyHYu75joYT3Z3EHaaC
+RESEND_API_KEY=<your_sending_access_key>
+RESEND_FULL_ACCESS_KEY=<your_full_access_key>
 ```
+
+**Nota de Seguridad:** Las API keys están configuradas en `.env.local` (no commiteado) y en Netlify como environment variables. Nunca commitear las keys reales al repositorio.
 
 **CLI Helper creado:**
 ```bash
@@ -158,7 +139,7 @@ marsala.dev/
 │   └── waitlist/page.tsx             ← Nueva página
 │
 ├── content/
-│   └── blog/                         ← 17 posts MDX
+│   └── blog/                         ← 37 posts generados vía blog-data.mjs
 │       ├── modular-marketing-stack-guide.mdx
 │       ├── automate-conversion-funnel-n8n.mdx
 │       ├── spreadsheets-to-dashboards.mdx
@@ -190,6 +171,7 @@ marsala.dev/
 npm run dev                # Servidor local (corriendo)
 npm run build              # Build producción
 npm run start              # Servidor producción
+npm run blog:generate      # Regenera los 37 posts desde blog-data.mjs
 
 # Resend
 npm run resend:info        # Info configuración
@@ -211,7 +193,7 @@ npm run netlify:setup-dns  # Agregar DNS automáticamente
 - API de emails configurada
 - Emails de prueba funcionando
 - Entry point tracking
-- Research tab muestra todo el blog (17 MDX + 18 research legacy)
+- Research tab muestra todo el blog (37 posts + research legacy auto-render)
 
 ### ⏳ Pendiente
 - Verificar dominio marsala.dev en Resend (requiere DNS)
@@ -266,7 +248,7 @@ npm run netlify:setup-dns  # Agregar DNS automáticamente
 
 **Implementado en esta sesión:**
 1. ✅ Sistema completo de formularios con emails
-2. ✅ 35 publicaciones (17 MDX + 18 research legacy) en /research → /blog
+2. ✅ 37 publicaciones (dataset unificado + research legacy) en /research → /blog
 3. ✅ CLI de Resend para gestión
 4. ✅ CLI de Netlify para DNS
 5. ✅ Documentación completa

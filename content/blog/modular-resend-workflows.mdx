@@ -1,0 +1,63 @@
+---
+title: "Modular Workflows with Resend and React Email"
+slug: "modular-resend-workflows"
+type: "Tutorial"
+summary: "I compose email workflows like LEGO bricks thanks to Resend and React Email."
+description: "Step-by-step tutorial for building reusable email workflows with components, testing and automation."
+date: "2024-11-15"
+readingTime: "8 min read"
+author: "Marina Álvarez"
+tags:
+  - "Email"
+  - "Automation"
+keywords:
+  - "resend"
+  - "react email"
+  - "workflow"
+  - "automation"
+featured: true
+image: "/blog/resend-workflows.jpg"
+---
+
+
+# Modular Workflows with Resend and React Email
+
+> My email programs are modular—swapping content blocks no longer breaks the pipeline.
+
+## Context
+
+Marketing needed consistent emails without copying HTML. I built a component library with React Email and orchestrated everything through n8n.
+
+## Stack I leaned on
+
+- Resend + React Email component library
+- Storybook to preview templates
+- Mailosaur for automated QA
+- n8n orchestrations
+
+## Playbook
+
+1. Designed hero/metrics/CTA components and published them as a private npm package.
+2. Wrote visual + accessibility tests directly in Storybook.
+3. Composed workflows in n8n by mixing those components as blocks.
+4. Ran QA across real inboxes and stored snapshots for audits.
+5. Instrumented telemetry to compare component performance.
+
+## Metrics & telemetry
+
+- CTR up 38% on average
+- Time to launch a new sequence: 2 days → 4 hours
+- Manual QA bugs: -80%
+
+## What stuck with me
+
+- Separating copy from layout is the fastest productivity boost.
+- Email components deserve semantic versioning like any other UI kit.
+
+## What I'm building next
+
+I'm packaging these components into a public repo. Want the link once it's ready? send me a DM.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

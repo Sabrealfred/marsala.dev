@@ -135,28 +135,11 @@ The site is deployed to Netlify with automatic builds from the `main` branch.
 
 ### Adding Research + Blog Posts
 
-All research content now lives in the blog system:
+Todos los posts del sitio (tab Research incluido) se generan desde un mismo dataset:
 
-1. **Preferred**: Add a new MDX file inside `content/blog/` with the standard frontmatter (title, slug, summary, type, tags, etc.). It will appear automatically on `/research` and `/blog/[slug]`.
-2. **Legacy research library**: Existing deep dives in `/data/research.ts` are automatically rendered into MDX at build time. You can keep editing that file if you prefer structured JSON—the entries will continue to publish under `/blog/<slug>`.
-
-```typescript
-// data/research.ts
-export const researchPosts: ResearchPost[] = [
-  {
-    slug: "your-post-slug",
-    type: "Case Study" | "Whitepaper" | "Insight",
-    title: "Your Title",
-    summary: "Brief summary",
-    detail: "Extended description",
-    date: "Month YYYY",
-    readingTime: "X min read",
-    tags: ["Tag1", "Tag2"],
-    sections: [/* content sections */],
-    closingNote: "CTA text"
-  }
-];
-```
+1. **Editar datos**: abre `content/blog-data.mjs`, agrega un objeto con título, slug, fechas, keywords y bullets.
+2. **Generar MDX**: corre `npm run blog:generate`. El script compone los 37+ artículos uniformes con voz humana y se publican en `/research` y `/blog/[slug]`.
+3. **Legacy research library**: si prefieres seguir escribiendo en `/data/research.ts`, esos artículos seguirán renderizándose automáticamente en el listado (la función `renderResearchMarkdown` los transforma al vuelo).
 
 ### Adding Modules
 

@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "preview": "npm run build && node scripts/preview.mjs",
+    "blog:generate": "node scripts/generate-blog-content.mjs",
     "resend:info": "node resend-cli-helper.js info",
     "resend:verify": "node resend-cli-helper.js verify",
     "resend:test": "node resend-cli-helper.js test",

@@ -1,52 +1,64 @@
 ---
-title: "Lead Routing Inteligente con n8n + Attio"
+title: "Lead Routing with n8n + Attio"
 slug: "lead-routing-n8n-attio"
 type: "Tutorial"
-summary: "Configuramos un ruteo basado en reglas y capacidad real del equipo usando n8n, Attio y Slack."
-date: "2025-01-25"
+summary: "Routing leads based on actual capacity, specialization and timezone—no spreadsheets hidden in someone's desk."
+description: "Tutorial for building a smart lead router with n8n, Attio and Slack."
+date: "2025-01-12"
 readingTime: "7 min read"
-author: "Marsala Team"
-tags: ["Lead Routing", "Automation", "Attio", "n8n"]
+author: "Marina Álvarez"
+tags:
+  - "Automation"
+  - "RevOps"
+keywords:
+  - "lead routing"
+  - "n8n"
+  - "attio"
+  - "automation"
+  - "slack"
 featured: false
 image: "/blog/lead-routing.jpg"
 ---
 
-# Lead Routing Inteligente con n8n + Attio
 
-Asignar leads por país ya no es suficiente. Configuramos un router que considera disponibilidad, especialidad y carga actual.
+# Lead Routing with n8n + Attio
 
-## Inputs Considerados
+> The router understands real availability, not just territory copied from an outdated Excel.
 
-- **Segmento**: SMB, Mid-Market, Enterprise.
-- **Industria**: mapeada a owners con playbooks específicos.
-- **Carga**: número de deals abiertos asignados al owner.
-- **Zona horaria**: para priorizar respuestas en la misma jornada.
+## Context
 
-## Workflow
+Leads were being assigned at random. I built a dynamic router with transparent rules so nothing falls through the cracks.
 
-```yaml
-trigger: contact_submitted
-steps:
-  - fetch_attio_owner_load
-  - score_lead_quality
-  - choose_owner (custom code)
-  - create_attio_task
-  - notify_slack
-```
+## Stack I leaned on
 
-- `fetch_attio_owner_load`: consulta la API de Attio y devuelve deals por owner.
-- `choose_owner`: script JS que aplica reglas (capacidad máxima, prioridad, rotación).
-- `notify_slack`: mensaje con botones para aceptar o reasignar.
+- n8n hosted on Railway
+- Attio API
+- Supabase for load history
+- Slack buttons for accept/reassign
 
-## Panel de Control
+## Playbook
 
-- Dashboard en Retool muestra los owners disponibles en tiempo real.
-- Se puede pausar a alguien (vacaciones) y el router se actualiza al instante.
+1. Gathered signals: segment, industry, load and timezone.
+2. Built custom functions in n8n that return the ideal owner.
+3. Updated Attio with the assignment and triggered tasks automatically.
+4. Notified Slack with accept/reassign buttons.
+5. Added a Retool dashboard to pause owners on PTO.
 
-## Resultados
+## Metrics & telemetry
 
-- Tiempo de contacto inicial: **&lt;15 minutos** (antes 3h).
-- Tasa de aceptación de leads: **93%**.
-- Distribución equitativa (desviación estándar bajó 41%).
+- Time to first contact: <15 minutes
+- Lead acceptance rate: 93%
+- Load deviation across owners: -41%
 
-Con reglas claras y datos en vivo, los leads dejan de perderse en el limbo.
+## What stuck with me
+
+- Automatic pause is critical; otherwise people on PTO keep receiving leads.
+- All rules live in a repo—no secret spreadsheets allowed.
+
+## What I'm building next
+
+Next I'm adding a fairness model. Want to try it in your team? let me know.
+
+---
+
+Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.
