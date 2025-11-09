@@ -44,6 +44,17 @@ Running experiments is easy; running **repeatable** experiments that teams trust
 | Design review | Figma + Storybook | Components synced with tokens so UI changes mirror product |
 | Communication | Resend summaries + #experiments Slack channel | Automated weekly recaps |
 
+## Prioritization Rubric
+
+We grade every proposal against the **FICE** rubric (Fit, Impact, Confidence, Effort). Each dimension is scored 1–5 with explicit prompts so debates stay objective:
+
+* **Fit.** Does the experiment ladder up to the quarterly mission and the owning squad’s KPIs? We reject clever one-offs that don’t map to strategy.
+* **Impact.** We estimate the size of the population touched and the expected lift using historical conversion bands. Analysts provide the model, not opinions.
+* **Confidence.** Do we have directional evidence (qual insights, prior tests, user interviews) that justify the bet? High-confidence scores require linked artifacts.
+* **Effort.** Engineering, design, and data sign off on the engineering hours plus QA cost. Anything above 5 days needs director approval.
+
+The rubric lives directly in the Linear intake form so submitters know how proposals will be judged. It also makes trade-offs transparent when stakeholders ask why their idea waited a sprint.
+
 ## Rituals in Detail
 
 ### Weekly Intake (Monday)
@@ -72,6 +83,18 @@ Each experiment owner gives a 60-second update: implementation status, blockers,
 * Analytics QA: we use a custom script that fires PageView + custom events, then verifies they landed in PostHog/dbt within five minutes.
 * Launch staged to 5% of traffic; health monitored for 30 minutes before scaling.
 
+## Instrumentation & QA Checklist
+
+Every experiment has a living checklist that must turn green before launch:
+
+1. **Events defined.** Segment + PostHog schema reviewed by analytics, including naming conventions and guardrail metrics.
+2. **Data contracts verified.** dbt tests run in CI to ensure new events don’t break downstream models.
+3. **Accessibility + performance pass.** Lighthouse and axe CI checks must be ≥90; perf regressions require a compensating experiment.
+4. **Rollback plan documented.** For each flag we sketch “what happens if we revert in the middle of onboarding” so CS and Sales aren’t surprised.
+5. **Owner escalation tree.** If metrics swing beyond guardrails, everyone knows who pulls the plug and who communicates with leadership.
+
+It sounds heavy, but the checklist sits next to the PR and takes five minutes to verify because the automation does most of the work.
+
 ### Friday Demo + Retro
 
 We demo results (even if still running) and log learnings into Notion. Each entry includes:
@@ -90,6 +113,21 @@ We demo results (even if still running) and log learnings into Notion. Each entr
 | Wednesday | Build + QA |
 | Thursday | Launch + monitoring |
 | Friday | Demo + retro + backlog grooming |
+
+## Org Enablement and Incentives
+
+Process dies when incentives clash. We invited marketing, success, and sales ops to nominate “experiment buddies” who shadow a squad for two sprints. Buddies help write hypotheses, sanity-check guardrails, and carry learnings back to their teams. Leadership reviews a one-page “experiments shipped vs. learnings captured” scorecard in the weekly business review, so executives celebrate disciplined invalidations rather than only wins. We also track experiment debt (tests stuck without analysis) and treat it like tech debt—if the number creeps above three, we pause new launches until analysis catches up.
+
+## Scaling to Multiple Squads
+
+Once two squads adopted the rituals, we packaged them into a starter kit:
+
+* **Notion workspace template** with linked databases for hypotheses, rollouts, and retros.
+* **Linear project template** that auto-generates the right statuses, custom fields, and automation rules.
+* **Starter telemetry pack** (dbt macros + dashboard) so new squads don’t reinvent charts.
+* **Buddy rotation calendar** assigning an analyst and designer to each new squad for their first sprint.
+
+We launch new squads in “mentored mode” for two iterations. After that they enter the shared operating rhythm and contribute to the weekly backlog refinement.
 
 ## Metrics We Track
 

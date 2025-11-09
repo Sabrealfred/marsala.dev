@@ -43,6 +43,19 @@ All secrets stay in HashiCorp Vault; the sandbox uses short-lived tokens for eve
 * **Human-in-the-Loop.** Nothing is sent to a customer without a human pressing “Send.” Agents can edit or request a new draft in one click.
 * **Rate Limits + Kill Switch.** If rejection rate exceeds 20% in a rolling hour, the sandbox disables itself and notifies the on-call engineer.
 
+## Isolation Patterns That Passed Audit
+
+Regulators were less interested in the AI model and more interested in how we isolated it. We split the architecture into a **data plane** (Zendesk, Supabase, Vault) and a **control plane** (sandbox API, prompt store, evaluation jobs). The control plane can orchestrate workflows but never stores raw transcripts. Service accounts have single-purpose scopes, and every call uses short-lived OAuth tokens minted by Vault so there are no long-lived secrets to leak.
+
+Key patterns that repeatedly impressed auditors:
+
+* **Dual redaction.** Zendesk webhooks strip obvious identifiers; the sandbox service runs a second scrub plus deterministic replacements. If the two systems disagree, we quarantine the ticket.
+* **Immutable artifacts.** Prompt inputs, outputs, and evaluation results are written to BigQuery tables with append-only access. Investigations can replay any suggestion with zero mutation risk.
+* **Air-gapped evals.** Offline evaluation jobs run on a separate project with no production network access, so a rogue eval script can’t touch live tickets.
+* **Config-as-code.** Prompt versions, tool registries, and policy references live in Git with CODEOWNERS. Compliance reviews diffs the same way they review infrastructure changes.
+
+By treating isolation as a product feature (not an afterthought), we sped up legal approvals and avoided endless review cycles.
+
 ## Training the Prompt Library
 
 We treated prompt development like software:
@@ -70,6 +83,19 @@ At every stage, compliance and legal reviewed logs to confirm privacy requiremen
 
 We display these metrics in Grafana; anomalies page the on-call support engineer via PagerDuty.
 
+## Incident Response and Chaos Drills
+
+The kill switch only works if people practice using it. Every quarter we run a “sandbox chaos hour” where we simulate three scenarios: mass low-confidence responses, Vault token expiration, and knowledge-base mismatch. Agents, compliance, and engineering walk through the incident runbook together. We measure mean time to disable the sandbox, mean time to identify the root cause, and the quality of the customer comms template we keep on file.
+
+If a real issue triggers the kill switch, the process is already muscle memory:
+
+1. Sandbox API flips to `maintenance` mode and returns canned responses advising agents to draft manually.
+2. PagerDuty notifies on-call plus a compliance liaison.
+3. A Notion incident doc is created with pre-filled sections for timeline, affected tickets, and regulatory follow-up.
+4. Once resolved, the runbook requires a retro with both engineering and support leads before re-enabling AI suggestions.
+
+These drills sound heavy-handed, but they kept us calm the one time GPT latency spiked and started timing out half the queue.
+
 ## Agent Experience
 
 Agents work inside a Notion-powered desk with the following flow:
@@ -80,6 +106,10 @@ Agents work inside a Notion-powered desk with the following flow:
 4. Resend sends the final email using the component library discussed earlier.
 
 Agents loved that the desk also surfaces contextual data (MRR, plan tier, health score). The AI suggestion becomes a starting point, not an order.
+
+## Change Management and Enablement
+
+We underestimated how much enablement work it takes to convince agents that AI is a partner, not a threat. Before rollout we ran live clinics showing how the sandbox logs every action, how to override a suggestion, and how we track individual credit for great edits. Support leadership also rewrote the performance rubric so humans are evaluated on coaching signal and escalation quality—not on blindly accepting AI drafts. Finally, compliance has a standing slot in the weekly support meeting to share audit findings, which keeps the partnership collaborative rather than adversarial.
 
 ## Results
 
