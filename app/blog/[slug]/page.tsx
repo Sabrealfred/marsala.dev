@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { formatBlogDate, getBlogPost, getBlogSlugs, getRelatedPosts, getCategoryForPost } from "@/lib/blog";
+import { formatBlogDate, getBlogPost, getBlogSlugs, getRelatedPosts, getCategoryForPost, getNextPost, getPreviousPost } from "@/lib/blog";
 import { mdxComponents } from "@/components/MDXComponents";
 
 type BlogPostParams = {
@@ -56,6 +56,8 @@ export default function BlogPostPage({ params }: BlogPostParams) {
   const formattedDate = formatBlogDate(post.date);
   const relatedPosts = getRelatedPosts(params.slug, 3);
   const category = getCategoryForPost(post);
+  const nextPost = getNextPost(params.slug);
+  const previousPost = getPreviousPost(params.slug);
 
   return (
     <main className="min-h-screen bg-cream-50">
@@ -67,10 +69,10 @@ export default function BlogPostPage({ params }: BlogPostParams) {
 
         <div className="relative z-10 mx-auto max-w-3xl px-6 lg:px-8">
           <Link
-            href="/blog"
+            href="/research"
             className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-moss-700 transition hover:text-moss-900"
           >
-            <span>←</span> Back to blog
+            <span>←</span> Back to articles
           </Link>
 
           <div className="mb-4 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-sage-600">
@@ -115,6 +117,55 @@ export default function BlogPostPage({ params }: BlogPostParams) {
           <MDXRemote source={post.content} components={mdxComponents} />
         </article>
       </section>
+
+      {/* Next/Previous Navigation */}
+      {(previousPost || nextPost) && (
+        <section className="border-y border-moss-200 bg-gradient-to-br from-white to-cream-50 py-8">
+          <div className="mx-auto max-w-6xl px-6 lg:px-8">
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Previous Post */}
+              {previousPost ? (
+                <Link
+                  href={`/blog/${previousPost.slug}`}
+                  className="group relative overflow-hidden rounded-2xl border-2 border-moss-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-moss-500 hover:shadow-lg"
+                >
+                  <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-sage-600">
+                    <span>←</span>
+                    <span>Previous Article</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-moss-950 transition-colors group-hover:text-moss-700">
+                    {previousPost.title}
+                  </h3>
+                  <p className="mt-2 line-clamp-2 text-sm text-sage-700">
+                    {previousPost.summary}
+                  </p>
+                </Link>
+              ) : (
+                <div />
+              )}
+
+              {/* Next Post */}
+              {nextPost ? (
+                <Link
+                  href={`/blog/${nextPost.slug}`}
+                  className="group relative overflow-hidden rounded-2xl border-2 border-moss-200 bg-white p-6 text-right transition-all duration-300 hover:-translate-y-1 hover:border-moss-500 hover:shadow-lg md:col-start-2"
+                >
+                  <div className="mb-2 flex items-center justify-end gap-2 text-xs font-semibold uppercase tracking-wider text-sage-600">
+                    <span>Next Article</span>
+                    <span>→</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-moss-950 transition-colors group-hover:text-moss-700">
+                    {nextPost.title}
+                  </h3>
+                  <p className="mt-2 line-clamp-2 text-sm text-sage-700">
+                    {nextPost.summary}
+                  </p>
+                </Link>
+              ) : null}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Related Posts */}
       {relatedPosts.length > 0 && (

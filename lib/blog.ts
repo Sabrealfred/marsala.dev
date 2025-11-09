@@ -210,6 +210,28 @@ export function getRelatedPosts(currentSlug: string, limit = 3): BlogPost[] {
   return sameCategoryPosts.slice(0, limit);
 }
 
+export function getNextPost(currentSlug: string): BlogPost | null {
+  const allPosts = getAllBlogPosts(); // Already sorted by date (newest first)
+  const currentIndex = allPosts.findIndex(post => post.slug === currentSlug);
+
+  if (currentIndex === -1 || currentIndex === 0) {
+    return null; // No next post (either not found or already the newest)
+  }
+
+  return allPosts[currentIndex - 1]; // Next = more recent
+}
+
+export function getPreviousPost(currentSlug: string): BlogPost | null {
+  const allPosts = getAllBlogPosts(); // Already sorted by date (newest first)
+  const currentIndex = allPosts.findIndex(post => post.slug === currentSlug);
+
+  if (currentIndex === -1 || currentIndex === allPosts.length - 1) {
+    return null; // No previous post (either not found or already the oldest)
+  }
+
+  return allPosts[currentIndex + 1]; // Previous = older
+}
+
 function normalizeFrontmatter(data: GrayMatterFile<string>["data"], fallbackSlug: string) {
   const frontmatter = data as BlogFrontmatter;
 
