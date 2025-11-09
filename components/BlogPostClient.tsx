@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLanguage } from "./LanguageProvider";
-import { formatBlogDate, getCategoryForPost } from "@/lib/blog";
+import { formatBlogDate, getCategoryForPost } from "@/lib/blog-utils";
 
 type BlogPost = {
   slug: string;
