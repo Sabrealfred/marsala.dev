@@ -127,16 +127,6 @@ export function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="https://linkedin.com/company/marsala-dev"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sage-600 transition-colors duration-200 hover:text-moss-700"
-                  >
-                    LinkedIn
-                  </a>
-                </li>
-                <li>
                   <Link
                     href="/contact"
                     className="text-sage-600 transition-colors duration-200 hover:text-moss-700"
