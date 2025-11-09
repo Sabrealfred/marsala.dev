@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Types locales para evitar dependencias de servidor
 type BlogPost = {
@@ -62,10 +63,36 @@ type ResearchPageClientProps = {
 
 export function ResearchPageClient({ allPosts, postsByCategory, categories }: ResearchPageClientProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
-  const displayPosts = selectedCategory
+  // Get all unique tags from posts
+  const allTags = Array.from(
+    new Set(allPosts.flatMap(post => post.tags || []))
+  ).sort();
+
+  // Filter posts based on category, search, and tag
+  let displayPosts = selectedCategory
     ? postsByCategory[selectedCategory] || []
     : allPosts;
+
+  // Apply search filter
+  if (searchQuery) {
+    const query = searchQuery.toLowerCase();
+    displayPosts = displayPosts.filter(
+      post =>
+        post.title.toLowerCase().includes(query) ||
+        post.summary.toLowerCase().includes(query) ||
+        post.tags?.some(tag => tag.toLowerCase().includes(query))
+    );
+  }
+
+  // Apply tag filter
+  if (selectedTag) {
+    displayPosts = displayPosts.filter(post =>
+      post.tags?.map(t => t.toLowerCase()).includes(selectedTag.toLowerCase())
+    );
+  }
 
   return (
     <>
