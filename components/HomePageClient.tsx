@@ -82,19 +82,14 @@ export function HomePageClient() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Header - Left Aligned */}
         <div className="mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <h2 className="text-4xl font-bold tracking-tight text-moss-950 lg:text-5xl">
               Build Your Perfect Growth Stack
             </h2>
             <p className="mt-4 max-w-2xl text-lg text-sage-700">
               Select the modules you need. See the impact in real-time.
             </p>
-          </motion.div>
+          </div>
         </div>
 
         {/* 70/30 Layout - Content/Sidebar */}
@@ -104,16 +99,12 @@ export function HomePageClient() {
             {modules.map((module, index) => {
               const isSelected = selected.includes(module.id);
               return (
-                <motion.button
+                <button
                   key={module.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
                   onClick={() => toggleModule(module.id)}
-                  className={`group relative overflow-hidden rounded-3xl border-2 p-6 text-left transition-all duration-500 ${
+                  className={`group relative overflow-hidden rounded-3xl border-2 p-6 text-left transition-all duration-300 ${
                     isSelected
-                      ? "border-moss-500 bg-gradient-to-br from-white to-moss-50 shadow-2xl scale-105"
+                      ? "border-moss-500 bg-gradient-to-br from-white to-moss-50 shadow-2xl"
                       : "border-moss-200 bg-white hover:border-moss-400 hover:shadow-lg"
                   }`}
                 >
@@ -150,8 +141,8 @@ export function HomePageClient() {
                     </motion.div>
                   )}
 
-                  <div className={`absolute inset-0 bg-gradient-to-br ${module.color} opacity-0 transition-opacity duration-500 ${isSelected ? "opacity-10" : "group-hover:opacity-5"}`} />
-                </motion.button>
+                  <div className={`absolute inset-0 bg-gradient-to-br ${module.color} opacity-0 transition-opacity duration-300 ${isSelected ? "opacity-10" : "group-hover:opacity-5"}`} />
+                </button>
               );
             })}
           </div>
