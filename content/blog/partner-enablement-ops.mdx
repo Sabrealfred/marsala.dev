@@ -26,7 +26,7 @@ image: "/blog/partner-enablement.jpg"
 
 ## Context
 
-Owning channel revenue taught me that partners get lost without operating guides. I built a modular program that adapts by maturity.
+Owning channel revenue taught me that partners get lost without a shared operating manual. We had different onboarding decks for each region, stale pricing PDFs, and zero telemetry on who consumed what. When we missed revenue targets, nobody could tell whether it was pipeline, enablement, or motivation. I rebuilt the program around a modular “partner OS”: each partner gets a lightweight portal with living playbooks, automated nudges, and clear success metrics. The program scales up or down depending on partner maturity, so new agencies don’t drown while strategic partners get the depth they expect.
 
 ## Stack I leaned on
 
@@ -35,28 +35,119 @@ Owning channel revenue taught me that partners get lost without operating guides
 - Resend for educational nurtures
 - Attio to score engagement
 
+## The Starting Mess
+
+1. **One-size content**: a 60-slide deck tried to cover onboarding, pricing, compliance, and co-marketing. Nobody finished it.
+2. **Opaque engagement**: we blasted quarterly newsletters but couldn’t see whether partners opened, clicked, or applied anything.
+3. **Support overload**: the same “how do I register a deal?” question hit Slack every week because the answer lived in an ancient PDF.
+4. **No attribution**: partner-sourced deals were tracked manually; we couldn’t tie enablement consumption to revenue.
+
+Every fix I shipped had to eliminate one of these problems.
+
+## Program Architecture
+
+| Layer | Purpose | Tools |
+|-------|---------|-------|
+| **Portal** | Single source of truth for playbooks, assets, FAQs | Notion DB published via Super.so with access tiers |
+| **Learning tracks** | Bite-sized modules with quizzes + certifications | Notion templates + Typeform assessments + n8n scoring |
+| **Engagement engine** | Automates nudges, flags disengagement | Supabase activity log + Attio engagement fields + Resend nurtures |
+| **Revenue instrumentation** | Tie actions to pipeline and ARR | Deal registration via Attio, shared dashboards in Metabase |
+| **Feedback loop** | Partners submit requests, vote on features | Notion forms feeding Jira + monthly partner councils |
+
+## Segmentation Framework
+
+I defined three maturity bands:
+
+- **Launch partners** (0–3 deals): focus on onboarding basics, sandbox access, and deal registration.
+- **Growth partners** (3–15 deals): need co-selling plays, pricing scenarios, technical deep dives.
+- **Strategic partners** (15+ deals): care about roadmap previews, joint marketing, and executive alignment.
+
+Each band gets a tailored track: modules, certifications, and office hours tailored to their goals. Graduation is automated: when a partner logs the third deal, Supabase updates their tier and unlocks the next track plus congratulatory Resend email.
+
 ## Playbook
 
-1. Segmented partners by maturity and needs.
-2. Designed content tracks with short modules and quick assessments.
-3. Automated reminders based on activity and shared deals.
-4. Measured progress with dashboards for consumption + attributed revenue.
-5. Hosted bi-weekly office hours to reinforce learning.
+1. **Build the data spine**: instrument every portal page with Supabase row-level analytics (views, completion, quiz scores). Tie partner IDs to Attio orgs so we can enrich pipelines.
+2. **Design modular content**: each module is a 5-minute briefing plus a “Do this now” checklist. Examples: “Register a Deal in 3 steps,” “How to scope integrations,” “Pricing playbook by segment.”
+3. **Create certification loops**: after each track, partners take a short assessment; passing triggers badges in the portal and updates their Attio notes so AEs know who’s certified.
+4. **Automate nudges**: an n8n flow watches for inactivity (no portal visit in 14 days, no registered deals). It sends a Resend email with relevant modules and pings the partner manager in Slack.
+5. **Host live reinforcement**: bi-weekly office hours follow a fixed agenda: highlight wins, demo a playbook, tackle open questions. Sessions get summarized and embedded back into the portal.
+6. **Measure attributed revenue**: deals registered via the portal automatically tag which modules the partner completed beforehand. Our Metabase dashboard slices ARR by “modules consumed” so we see correlation.
+7. **Close the loop**: partners can suggest content or flag confusing steps via an inline form. Requests land in Jira with partner metadata; we review them during the monthly partner council.
+
+## Automations That Made the Program Feel Alive
+
+- **Welcome journey**: as soon as a partner signs, Resend drips a three-email series (portal tour, first module, deal registration). Each email includes dynamic stats (“partners who finish Module 1 close 2.3x more deals”).
+- **Deal-based triggers**: when a partner registers a deal but stalls, Attio triggers a playbook email (“Need a security reviewer? Here’s the 4-step checklist”) and invites them to office hours.
+- **Certification badges**: n8n updates the partner’s portal profile and Slack channel topic when they earn a badge; peers see it and ask how to level up.
+- **Executive digests**: every Monday, partner managers get a Resend summary showing active partners, modules completed, open asks, and pipeline size.
+
+## Operating Reviews
+
+Each quarter we run a **Partner Enablement QBR** with this agenda:
+
+1. Review segment-level adoption (portal MAU, module completion).
+2. Compare pipeline and win rates between certified vs. non-certified partners.
+3. Surface top support issues pulled from the question log.
+4. Decide which modules to retire, refresh, or create.
+5. Align on co-marketing calendar and shared KPIs.
+
+Decisions and owners go straight into Notion tasks so nothing gets lost.
+
+## Sample Module Structure
+
+```
+Module: Demo-to-Close Blueprint
+Duration: 7 minutes video + checklist
+Audience: Growth partners
+
+Sections:
+1. Context (when to use this play)
+2. Assets (demo script, ROI calculator, security FAQ)
+3. Checklist (3 steps before the call, 3 steps after)
+4. Assessment (3-question Typeform; pass = 80%)
+5. Success stories (two short clips from top partners)
+```
+
+All assets link back to version-controlled docs, so updates propagate instantly.
 
 ## Metrics & telemetry
 
-- Monthly active partners: +41%
-- Onboarding time: 4 weeks → 9 days
-- Average deal size via partners: +18%
+- **Monthly active partners**: +41% (we track log-ins + module completions).
+- **Onboarding time**: 4 weeks → 9 days thanks to self-serve tracks and certification gating.
+- **Average deal size via partners**: +18% after adding pricing scenarios.
+- **Deal registration accuracy**: 96% (up from 62%) because the portal validates submissions before they hit Attio.
+- **Content freshness**: 92% of modules updated within the last quarter (tracked via Notion property + reminders).
+
+## Partner Health Scoring
+
+We built a simple but effective health model combining:
+
+1. **Engagement** (portal visits last 14 days, module completion %, office hours attendance).
+2. **Pipeline** (registered deals value, conversion rate, average sales cycle).
+3. **Advocacy** (NPS responses, testimonial participation, referrals).
+
+n8n recalculates the score weekly and writes it to Attio. Anything below 60 triggers a playbook for the partner manager: review notes, schedule a call, recommend a new module. High-scoring partners get fast-tracked for co-marketing funds.
+
+## Cost & Tooling Considerations
+
+- **Notion + Super.so**: $24/seat + $12/site → cheaper than custom portals, and the marketing team already knew Notion.
+- **Supabase**: free tier handled analytics; we upgraded to Pro ($25/mo) once we stored more than 500k events.
+- **n8n**: self-hosted on Fly.io (~$7/mo) so we could version workflows in Git.
+- **Resend**: pay-as-you-go, averaged $38/mo for ~35k nurture emails.
+- **Attio**: central CRM, so incremental cost was zero; we just added custom objects for partner health.
+
+All-in cost stayed < $100/mo, far below partner portal SaaS options, and we own the roadmap.
 
 ## What stuck with me
 
 - Enablement has to be bite-sized and actionable; no endless PDFs.
 - Measuring real usage tells you which modules to tweak without guessing.
+- Partners behave like product users—ship releases, changelogs, and support just like you would for customers.
 
 ## What I'm building next
 
-I'm packaging these modules as a ready-to-clone portal. Want early access? let me know.
+I'm packaging these modules as a ready-to-clone portal with starter automations, plus experimenting with partner health scoring that blends portal behavior, pipeline, and NPS. Want early access? let me know.
+
 
 ---
 

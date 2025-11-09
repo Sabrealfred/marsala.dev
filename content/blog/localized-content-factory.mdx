@@ -27,7 +27,7 @@ image: "/blog/localized-content.jpg"
 
 ## Context
 
-Marketing wanted to launch in three new markets fast. I built a content factory where AI drafts, humans review and regional guidelines keep us honest.
+Marketing wanted to launch in three new markets within a quarter, but our localization “process” was a Slack DM plus a Google Doc. Turnaround times stretched to weeks, legal never knew what they were approving, and tone consistency evaporated. I built a localization factory that treats content like code: structured intake, deterministic prompts, human QA, and dashboards that show throughput and quality per region.
 
 ## Stack I leaned on
 
@@ -36,28 +36,141 @@ Marketing wanted to launch in three new markets fast. I built a content factory 
 - Lokalise for regional reviewers
 - Resend to send proofs to stakeholders
 
+## Failure Modes to Eliminate
+
+1. **Shadow translations**: PMMs pinged bilingual friends for “quick copy,” skipping legal and SEO.
+2. **Tone drift**: literal translations stripped humor and cultural nuance.
+3. **Approval chaos**: no single source of truth for what content was pending review.
+4. **Zero telemetry**: nobody could answer basic questions like “How long does localization take?”
+
+The factory design attacked each of these directly.
+
+## System Architecture
+
+| Stage | Owner | Tools |
+|-------|-------|-------|
+| Intake | PMM / Growth | Notion database with priority + region tags |
+| AI draft | Automation | n8n calling OpenAI with region-specific prompts |
+| Human review | Regional editors | Lokalise projects with SLA tracking |
+| QA & compliance | SEO + Legal | Automated checklists, Semrush API, policy snippets |
+| Stakeholder approval | Regional leads | Resend proof emails + approval logging |
+| Publish + telemetry | Web + Ops | Next.js deploy, Supabase events, Metabase dashboards |
+
+Each content ID flows through these stages with timestamps stored in Supabase so we can audit the pipeline.
+
 ## Playbook
 
-1. Defined voice guidelines per region and turned them into prompts.
-2. Automated first-pass translation and queued human review with SLAs.
-3. Built SEO + legal checklists for every market.
-4. Published dashboards for throughput and quality.
-5. Stored terminology in versioned glossaries.
+1. **Define voice guides per region** with tone sliders, taboo topics, and sample phrases. Prompts reference these guides explicitly.
+2. **Trigger AI drafts** when a Notion entry flips to “Localize.” n8n packages the source content, glossaries, and context (persona, campaign goal) into the prompt.
+3. **Queue human review** by auto-creating Lokalise tasks per region. SLAs: 48h for tier-1 markets, 72h for tier-2. Missed SLA auto-escalates in Slack.
+4. **Run automated QA**:
+   - SEO checks verify keywords, hreflang, schema, and canonical URLs.
+   - Legal snippets ensure regulated claims match approved language IDs.
+   - Accessibility lints confirm button labels and alt text are translated.
+5. **Send proofs** via Resend. Stakeholders get a side-by-side PDF (source vs. localized) and approve with one click; approvals log to Supabase.
+6. **Publish + log**: once approved, Next.js rebuilds localized pages, and Metabase records cycle time, reviewer, and defect counts.
+7. **Retro monthly** with regional marketing + legal to review KPIs, backlog, and glossary updates.
+
+## Glossary & Prompt Operations
+
+- **Versioned glossaries** live in Git (`/localization/glossaries/<region>.json`). Each entry includes term, translation, usage notes, and banned synonyms.
+- **Prompt modules**: we compose prompts from reusable blocks (tone, legal, CTA style). Editors toggle modules before kicking off AI drafts.
+- **Change control**: glossary updates require regional marketing + legal approval. Merged changes fire a webhook that regenerates AI few-shot examples and notifies reviewers.
+
+## Human Review SLAs
+
+| Region | SLA | Backup plan |
+|--------|-----|-------------|
+| LATAM | 48h | Auto-assign to secondary reviewer after 12h delay |
+| DACH | 72h | Email + Jira ticket to agency partner |
+| APAC | 72h (weekend-adjusted) | Escalate to localization PM if >96h |
+
+SLA metrics feed into dashboards so we can justify more reviewer budget or spot bottlenecks early.
+
+## Quality Gates
+
+1. **Tone scoring**: reviewers rate each asset 1–5. Anything &lt;4 forces a rework and adds a glossary suggestion.
+2. **Terminology lint**: automation compares final copy to glossary; mismatches highlight in red for manual review.
+3. **Legal checklist**: regex-based rules ensure mandatory disclaimers survive and region-specific policy IDs are referenced.
+4. **SEO crawler**: headless browser hits staging pages to confirm hreflang pairs and internal links.
+
+Quality scores roll up per region so we can coach specific reviewers or refine prompts.
+
+## Dashboards & Telemetry
+
+Metabase dashboards include:
+
+- Cycle time per asset/region.
+- SLA adherence for reviewers.
+- % of AI-generated text kept vs. edited (signals prompt quality).
+- Throughput vs. backlog.
+- Performance metrics (CTR, conversion) for localized assets compared to source language.
+
+Stakeholders can self-serve answers instead of DM-ing ops.
+
+## Regional Playbooks in Practice
+
+Each region has its own “playbook card” inside the portal:
+
+- **LATAM**: emphasizes storytelling, includes a library of culturally relevant references, and flags legal requirements around financial promotions.
+- **DACH**: prioritizes precision and compliance; the playbook bundles standard Betriebsrat clauses and formal tone examples.
+- **APAC**: splits into sub-regions (JP, SG, AU) with separate glossary overrides, preferred CTA verbs, and payment terminology.
+
+Playbook cards include recommended content mix (blogs vs. lifecycle emails), sample campaigns that worked, and “phrases to avoid.” Editors consult them before kicking off localization, and prompts inject the relevant card automatically.
+
+## Collaboration with Design & Engineering
+
+- **Figma context**: designers pull localized copy via a Notion API integration so mockups always match the latest approved text. No more copy/paste errors.
+- **Component tokens**: we tagged components that struggle with long strings (buttons, nav) so engineering can prioritize responsive fixes. Localized QA includes screenshots to verify layout integrity.
+- **Release orchestration**: localization pipeline integrates with the Next.js build process. When a translation is ready, a GitHub Action runs screenshot tests and posts results in #web-shiproom.
+
+Treating localization as part of the release train (not an afterthought) kept the site consistent.
+
+## Incident Response
+
+What happens if a localized asset goes live with an error?
+
+1. Analyst hits the “Raise issue” button in Notion, tagging the content ID and region.
+2. Automation triggers: page removed from production, notification to regional lead, Jira ticket created with log of AI prompt + reviewer edits.
+3. Triage call within 4 hours; we root-cause whether it was glossary drift, reviewer oversight, or automation bug.
+4. Post-incident review updates prompts/glossaries and adds regression tests if needed.
+
+We’ve only had two incidents since launch, both resolved the same day.
 
 ## Metrics & telemetry
 
-- Localization time: 10 days → 2.5 days
-- Tone errors: -70%
-- CTR on localized campaigns: +23%
+- **Localization time**: 10 days → 2.5 days.
+- **Tone errors**: -70% after implementing glossaries + tone scoring.
+- **CTR on localized campaigns**: +23% vs. English-only.
+- **Legal escalations**: dropped from 9 per quarter to 1.
+- **Reviewer SLA**: 94% on-time completion.
+
+## Change Management
+
+- **Localization guild**: monthly meetups with PMM, regional marketing, legal, and ops to review KPIs and update guidelines.
+- **Training labs**: new reviewers run “prompt hot seat” exercises where they intentionally break tone; the system catches errors so they learn guardrails.
+- **Changelog**: every workflow or glossary update posts to #localization-ops with TL;DR and action items.
+- **Partner feedback**: regional agencies file requests via a Notion form that feeds backlog grooming.
+
+## Cost Snapshot
+
+- Lokalise: ~$120/mo for 25 seats.
+- OpenAI usage: ~$160/mo (40k tokens/day across drafts + QA).
+- Resend: ~$25/mo for proofs and notifications.
+- n8n on Fly.io: ~$14/mo.
+- Supabase + Metabase: still on free tiers initially; upgraded to Pro once we crossed 1M events.
+
+Total spend stayed under $350/mo—cheaper than outsourcing translations to agencies every time.
 
 ## What stuck with me
 
 - AI accelerates, but local reviewers remain non-negotiable.
 - Without living glossaries every person invents new terms.
+- Dashboards beat folklore—teams trust the pipeline when they see the data.
 
 ## What I'm building next
 
-I'm working on a Figma + Notion plugin so design sees localized copy in context. Interested? let's chat.
+I'm working on a Figma + Notion plugin so design sees localized copy in context, plus automated screenshot QA per language. Interested? let's chat.
 
 ---
 
