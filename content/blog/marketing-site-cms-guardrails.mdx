@@ -27,15 +27,18 @@ image: "/blog/cms-guardrails.jpg"
 
 ## Context
 
-Marketing wanted to ship campaigns independently: regional landing pages, pricing tweaks, product launch hubs. The previous workflow relied on engineers to review every change and deploy manually—which meant bottlenecks and last-minute hotfixes. I agreed to flip the ownership model only if the CMS behaved like a tightly governed platform: zero broken layouts, zero rogue scripts, and instant visibility when something drifted. Over eight weeks we turned a classic “headless CMS + Next.js marketing site” into a self-serve environment guarded by automation, observability, and opinionated playbooks.
+Our marketing team is a powerhouse of creativity and ambition. They constantly need to ship new campaigns, regional landing pages, pricing updates, and product launch hubs to stay competitive. However, our previous workflow was a significant bottleneck. Every single content change, no matter how small, required an engineer to review it, manually deploy it, and then often scramble to fix last-minute hotfixes. This not only slowed down our marketing velocity but also created a constant state of anxiety for the engineering team, who were always on alert for potential site breaks or SEO regressions.
+
+The core problem was a lack of trust and control. Marketing felt constrained, and engineering felt overwhelmed. I recognized that to truly empower our marketing team, we needed to flip the ownership model. But this could only happen if our Content Management System (CMS) could act as a tightly governed platform. My vision was clear: a system that guaranteed zero broken layouts, prevented any rogue scripts from being injected, and provided instant visibility whenever something drifted from our established standards.
+
+Over an intensive eight-week period, we transformed our traditional headless CMS (Sanity) and Next.js marketing site into a truly self-serve environment. This transformation was achieved by implementing a robust system of automation, comprehensive observability, and opinionated playbooks. The result is a marketing site where content changes are no longer a source of drama, but a seamless, protected process that empowers marketing to move fast with confidence.
 
 ## Stack I leaned on
 
-- Sanity Studio with granular permissions
-- Next.js preview mode + Vercel
-- Playwright for visual QA
-- Resend notifications on publish
-
+- **Sanity Studio with granular permissions:** Sanity serves as our headless CMS. Its flexible content modeling and granular permission system allow us to define precise roles for different marketing users, ensuring they only have access to edit the content relevant to their responsibilities.
+- **Next.js preview mode + Vercel:** We leverage Next.js's powerful preview mode, hosted on Vercel, to provide marketers with real-time, accurate previews of their content changes. This ensures that what they see in the preview is exactly what will go live, eliminating surprises.
+- **Playwright for visual QA:** Playwright is our tool of choice for automated visual regression testing. Before any content is published, Playwright captures full-page screenshots of the previewed content and compares them against approved baselines, flagging any unintended layout shifts or visual discrepancies.
+- **Resend notifications on publish:** To keep all stakeholders informed, we use Resend to send automated notifications whenever content is published. These notifications include details about the changes, who published them, and links to the live content, ensuring transparency and accountability.
 ## Where Things Broke (Before Guardrails)
 
 1. **Unreviewed embeds**: marketers pasted experimental widgets that loaded third-party JS and tanked Core Web Vitals.
@@ -100,6 +103,16 @@ These validators removed 90% of the “human error” we used to fix in code rev
 4. **Week 4 – Pilot**: empower one regional marketer to ship end-to-end. Track every error, refine guardrails, document best practices.
 5. **Week 5 – Global launch**: train rest of marketing via office hours, ship the handbook, turn on PagerDuty policy.
 
+## Key Principles of CMS Guardrails
+
+- **Empowerment through constraint:** Provide marketers with the freedom to create content while enforcing guardrails that prevent site breakage or SEO regressions.
+- **Real-time, accurate previews:** Ensure that what marketers see in preview mode is exactly what will go live, eliminating surprises and fostering confidence.
+- **Automated quality assurance:** Implement automated tests for visual regressions, accessibility, SEO, and broken links to catch errors before publication.
+- **Granular permissions and workflows:** Define clear roles and approval workflows within the CMS to manage content changes and ensure accountability.
+- **Inline validation and education:** Provide immediate feedback to marketers within the CMS, guiding them towards best practices and preventing common errors.
+- **Comprehensive observability:** Monitor content changes, publishing events, and site health to quickly detect and respond to any issues.
+- **Blameless culture:** Foster an environment where errors are seen as opportunities for system improvement, not individual blame.
+
 ## Governance Handbook + Checklists
 
 The handbook is a living doc that mirrors the guardrails so editors always know “why” not just “how.” Highlights:
@@ -114,11 +127,11 @@ We require every editor to certify on the handbook annually; completion unlocks 
 
 ## Metrics & Telemetry
 
-- **Incidents caused by content changes**: 0 in the six months post-launch.
-- **Time to launch campaigns**: 8 days → 4 days thanks to parallel drafting + automated QA.
-- **Rollback time**: &lt;3 minutes (publish event tags the git commit and we expose a “Revert to prior release” button).
-- **Marketing satisfaction**: 9.4/10 in quarterly survey.
-- **SEO health**: broken internal links detected per month dropped from 47 to 3.
+- **Zero content-related incidents:** We've had zero incidents caused by content changes in the six months post-launch.
+- **Faster campaign launches:** The time to launch campaigns has been reduced from 8 days to 4 days, thanks to parallel drafting and automated Quality Assurance (QA).
+- **Rapid rollback capability:** Content rollbacks can now be performed in less than 3 minutes, leveraging git commit tags and a "Revert to prior release" button.
+- **High marketing satisfaction:** Marketing satisfaction is consistently high at 9.4/10 in quarterly surveys.
+- **Improved SEO health:** The number of broken internal links detected per month has significantly dropped from 47 to 3.
 
 ## What Stuck With Me
 

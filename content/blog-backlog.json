@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Attio + HubSpot Dual CRM OS",
+    "slug": "attio-hubspot-dual-crm-os",
+    "category": "RevOps & GTM Systems",
+    "type": "Case Study",
+    "status": "todo",
+    "summary": "Cómo orquestar pipelines paralelos entre Attio y HubSpot sin romper reporting ni contratos de datos."
+  },
+  {
+    "title": "Prompt Ops Control Plane",
+    "slug": "prompt-ops-control-plane",
+    "category": "AI & Copilots",
+    "type": "Playbook",
+    "status": "todo",
+    "summary": "Framework para versionar prompts, contratos y guardrails usando LangChain + Supabase + PostHog."
+  },
+  {
+    "title": "n8n Mission-Critical Automation Kit",
+    "slug": "n8n-mission-critical-kit",
+    "category": "Automation & n8n",
+    "type": "Tutorial",
+    "status": "todo",
+    "summary": "Plantillas y monitoreo para flujos de revenue sensibles construidos con n8n, Attio y Slack."
+  },
+  {
+    "title": "DuckDB Growth Warehouse",
+    "slug": "duckdb-growth-warehouse",
+    "category": "Data & Analytics Stack",
+    "type": "Guide",
+    "status": "todo",
+    "summary": "Cómo armar un warehouse portable con DuckDB + dbt + Metabase para equipos de growth."
+  },
+  {
+    "title": "Design Tokens para Dark Mode y Multi-idioma",
+    "slug": "design-tokens-darkmode-i18n",
+    "category": "Design Systems & UX",
+    "type": "Tutorial",
+    "status": "todo",
+    "summary": "Playbook para expandir Brand/Web OS con tokens que soporten dark mode y 5 idiomas clave."
+  },
+  {
+    "title": "Privacy Layer for Experimentation",
+    "slug": "privacy-layer-experimentation",
+    "category": "Platform & Infrastructure",
+    "type": "Insight",
+    "status": "todo",
+    "summary": "Arquitectura para cumplir AI Act/SOC2 sin frenar growth experiments en Next.js + Supabase."
+  },
+  {
+    "title": "Treasury OS con Drift + Hummingbot",
+    "slug": "treasury-os-drift-hummingbot",
+    "category": "DeFi / Fintech Ops",
+    "type": "Case Study",
+    "status": "todo",
+    "summary": "Automatizar coberturas y liquidez usando Drift Protocol, Hummingbot y monitorización en Grafana."
+  },
+  {
+    "title": "Partner Portal Supabase + Next Auth",
+    "slug": "partner-portal-supabase-next-auth",
+    "category": "Enablement & Playbooks",
+    "type": "Playbook",
+    "status": "todo",
+    "summary": "Portal modular para partners con Supabase, Row Level Security y guías vivas."
+  },
+  {
+    "title": "Commerce OS Localization Pipeline",
+    "slug": "commerce-localization-pipeline",
+    "category": "Tutorials & Tooling",
+    "type": "Guide",
+    "status": "todo",
+    "summary": "Configurar catálogos headless multi-mercado con Next.js, Commerce Layer y automatización de traducciones."
+  },
+  {
+    "title": "Launch Council Metrics Playbook",
+    "slug": "launch-council-metrics-playbook",
+    "category": "RevOps & GTM Systems",
+    "type": "Insight",
+    "status": "todo",
+    "summary": "Cómo medimos readiness, SLO y QA en un council mensual con Linear + Notion + Slack."
+  }
+]

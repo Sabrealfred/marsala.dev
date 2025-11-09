@@ -27,15 +27,18 @@ image: "/blog/localized-content.jpg"
 
 ## Context
 
-Marketing wanted to launch in three new markets within a quarter, but our localization “process” was a Slack DM plus a Google Doc. Turnaround times stretched to weeks, legal never knew what they were approving, and tone consistency evaporated. I built a localization factory that treats content like code: structured intake, deterministic prompts, human QA, and dashboards that show throughput and quality per region.
+Our marketing team had ambitious plans: launch into three new international markets within a single quarter. This was a fantastic growth opportunity, but our existing localization "process" was, to put it mildly, a bottleneck. It consisted primarily of frantic Slack DMs to bilingual team members and a chaotic collection of Google Docs. The results were predictable: turnaround times for translations stretched into weeks, our legal team was constantly in the dark about what content they were approving (or not approving), and any semblance of brand tone and voice consistency across languages evaporated.
+
+This ad-hoc approach was not only inefficient but also risky. We were losing valuable time to market, risking compliance issues, and delivering a fragmented brand experience to our international audiences. We needed a scalable, reliable, and governed solution.
+
+That's when I envisioned and built a "localization factory." The core idea was to treat localized content with the same rigor and discipline as software code. This meant implementing a structured intake process for new content, leveraging deterministic AI prompts for initial drafts, integrating human quality assurance (QA) at critical stages, and building comprehensive dashboards to provide real-time visibility into throughput and quality metrics per region. This factory has transformed our localization efforts, allowing us to scale rapidly while maintaining brand voice, legal compliance, and operational efficiency.
 
 ## Stack I leaned on
 
-- Notion CMS with content IDs
-- OpenAI + custom glossaries
-- Lokalise for regional reviewers
-- Resend to send proofs to stakeholders
-
+- **Notion CMS with content IDs:** Notion serves as our centralized Content Management System (CMS). Each piece of content is assigned a unique content ID, allowing for easy tracking and versioning throughout the localization workflow.
+- **OpenAI + custom glossaries:** We leverage OpenAI's powerful language models for generating initial drafts of localized content. To ensure brand consistency and accuracy, these models are fine-tuned with custom glossaries that include region-specific terminology, brand voice guidelines, and banned phrases.
+- **Lokalise for regional reviewers:** Lokalise is our chosen platform for managing the human review process. It provides a collaborative environment for regional editors to review, edit, and approve localized content, with built-in workflows for quality assurance and feedback.
+- **Resend to send proofs to stakeholders:** We use Resend to securely send proofs of localized content to various stakeholders, including legal, regional marketing leads, and product managers. This ensures that all relevant parties have an opportunity to review and approve the content before publication.
 ## Failure Modes to Eliminate
 
 1. **Shadow translations**: PMMs pinged bilingual friends for “quick copy,” skipping legal and SEO.
@@ -70,6 +73,16 @@ Each content ID flows through these stages with timestamps stored in Supabase so
 5. **Send proofs** via Resend. Stakeholders get a side-by-side PDF (source vs. localized) and approve with one click; approvals log to Supabase.
 6. **Publish + log**: once approved, Next.js rebuilds localized pages, and Metabase records cycle time, reviewer, and defect counts.
 7. **Retro monthly** with regional marketing + legal to review KPIs, backlog, and glossary updates.
+
+## Key Principles of a Localized Content Factory
+
+- **Content as code:** Treat localized content with the same rigor as software code, including structured intake, version control, and automated workflows.
+- **AI-powered drafting with human oversight:** Leverage AI for initial translation drafts, but always integrate human reviewers for quality assurance, cultural nuance, and tone consistency.
+- **Centralized glossaries and style guides:** Maintain version-controlled glossaries and regional style guides to ensure consistent terminology and brand voice across all languages.
+- **Automated quality gates:** Implement automated checks for SEO, legal compliance, and accessibility to catch errors early in the localization pipeline.
+- **Transparent approval workflows:** Establish clear approval processes with digital sign-offs and audit trails to ensure all stakeholders are informed and accountable.
+- **Real-time telemetry and dashboards:** Monitor key metrics like turnaround times, quality scores, and throughput per region to identify bottlenecks and drive continuous improvement.
+- **Continuous feedback loops:** Foster ongoing communication between content creators, localizers, and regional marketing teams to refine processes and improve content quality.
 
 ## Glossary & Prompt Operations
 
@@ -137,13 +150,13 @@ What happens if a localized asset goes live with an error?
 
 We’ve only had two incidents since launch, both resolved the same day.
 
-## Metrics & telemetry
+## Metrics & Telemetry
 
-- **Localization time**: 10 days → 2.5 days.
-- **Tone errors**: -70% after implementing glossaries + tone scoring.
-- **CTR on localized campaigns**: +23% vs. English-only.
-- **Legal escalations**: dropped from 9 per quarter to 1.
-- **Reviewer SLA**: 94% on-time completion.
+- **Reduced localization time:** The average localization time has been dramatically reduced from 10 days to 2.5 days.
+- **Fewer tone errors:** Tone errors have decreased by 70% after implementing glossaries and tone scoring.
+- **Increased CTR on localized campaigns:** Click-through rates (CTR) on localized campaigns have increased by 23% compared to English-only campaigns.
+- **Fewer legal escalations:** Legal escalations have dropped from 9 per quarter to just 1.
+- **High reviewer SLA compliance:** We maintain a 94% on-time completion rate for reviewer Service Level Agreements (SLAs).
 
 ## Change Management
 

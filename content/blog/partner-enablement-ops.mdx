@@ -26,15 +26,18 @@ image: "/blog/partner-enablement.jpg"
 
 ## Context
 
-Owning channel revenue taught me that partners get lost without a shared operating manual. We had different onboarding decks for each region, stale pricing PDFs, and zero telemetry on who consumed what. When we missed revenue targets, nobody could tell whether it was pipeline, enablement, or motivation. I rebuilt the program around a modular “partner OS”: each partner gets a lightweight portal with living playbooks, automated nudges, and clear success metrics. The program scales up or down depending on partner maturity, so new agencies don’t drown while strategic partners get the depth they expect.
+As someone responsible for channel revenue, I quickly learned a critical truth: partners are an extension of your sales force, but they often operate in the dark without a shared operating manual. Our previous approach to partner enablement was fragmented and ineffective. We had a dizzying array of different onboarding decks for each region, outdated pricing PDFs scattered across various shared drives, and, most critically, zero visibility into what content partners were actually consuming or finding valuable.
+
+This lack of structure created significant problems. When we inevitably missed revenue targets, it was impossible to diagnose the root cause. Was it a pipeline issue? A failure in enablement? Or simply a lack of motivation from our partners? The ambiguity was frustrating and hindered our ability to course-correct.
+
+To solve this, I completely reimagined our partner enablement program, building it around a modular "partner OS." The core idea was to provide each partner with a lightweight, personalized portal. This portal houses living playbooks, delivers automated nudges based on their engagement, and tracks clear success metrics. The beauty of this system is its adaptability: it scales up or down depending on a partner's maturity level. New agencies receive foundational onboarding and clear deal registration guidance, while strategic partners gain access to advanced co-selling strategies and roadmap previews. This ensures that every partner receives the right level of support and information, preventing overwhelm for new agencies and providing the depth expected by our most valuable partners.
 
 ## Stack I leaned on
 
-- Notion + Super.so for the public portal
-- Supabase + n8n to track usage
-- Resend for educational nurtures
-- Attio to score engagement
-
+- **Notion + Super.so for the public portal:** We use Notion as the backend for our partner portal, leveraging its flexibility for content management. Super.so then transforms our Notion pages into a fast, SEO-friendly public website, providing a seamless experience for our partners.
+- **Supabase + n8n to track usage:** Supabase serves as our data layer, tracking all partner interactions within the portal, such as page views, module completions, and quiz scores. n8n automates the processing of this usage data, triggering events and updates based on partner activity.
+- **Resend for educational nurtures:** Resend is our email platform for delivering personalized educational nurtures to partners. These automated email sequences are triggered by partner engagement (or lack thereof) and deliver relevant content to guide them through their enablement journey.
+- **Attio to score engagement:** Attio, our CRM, is integrated to provide a comprehensive view of partner engagement. We use it to score partner activity, track deal registrations, and manage partner relationships, ensuring that our partner managers have all the context they need.
 ## The Starting Mess
 
 1. **One-size content**: a 60-slide deck tried to cover onboarding, pricing, compliance, and co-marketing. Nobody finished it.

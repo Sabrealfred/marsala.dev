@@ -24,7 +24,11 @@ image: "/blog/experimentation.jpg"
 
 ## Background
 
-Running experiments is easy; running **repeatable** experiments that teams trust is not. A year ago our squads were running one experiment per month, often without clean data or follow-up analysis. To double growth impact we overhauled the experimentation process—borrowing agile rituals, adding strong telemetry, and codifying ownership. We now average four experiments per sprint across web, messaging, and automation surfaces. This post shares how we did it.
+Running experiments is deceptively easy; running **repeatable, trustworthy, and impactful** experiments that teams can consistently rely on is a far greater challenge. Just a year ago, our growth squads were struggling to execute even one experiment per month. These experiments often suffered from a lack of clean, reliable data, making it difficult to draw definitive conclusions, and follow-up analysis was frequently an afterthought. This ad-hoc approach led to a significant amount of wasted effort, inconclusive results, and a general lack of confidence in our experimentation program.
+
+Recognizing that a robust experimentation culture was critical to doubling our growth impact, we undertook a comprehensive overhaul of our entire process. Our strategy involved a deliberate blend of established agile rituals, the integration of strong, end-to-end telemetry, and a clear codification of ownership at every stage. By borrowing best practices from agile methodologies, we instilled a rhythm and discipline into our experimentation cycles. The introduction of robust telemetry ensured that every experiment was meticulously tracked, providing clean data for rigorous analysis. Furthermore, by clearly defining who was responsible for each aspect of an experiment, from ideation to debrief, we fostered accountability and streamlined execution.
+
+The results of this transformation have been remarkable. We now consistently average four experiments per sprint, spanning across various surfaces including web, messaging, and automation. This post delves into the specific rituals, tools, and cultural shifts that enabled us to achieve this significant leap in our experimentation capabilities, transforming a chaotic process into a predictable engine for growth.
 
 ## Operating Principles
 
@@ -38,11 +42,11 @@ Running experiments is easy; running **repeatable** experiments that teams trust
 
 | Need | Tool | Notes |
 |------|------|-------|
-| Backlog & workflow | Linear | Dedicated “EX” team with templates for intake, QA, debrief |
-| Telemetry | PostHog + dbt | Shared metrics layer, guardrails for sample size |
-| Feature flags | PostHog flags + custom middleware | LaunchDarkly-level control without the price tag |
-| Design review | Figma + Storybook | Components synced with tokens so UI changes mirror product |
-| Communication | Resend summaries + #experiments Slack channel | Automated weekly recaps |
+| **Backlog & workflow** | Linear | We utilize Linear for managing our experimentation backlog and workflow. A dedicated "EX" team within Linear uses standardized templates for experiment intake, quality assurance (QA), and debriefs, ensuring a consistent and organized process from start to finish. |
+| **Telemetry** | PostHog + dbt | PostHog serves as our primary event capture and analytics platform. Coupled with dbt (data build tool), we've established a shared metrics layer that provides robust guardrails for sample size calculations and statistical significance, ensuring data integrity and reliable analysis. |
+| **Feature flags** | PostHog flags + custom middleware | For dynamic control over experiment rollouts, we leverage PostHog's feature flagging capabilities. This is augmented with custom middleware that provides granular control, offering a level of flexibility and power comparable to enterprise solutions like LaunchDarkly, but without the associated cost. |
+| **Design review** | Figma + Storybook | Our design process integrates Figma for UI/UX design and Storybook for component development. This ensures that all UI changes are meticulously reviewed and that components are synced with our design tokens, guaranteeing that visual changes in experiments accurately mirror the product's established design system. |
+| **Communication** | Resend summaries + #experiments Slack channel | Effective communication is vital. We use Resend to automate weekly experiment recaps, which are then shared in a dedicated #experiments Slack channel. This keeps all stakeholders informed about ongoing experiments, key learnings, and upcoming initiatives. |
 
 ## Prioritization Rubric
 
@@ -54,6 +58,16 @@ We grade every proposal against the **FICE** rubric (Fit, Impact, Confidence, Ef
 * **Effort.** Engineering, design, and data sign off on the engineering hours plus QA cost. Anything above 5 days needs director approval.
 
 The rubric lives directly in the Linear intake form so submitters know how proposals will be judged. It also makes trade-offs transparent when stakeholders ask why their idea waited a sprint.
+
+## Key Principles of Scalable Experimentation
+
+- **Hypothesis-driven approach:** Every experiment must start with a clear, falsifiable hypothesis tied to a single, measurable metric.
+- **Dedicated ownership:** Assign explicit owners for each experiment from ideation through debrief to ensure accountability and continuity.
+- **Robust telemetry:** Implement comprehensive tracking plans and a shared metrics layer to guarantee clean, reliable data for analysis.
+- **Ubiquitous feature flagging:** Utilize feature flags for rapid, controlled rollouts and instant rollbacks, minimizing risk and maximizing agility.
+- **Thorough documentation:** Maintain a centralized library of all experiments, including wins, neutral results, and failures, to foster organizational learning.
+- **Automated quality assurance:** Integrate automated tests for visual regressions, accessibility, and data integrity into the experimentation pipeline.
+- **Continuous feedback loops:** Establish regular rituals for reviewing results, sharing learnings, and refining the experimentation process.
 
 ## Rituals in Detail
 
@@ -131,11 +145,11 @@ We launch new squads in “mentored mode” for two iterations. After that they 
 
 ## Metrics We Track
 
-* **Experiments launched per sprint:** 4 (goal 3–5).
-* **Analysis completion rate:** 100% (no open loops).
-* **Average time to decision:** 6.2 days.
-* **Experiment win rate:** 27% (rest either neutral or instructive failures).
-* **Technical rollback rate:** &lt;2% thanks to feature flags and QA.
+* **Experiments launched per sprint:** We consistently launch an average of 4 experiments per sprint, aligning with our goal of 3–5.
+* **Analysis completion rate:** Our analysis completion rate is 100%, ensuring no open loops or unanalyzed experiments.
+* **Average time to decision:** The average time from experiment launch to a clear decision (ship, iterate, revert, archive) is 6.2 days.
+* **Experiment win rate:** We maintain an experiment win rate of 27%, with the remaining experiments providing either neutral or instructive failure insights.
+* **Technical rollback rate:** Our technical rollback rate is consistently below 2%, a testament to the reliability of our feature flags and rigorous QA processes.
 
 ## Templates and Documentation
 

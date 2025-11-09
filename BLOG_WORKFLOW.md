@@ -5,6 +5,7 @@ This repository expects every human‑written article to follow the same guardra
 ## Flow Overview
 
 1. **Pick the source**
+   - Revisa prioridades en `content/blog-backlog.json` (status `todo` → `draft` → `published`).
    - Update `content/blog-data.mjs` for auto-generated posts.
    - Set `manual: true` when a post will be handcrafted.
 2. **Draft or expand the article**
@@ -50,5 +51,12 @@ This repository expects every human‑written article to follow the same guardra
 - [ ] `npm run build` passes.
 - [ ] Commit includes only relevant files.
 - [ ] Netlify production deploy triggered.
+
+## Blog Roadmap
+
+- [ ] Implementar taxonomía de categorías y tags visibles en `/blog` y `/research` para mejorar navegación.
+- [ ] Propagar los metadatos de categorías/tags a los `.mdx` generados y al sitemap.
+- [ ] Actualizar filtros/búsquedas del front para aprovechar las nuevas categorías y etiquetas.
+- [ ] Mantener `content/blog-backlog.json` como única fuente de ideas (cada entrada con título, cat, status).
 
 Follow this document whenever a new AI agent is asked to expand posts; it contains everything needed without referencing chat history.

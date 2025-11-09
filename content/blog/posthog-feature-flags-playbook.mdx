@@ -27,16 +27,20 @@ image: "/blog/feature-flags.jpg"
 
 ## Context
 
-We needed cohort-based rollouts, experimentation, and kill switches, but LaunchDarkly pricing was overkill for a lean team. PostHog’s feature flags plus discipline gave us 90% of the power for a fraction of the cost. The trick: treat flags like code. That means naming conventions, contracts, auditing, middleware integration, and dashboards that show who flipped what. This playbook explains how we govern flags end to end so product, growth, and RevOps can launch safely.
+In a rapidly evolving product environment, the ability to safely roll out new features, conduct A/B tests, and quickly respond to incidents is paramount. We desperately needed capabilities like cohort-based rollouts, robust experimentation frameworks, and reliable kill switches for new functionalities. However, solutions like LaunchDarkly, while powerful, were simply overkill and too expensive for our lean, agile team.
+
+We discovered that PostHog's feature flag capabilities, combined with a disciplined approach to governance, could provide 90% of the functionality we needed at a fraction of the cost. The key insight was to treat feature flags not as temporary toggles, but as first-class citizens—like code. This meant establishing clear naming conventions, defining explicit contracts for each flag, implementing rigorous auditing processes, integrating them seamlessly with our middleware, and building comprehensive dashboards to track their status and impact.
+
+This playbook outlines our end-to-end governance strategy for feature flags. It empowers our product, growth, and RevOps teams to launch new features and experiments safely, with confidence, and without fear of breaking production.
 
 ## Stack I leaned on
 
-- **PostHog feature flags** (boolean, multivariate, condition-based)
-- **PostHog cohorts** built from real events and properties
-- **Next.js middleware + server components** to evaluate flags at the edge
-- **Supabase edge functions** for non-Next surfaces and backend jobs
-- **Linear + Slack workflows** for approval, change logs, and cleanup tasks
-- **Metabase dashboards** summarizing flag status and experiment outcomes
+- **PostHog feature flags (boolean, multivariate, condition-based):** PostHog is the core of our feature flagging system. It allows us to create various types of flags—simple boolean toggles, multivariate flags for A/B/n testing, and condition-based flags that target specific user cohorts. Its flexibility is crucial for our diverse experimentation needs.
+- **PostHog cohorts built from real events and properties:** One of PostHog's strengths is its integrated analytics. We leverage this by building dynamic cohorts directly from real user events and properties. This ensures our flag targeting is precise and always up-to-date, reflecting actual user behavior.
+- **Next.js middleware + server components to evaluate flags at the edge:** For our Next.js applications, we integrate PostHog flags directly into the middleware and server components. This allows us to evaluate flags at the edge, ensuring that users see the correct experience from the very first render, minimizing layout shifts and improving perceived performance.
+- **Supabase edge functions for non-Next surfaces and backend jobs:** For services outside our Next.js frontend, such as backend jobs or other microservices, we use Supabase edge functions. These functions can fetch flag statuses via the PostHog API, ensuring consistent flag evaluation across our entire stack.
+- **Linear + Slack workflows for approval, change logs, and cleanup tasks:** To maintain governance, we've integrated our flag management with Linear for approvals and task tracking. Slack workflows provide real-time notifications for flag changes and facilitate discussions, while also serving as a channel for automated change logs and cleanup reminders.
+- **Metabase dashboards summarizing flag status and experiment outcomes:** Transparency is key. We use Metabase to create custom dashboards that provide a comprehensive overview of all active flags, their statuses, and the real-time outcomes of our experiments. This allows product managers, growth leads, and engineers to monitor impact and make data-driven decisions.
 
 ## Pain Points Before Governance
 
@@ -85,6 +89,15 @@ PostHog’s tags + descriptions store metadata; we also sync to Supabase for rep
 7. **Cleanup**
    - Daily script checks expired flags; if past expiry, open Linear cleanup ticket and ping owner.
    - Run “flag debt” review during weekly growth standup to ensure we remove or merge code paths.
+
+## Key Principles for Feature Flag Governance
+
+- **Treat flags as code:** Apply software development best practices to feature flags, including version control, code reviews, and automated testing.
+- **Clear ownership:** Every feature flag must have a clear owner (and a backup) who is responsible for its lifecycle.
+- **Defined lifecycle:** Flags should have a defined lifecycle, from creation to deprecation, with clear expiry dates for temporary flags.
+- **Automated monitoring:** Implement automated monitoring and alerting for flag changes and their impact on key metrics.
+- **Transparency and communication:** Ensure all stakeholders are aware of active flags, their purpose, and any changes.
+- **Rollback readiness:** Always have a clear and tested rollback plan for every feature flag.
 
 ## Data Contracts for Flags
 

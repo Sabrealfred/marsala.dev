@@ -28,38 +28,62 @@ image: "/blog/attio-migration.jpg"
 
 ## Context
 
-I love Attio because I can shape it to my process. This migration was my final exam: 120k records, 37 properties and multi-team workflows.
+Migrating a CRM is rarely a simple task; it's often a high-stakes operation that can disrupt sales, marketing, and customer success if not executed flawlessly. My personal affinity for Attio stems from its unparalleled flexibility—the ability to truly shape the CRM to fit our unique business processes, rather than forcing our processes into a rigid system. This particular migration, however, was more than just a technical challenge; it felt like a final exam for my RevOps expertise. We were tasked with moving a substantial dataset: 120,000 records, encompassing 37 critical properties, and supporting complex multi-team workflows that touched every revenue-generating department.
 
+The previous CRM, while established, had become a bottleneck. Its inflexibility hindered our ability to innovate, automate, and gain the granular insights we needed. The decision to move to Attio was strategic, aimed at unlocking greater agility and efficiency. However, the sheer volume and complexity of the data, coupled with the need to maintain business continuity and avoid any downtime, presented a formidable challenge. This wasn't just about transferring data; it was about re-architecting our entire revenue operations to leverage Attio's capabilities, ensuring a seamless transition for all users, and ultimately, delivering on the promise of a more efficient and insightful CRM environment. The success of this migration hinged on meticulous planning, robust data handling, and comprehensive user enablement.
 ## Stack I leaned on
 
-- Airbyte + dbt for extraction and normalization
-- Attio API + TypeScript scripts
-- Supabase for staging/QA
-- Notion + Loom for enablement
-
+- **Airbyte + dbt for extraction and normalization:** Airbyte was instrumental for efficiently extracting the vast amount of data from our legacy CRM. We then leveraged dbt (data build tool) to transform and normalize this data, ensuring it was clean, consistent, and perfectly structured for Attio's schema.
+- **Attio API + TypeScript scripts:** The Attio API was the backbone for programmatically interacting with the new CRM. We developed custom TypeScript scripts to handle the complex data ingestion, property mapping, and the creation of new records, ensuring data integrity and adherence to Attio's specific requirements.
+- **Supabase for staging/QA:** Supabase provided a flexible and scalable environment for staging our migrated data. This allowed us to perform rigorous Quality Assurance (QA) checks, identify discrepancies, and validate data before the final cutover, minimizing risks during the live migration.
+- **Notion + Loom for enablement:** User enablement was crucial for a smooth transition. Notion served as our central hub for creating comprehensive training materials, FAQs, and step-by-step guides. We supplemented these with Loom video walkthroughs, providing visual and easy-to-digest instructions for all teams, ensuring rapid adoption and proficiency with the new system.
 ## Playbook
 
-1. Defined success criteria and blocked a freeze window.
-2. Created field mapping and dedupe rules versioned in Git.
-3. Ran a dress rehearsal with 5% of data and documented gaps.
-4. Rebuilt automations with Attio Actions and tests.
-5. Delivered trainings and a health dashboard after cutover.
+1. **Defined success criteria and blocked a freeze window:** Before any data movement, we meticulously defined what a successful migration would look like. This included specific data completeness and accuracy targets, performance benchmarks for the new system, and user adoption rates. Crucially, we established a "freeze window" – a period during which no new data entries or significant changes were allowed in the old CRM – to ensure data consistency during extraction.
+2. **Created field mapping and dedupe rules versioned in Git:** One of the most critical steps was creating a comprehensive field mapping document, detailing how each property from the old CRM would translate to Attio. Simultaneously, we developed robust deduplication rules to ensure a clean dataset. Both the field mapping and dedupe rules were versioned in Git, allowing for collaborative review, auditability, and easy rollback if needed.
+3. **Ran a dress rehearsal with 5% of data and documented gaps:** To minimize risks, we conducted a full "dress rehearsal" migration using a representative 5% sample of our data. This allowed us to test the entire pipeline – extraction, transformation, loading, and automation rebuilding – in a controlled environment. Every discrepancy, error, or unexpected behavior was meticulously documented, and the identified gaps informed refinements to our scripts and processes.
+4. **Rebuilt automations with Attio Actions and tests:** Our legacy CRM had numerous automations that were vital to our operations. Instead of simply porting them, we took the opportunity to rebuild and optimize them using Attio's native "Attio Actions" capabilities. Each new automation was thoroughly tested to ensure it functioned as expected and integrated seamlessly with our new workflows.
+5. **Delivered trainings and a health dashboard after cutover:** A successful migration isn't just about data; it's about people. Post-cutover, we delivered targeted training sessions to all affected teams, focusing on Attio's new features and updated workflows. We also launched a "health dashboard" in Metabase, providing real-time visibility into data quality, system performance, and key user adoption metrics, empowering teams to monitor the new CRM's health proactively.
+## Key Principles of a Successful CRM Migration
 
-## Metrics & telemetry
+- **Meticulous planning and scope definition:** Clearly define migration goals, success criteria, and the scope of data and workflows to be migrated.
+- **Data cleanliness and normalization:** Prioritize cleaning, deduplicating, and normalizing data before migration to ensure data integrity in the new CRM.
+- **Phased approach with dress rehearsals:** Conduct multiple dry runs with subsets of data to identify and resolve issues before the final cutover.
+- **Robust QA and validation:** Implement comprehensive testing procedures at every stage to verify data accuracy, integrity, and functionality in the new system.
+- **Comprehensive user enablement:** Provide extensive training, documentation, and support to ensure smooth user adoption and minimize disruption.
+- **Automation of data transfer and workflow recreation:** Leverage tools and scripts to automate data extraction, transformation, and the rebuilding of workflows in the new CRM.
+- **Clear communication and stakeholder management:** Maintain transparent communication with all stakeholders throughout the migration process, managing expectations and addressing concerns proactively.
 
-- Data completeness: 99.3%
-- Automations rebuilt: 12 in three days
-- Annual stack cost: -42%
+## Common Failure Modes (and Fixes)
 
+1. **Underestimating data complexity:**
+   - **Problem:** Assuming data from the old CRM is clean and directly transferable, leading to unexpected errors and delays during migration.
+   - **Fix:** Conduct a thorough data audit and profiling *before* migration. Identify data inconsistencies, missing values, and non-standard formats. Plan for extensive data cleaning and transformation.
+2. **Lack of clear field mapping:**
+   - **Problem:** Inadequate or ambiguous mapping between old and new CRM fields, resulting in data loss, incorrect data types, or misaligned information.
+   - **Fix:** Create a detailed, version-controlled field mapping document. Involve key stakeholders from each department to validate mappings. Use automated tools to verify field types and constraints.
+3. **Ignoring existing automations and integrations:**
+   - **Problem:** Focusing solely on data transfer and overlooking the need to rebuild or reconfigure critical automations and third-party integrations.
+   - **Fix:** Document all existing automations, workflows, and integrations in the old CRM. Plan for their recreation and rigorous testing in the new system. Prioritize mission-critical automations for early rebuild.
+4. **Insufficient user enablement:**
+   - **Problem:** Launching the new CRM without adequate training, documentation, or support, leading to user frustration, low adoption, and decreased productivity.
+   - **Fix:** Develop a comprehensive enablement plan including training sessions, video tutorials (e.g., Loom), FAQs, and a dedicated support channel. Emphasize the benefits of the new system to users.
+5. **Skipping dress rehearsals:**
+   - **Problem:** Rushing directly to the full migration without conducting smaller, controlled test migrations, leading to unforeseen issues during the live cutover.
+   - **Fix:** Always perform at least one full "dress rehearsal" migration with a subset of real data. Document all issues encountered and refine the playbook based on these learnings.
+
+## Metrics & Telemetry
+
+- **Data completeness:** Achieved an impressive 99.3% data completeness, ensuring virtually all critical information was successfully migrated.
+- **Automations rebuilt:** Successfully rebuilt 12 complex automations in just three days, demonstrating rapid adaptation to the new CRM environment.
+- **Annual stack cost reduction:** Realized a significant 42% reduction in annual stack costs, highlighting the efficiency gains and cost-effectiveness of the migration.
 ## What stuck with me
 
-- Owners need 5-minute video walk-throughs per flow.
-- Never ignore obscure properties; there's always a hidden integration.
-
+- **Owners need 5-minute video walk-throughs per flow:** A key learning from the enablement phase was the power of concise, visual training. While comprehensive documentation is essential, busy team members often prefer quick, digestible content. Creating short, 5-minute video walk-throughs for each critical workflow or new feature in Attio proved incredibly effective. These videos, often recorded using Loom, allowed users to quickly grasp complex processes, reducing friction and accelerating adoption far more efficiently than lengthy written guides alone.
+- **Never ignore obscure properties; there's always a hidden integration:** During data migration, it's tempting to overlook seemingly "obscure" or rarely used properties from the old CRM. However, this migration taught me a valuable lesson: every property exists for a reason, and often, that reason is tied to a critical, albeit hidden, integration or a specific business process. Ignoring these can lead to broken workflows, data loss, or unexpected system failures post-migration. A thorough audit of all properties, no matter how minor they seem, is crucial to uncover these hidden dependencies and ensure a truly seamless transition.
 ## What I'm building next
 
-I'm packaging this playbook into a CLI. Want to test it? DM me.
-
+I'm currently in the process of packaging this entire migration playbook, including all the scripts, checklists, and best practices, into a command-line interface (CLI) tool. The vision is to create a repeatable, semi-automated framework that other RevOps professionals can leverage for their own CRM migrations, significantly reducing the manual effort and risk involved. This CLI will guide users through each step, from data extraction and transformation to QA and enablement. If you're a RevOps practitioner facing a CRM migration and are interested in being an early tester for this tool, please reach out and DM me. Your feedback would be invaluable in refining this solution.
 ---
 
 Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.

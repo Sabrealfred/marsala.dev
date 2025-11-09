@@ -27,16 +27,20 @@ image: "/blog/next-performance.jpg"
 
 ## Context
 
-I maintain landing pages, docs hubs, and product surfaces that marketing edits weekly. Performance used to degrade quietly until a VP noticed LCP &gt;4s. I built a repeatable audit program: budgets, CI, bundle analysis, real-user monitoring, and a rotating “performance guard.” Now regressions surface before release.
+I maintain a portfolio of web properties, including high-traffic landing pages, extensive documentation hubs, and dynamic product surfaces that the marketing team edits on a weekly basis. For a long time, performance was an afterthought. It used to degrade quietly, commit by commit, until a VP of Marketing noticed our main landing page's Largest Contentful Paint (LCP) was over 4 seconds during a critical campaign. That was the wake-up call.
+
+The problem was a classic case of "death by a thousand cuts." A new tracking script here, a high-resolution hero image there, and a few kilobytes of extra CSS from a new component—it all added up. We were flying blind, with no visibility into how our day-to-day changes were impacting the user experience.
+
+To solve this, I designed and implemented a repeatable and automated performance audit program. This program is built on a foundation of performance budgets, continuous integration checks, bundle analysis, real-user monitoring (RUM), and a rotating "performance guard" duty. Now, performance regressions are caught and addressed before they ever make it to production.
 
 ## Stack I leaned on
 
-- Lighthouse CI + GitHub Actions for lab checks on every PR.
-- WebPageTest + Calibre for synthetic + field data.
-- Next.js analyzer + Bundle Buddy for JS diagnostics.
-- Cloudinary/ImageKit for responsive media.
-- Grafana dashboard fed by CrUX + PostHog RUM.
-- n8n bots to post weekly digests and auto-create Linear tickets when metrics drift.
+- **Lighthouse CI + GitHub Actions:** This is the first line of defense. We run Lighthouse on every pull request using GitHub Actions. It provides immediate feedback on performance, accessibility, and SEO, right in the PR comments. We chose this because it's free, open-source, and highly configurable.
+- **WebPageTest + Calibre:** While Lighthouse gives us lab data, WebPageTest and Calibre give us synthetic and real-user monitoring (RUM) data. WebPageTest allows us to run tests from different locations and on different devices, while Calibre provides ongoing monitoring and alerts. This combination gives us a complete picture of our performance in the wild.
+- **Next.js analyzer + Bundle Buddy:** These tools are essential for JavaScript diagnostics. The Next.js analyzer gives us a visual representation of our bundle sizes, and Bundle Buddy helps us identify duplicate dependencies and opportunities for code splitting.
+- **Cloudinary/ImageKit:** Media optimization is a huge part of web performance. We use Cloudinary and ImageKit to automatically optimize and serve responsive images and videos in modern formats like AVIF and WebP.
+- **Grafana dashboard fed by CrUX + PostHog RUM:** We use Grafana to visualize our performance data. We pull in data from the Chrome User Experience Report (CrUX) and our own Real User Monitoring (RUM) data from PostHog. This allows us to see how our performance is trending over time and how it varies by country, device, and connection speed.
+- **n8n bots:** Automation is key to making this program sustainable. We use n8n to create bots that post weekly performance digests to Slack and automatically create tickets in Linear when metrics drift. This keeps the team informed and accountable without adding manual work.
 
 ## Budgets & Config
 
@@ -85,10 +89,18 @@ If LHCI fails, a bot comments with before/after metrics and blocking resources.
 2. **CI enforcement**: preview URLs get audited via Lighthouse (desktop + mobile). Failures block merge and comment JSON + HTML artifacts into PR.
 3. **Bundle reviews**: `next build --analyze` runs nightly. Bundle Buddy highlights shared chunks; we split or lazy-load accordingly.
 4. **Media strategy**: Next.js Image, Cloudinary transformations, AVIF/WebP, streaming video via Mux/HLS keep bytes low.
-5. **API audits**: log SSR/data fetch times; budgets fail if p95 &gt; 400ms. Use caching + `stale-while-revalidate`.
+5. **API audits**: log SSR/data fetch times; budgets fail if p95 > 400ms. Use caching + `stale-while-revalidate`.
 6. **Synthetic monitoring**: WebPageTest + Calibre hit top routes hourly from three regions; alerts mirror budgets.
 7. **Incident response**: PagerDuty alerts guard on breach; we roll back offending PR or toggle feature flag using LaunchDarkly/PostHog.
 8. **Weekly performance review**: share digest (#perf-watch) summarizing regressions, fixes, and backlog items.
+
+## Common Performance Pitfalls in Next.js
+
+- **Large, unoptimized images:** This is the most common issue. Use `next/image` to automatically resize, optimize, and serve images in modern formats. Also, make sure to provide `width` and `height` attributes to prevent layout shifts.
+- **Blocking the main thread with large JavaScript bundles:** Use the Next.js dynamic import feature to code-split your application and only load the JavaScript that's needed for the current page.
+- **Slow API calls in `getServerSideProps`:** If your API calls are slow, your page will be slow. Use `stale-while-revalidate` caching strategies and make sure your APIs are fast.
+- **Not using `next/font`:** This can lead to font-related layout shifts. `next/font` will automatically optimize your fonts and remove external network requests for improved privacy and performance.
+- **Shipping too much third-party JavaScript:** Be mindful of the third-party scripts you add to your application. Use `next/script` with the `lazyOnload` strategy to defer the loading of non-critical scripts.
 
 ## Audit Checklist
 
@@ -148,14 +160,14 @@ We also run quarterly “perf drills” where new engineers walk through diagnos
 
 When we added five localized hero images, CLS spiked due to missing dimensions. Visual regression suite + Lighthouse caught it. Fix was simply adding `sizes` + width/height plus reserving space with CSS `aspect-ratio`. Having automation saved hours of detective work.
 
-## Metrics & telemetry
+## Metrics & Telemetry
 
-- Average LCP: &lt;2.2s desktop, &lt;2.6s mobile.
-- JS shipped per page: -35% YoY.
-- Post-release performance incidents: near zero.
-- PRs with Lighthouse evidence: 100%.
-- Regression detection time: 10 min median (down from hours).
-- Budget breaches per quarter: ≤2 (down from 11).
+- **Improved LCP:** The average Largest Contentful Paint (LCP) is now under 2.2 seconds on desktop and 2.6 seconds on mobile.
+- **Reduced JavaScript footprint:** We've reduced the amount of JavaScript shipped per page by 35% year-over-year.
+- **Fewer performance incidents:** We've had near-zero performance incidents since implementing the audit program.
+- **Full Lighthouse adoption:** 100% of pull requests now include Lighthouse evidence.
+- **Faster regression detection:** The median time to detect a regression is now 10 minutes, down from hours.
+- **Fewer budget breaches:** We've reduced the number of budget breaches per quarter from 11 to 2 or fewer.
 
 ## Lessons Learned
 

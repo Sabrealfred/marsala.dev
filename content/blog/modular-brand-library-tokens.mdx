@@ -27,15 +27,19 @@ image: "/blog/brand-library.jpg"
 
 ## Context
 
-Between marketing and product we had 12 logo versions floating in random Google Drive folders. Slides shipped with outdated colors, growth teams exported unoptimized SVGs, and designers spent hours policing. I rebuilt the brand system as code: tokens, releases, visual QA, and SLAs.
+Our brand was a mess. Between the marketing and product teams, we had at least 12 different logo versions floating around in random Google Drive folders. Presentation slides were being shipped with outdated color palettes, growth teams were exporting unoptimized SVGs that were slowing down our site, and our designers were spending a significant portion of their time policing the brand instead of creating new things.
+
+The root of the problem was a lack of a single source of truth. There was no centralized place for brand assets, no clear guidelines on how to use them, and no process for updating them. It was a classic case of brand chaos, and it was costing us time, money, and brand consistency.
+
+To solve this, I decided to treat our brand as code. I rebuilt our entire brand system from the ground up, using a combination of design tokens, a version-controlled repository, a living style guide, and a clear set of processes and Service Level Agreements (SLAs). This new system has brought order to our brand chaos and has allowed us to scale our brand with confidence.
 
 ## Stack I leaned on
 
-- Figma libraries + variables feeding Style Dictionary.
-- GitHub repo storing tokens (`tokens/`), assets (`assets/`), and release notes.
-- Storybook site (with Chromatic) acting as living documentation.
-- Cloudinary for CDN + dynamic delivery (format, size, crop).
-- Notion portal for non-technical stakeholders with embedded previews.
+- **Figma libraries + variables feeding Style Dictionary:** Figma is our single source of truth for design. We use Figma libraries and variables to define our design tokens (colors, typography, spacing, etc.). Style Dictionary then takes these tokens and transforms them into various formats (CSS, JS, etc.) that can be used by our developers.
+- **GitHub repo storing tokens (`tokens/`), assets (`assets/`), and release notes:** All of our brand assets, from tokens to logos to icons, are stored in a single GitHub repository. This gives us version control, a clear history of changes, and the ability to manage our brand assets like any other codebase.
+- **Storybook site (with Chromatic) acting as living documentation:** Storybook is our living style guide. It provides a searchable, browsable, and interactive documentation for our brand assets and components. We use Chromatic to run visual regression tests on every commit, ensuring that our brand stays consistent.
+- **Cloudinary for CDN + dynamic delivery (format, size, crop):** All of our visual assets are served through Cloudinary. This gives us a fast, reliable CDN and the ability to dynamically transform images and videos on the fly. We can resize, crop, and even change the format of an asset simply by changing the URL.
+- **Notion portal for non-technical stakeholders with embedded previews:** To make our brand assets accessible to non-technical stakeholders, we created a portal in Notion. This portal provides a user-friendly interface for browsing and downloading assets, and it includes embedded previews from Storybook and Cloudinary.
 
 ## Playbook
 
@@ -47,6 +51,14 @@ Between marketing and product we had 12 logo versions floating in random Google 
 6. **Document in Storybook**: each component example links to tokens, usage guidelines, and download buttons.
 7. **Release process**: every two weeks, cut a release (version semver), publish changelog, notify #brand-library.
 8. **Request workflow**: Typeform → Linear automation; SLA 3 days for minor variants, 2 weeks for new families.
+
+## The Benefits of a Token-Based System
+
+- **A single source of truth:** Design tokens provide a single, centralized source of truth for all of our brand assets. This eliminates confusion and ensures that everyone is using the most up-to-date assets.
+- **Improved consistency:** By using tokens, we can ensure that our brand is applied consistently across all of our products and marketing materials.
+- **Increased efficiency:** A token-based system makes it much faster and easier to update our brand. We can make a change in one place and have it automatically propagate to all of our assets.
+- **Better collaboration:** A token-based system improves collaboration between designers and developers. Designers can work in Figma, and developers can consume the tokens in their code, without having to worry about manual handoffs.
+- **Scalability:** A token-based system is highly scalable. We can easily add new brands, themes, and platforms without having to start from scratch.
 
 ## Architecture at a Glance
 
@@ -132,13 +144,13 @@ SLAs are visible to stakeholders so priorities stay aligned.
 
 ## SLA & Metrics
 
-- Urgent asset requests: -70%.
-- Multi-brand update time: 6h → 45 min.
-- Logo misuse incidents: almost zero.
-- Token adoption across squads: 100%.
-- Release cadence: every 14 days (tracked in Notion + GitHub).
-- SLA compliance for asset requests: 96%.
-- Partner satisfaction (quarterly survey): 9.2/10.
+- **Reduced urgent requests:** Urgent asset requests have been reduced by 70%.
+- **Faster multi-brand updates:** The time it takes to update our brand across multiple brands has been reduced from 6 hours to 45 minutes.
+- **Eliminated logo misuse:** Incidents of logo misuse have been almost completely eliminated.
+- **Full token adoption:** 100% of our squads have adopted the new token-based system.
+- **Consistent release cadence:** We now have a consistent release cadence of every 14 days, which is tracked in Notion and GitHub.
+- **High SLA compliance:** We have a 96% SLA compliance rate for asset requests.
+- **High partner satisfaction:** Our partners have a 9.2/10 satisfaction rate with the new system, according to our quarterly survey.
 
 ## Case Study: Multi-Brand Refresh
 

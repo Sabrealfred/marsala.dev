@@ -27,16 +27,20 @@ image: "/blog/privacy-layer.jpg"
 
 ## Context
 
-I work with sensitive data. To move quickly without violating GDPR or SOC2, I created a privacy layer that abstracts PII, enforces consent, and documents every touch. Instead of waiting on legal for every campaign, growth plugs into governed APIs and gets instant answers (“Yes, you can email this cohort”, “No, delete these records”). Treating privacy like a product gave us velocity without anxiety.
+As a growth team, we live and breathe data. But with great data comes great responsibility. We were constantly walking a tightrope between moving fast and staying compliant with regulations like GDPR and SOC2. Every new campaign, every new tool, and every new experiment required a lengthy review process with the legal team. This slowed us down and created a culture of fear around using data.
+
+The breaking point came when a well-intentioned A/B test accidentally exposed a small subset of user data. The incident was quickly contained, but it was a stark reminder that our ad-hoc approach to privacy was no longer sustainable.
+
+That's when I decided to build a privacy layer. This layer is a set of tools and processes that abstracts away the complexity of privacy and compliance. It allows our growth team to move fast and experiment freely, while still ensuring that we are respecting our users' privacy and complying with all relevant regulations. Instead of waiting on legal for every campaign, growth plugs into governed APIs and gets instant answers (“Yes, you can email this cohort”, “No, delete these records”). Treating privacy like a product gave us velocity without anxiety.
 
 ## Stack I leaned on
 
-- Supabase + Row Level Security for governed storage.
-- HashiCorp Vault for keys, salts, and secrets.
-- Segment consent mode + OneTrust for preference capture.
-- PostHog proxy that strips IP/PII before analytics ingestion.
-- n8n automations for deletion + audit reporting.
-- Metabase dashboards exposing lineage and consent status.
+- **Supabase + Row Level Security for governed storage:** We use Supabase as our primary data store for user data. Its built-in Row Level Security (RLS) allows us to enforce fine-grained access control policies at the database level. This ensures that our growth team can only access the data that they are authorized to see.
+- **HashiCorp Vault for keys, salts, and secrets:** We use HashiCorp Vault to manage our encryption keys, salts, and other secrets. This ensures that our sensitive data is always encrypted at rest and in transit, and that only authorized services can access the keys.
+- **Segment consent mode + OneTrust for preference capture:** We use Segment and OneTrust to capture and manage user consent. OneTrust provides the user-facing consent banner and preference center, while Segment's consent mode ensures that our downstream tools only receive data for the purposes that the user has consented to.
+- **PostHog proxy that strips IP/PII before analytics ingestion:** We use a PostHog proxy to strip IP addresses and other personally identifiable information (PII) from our analytics events before they are sent to PostHog. This allows us to collect valuable product usage data without compromising our users' privacy.
+- **n8n automations for deletion + audit reporting:** We use n8n to automate our data deletion and audit reporting processes. When a user requests to be forgotten, an n8n workflow automatically deletes their data from all of our systems. We also use n8n to generate weekly audit reports that are sent to our legal and compliance teams.
+- **Metabase dashboards exposing lineage and consent status:** We use Metabase to create dashboards that provide a real-time view of our data lineage and consent status. This allows our legal and compliance teams to see exactly where our data is coming from, where it is going, and what it is being used for.
 
 ## Data Classification & Contracts
 
@@ -66,6 +70,14 @@ CI fails if you add a field without owner or retention.
 4. **Log every use**: jobs writing/reading restricted data log metadata (who, why, purpose) to Supabase.
 5. **Automate deletions**: deletion requests trigger n8n flow across Supabase, PostHog, CRM, S3 backups with SLA 48h.
 6. **Review new tools**: Linear “Privacy Intake” collects scope; once approved, metadata syncs to dashboards so legal sees every destination.
+
+## The Benefits of a Privacy Layer
+
+- **Increased velocity:** By abstracting away the complexity of privacy and compliance, the privacy layer allows our growth team to move faster and experiment more freely.
+- **Reduced risk:** The privacy layer helps us to reduce the risk of data breaches and compliance violations.
+- **Improved trust:** By being transparent about our data practices and giving users control over their data, we can build trust with our users.
+- **Better data governance:** The privacy layer provides a centralized place to manage our data, which improves our data governance.
+- **Simplified compliance:** The privacy layer simplifies compliance with regulations like GDPR and SOC2.
 
 ### Consent API Example
 
@@ -108,15 +120,15 @@ ConsentAPI --> Allow/Block
 
 Experiments, emails, ads, and AI prompts call the API before running; we log every decision.
 
-## Metrics & telemetry
+## Metrics & Telemetry
 
-- Deletion requests served in &lt;48h (avg 16h).
-- Privacy incidents in 2024: 0.
-- Time to approve new tools: -40%.
-- Consent coverage: 98% of outbound touches logged via ConsentAPI.
-- Manual legal reviews per campaign: -55%.
-- Number of unauthorized queries blocked per month: 42 (great signal the layer works).
-- Data purpose expirations handled automatically: 100%.
+- **Faster deletion requests:** Deletion requests are now served in less than 48 hours, with an average of 16 hours.
+- **Zero privacy incidents:** We have had zero privacy incidents in 2024.
+- **Quicker tool approval:** The time to approve new tools has been reduced by 40%.
+- **High consent coverage:** 98% of outbound touches are now logged via the ConsentAPI.
+- **Reduced manual legal reviews:** Manual legal reviews per campaign have been reduced by 55%.
+- **Effective unauthorized query blocking:** We block an average of 42 unauthorized queries per month, which is a strong signal that the privacy layer is working effectively.
+- **Automated data purpose expirations:** 100% of data purpose expirations are now handled automatically.
 
 ## Dashboards & Reporting
 

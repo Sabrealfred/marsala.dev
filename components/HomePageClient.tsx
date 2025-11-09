@@ -80,7 +80,8 @@ export function HomePageClient() {
   return (
     <section className="bg-white py-12 lg:py-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mb-12 mx-auto max-w-2xl text-center">
+        {/* Header - Left Aligned */}
+        <div className="mb-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -90,15 +91,16 @@ export function HomePageClient() {
             <h2 className="text-4xl font-bold tracking-tight text-moss-950 lg:text-5xl">
               Build Your Perfect Growth Stack
             </h2>
-            <p className="mt-4 text-lg text-sage-700">
+            <p className="mt-4 max-w-2xl text-lg text-sage-700">
               Select the modules you need. See the impact in real-time.
             </p>
           </motion.div>
         </div>
 
-        <div className="mx-auto max-w-6xl">
-          {/* Module Grid */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        {/* 70/30 Layout - Content/Sidebar */}
+        <div className="grid gap-8 lg:grid-cols-[1fr,400px]">
+          {/* Left: Module Grid */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:gap-6">
             {modules.map((module, index) => {
               const isSelected = selected.includes(module.id);
               return (
@@ -154,95 +156,114 @@ export function HomePageClient() {
             })}
           </div>
 
-          {/* Impact Dashboard */}
-          <AnimatePresence>
-            {selected.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 40, scale: 0.9 }}
-                transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                className="mt-12 overflow-hidden rounded-4xl border-2 border-moss-300 bg-gradient-to-br from-white to-moss-50 p-8 shadow-2xl lg:p-12"
-              >
-                <div className="mb-6 flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-moss-gradient text-2xl shadow-lg">
-                    📊
+          {/* Right: Sticky Sidebar Dashboard */}
+          <div className="lg:sticky lg:top-8 lg:self-start">
+            <AnimatePresence mode="wait">
+              {selected.length > 0 ? (
+                <motion.div
+                  key="dashboard"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                  className="overflow-hidden rounded-4xl border-2 border-moss-300 bg-gradient-to-br from-white to-moss-50 p-8 shadow-2xl"
+                >
+                  <div className="mb-6 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-moss-gradient text-2xl shadow-lg">
+                      📊
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-moss-950">Your Custom Stack</h3>
+                      <p className="text-sm text-sage-600">{selected.length} module{selected.length !== 1 ? 's' : ''} selected</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-moss-950">Your Custom Stack</h3>
-                    <p className="text-sm text-sage-600">{selected.length} module{selected.length !== 1 ? 's' : ''} selected</p>
-                  </div>
-                </div>
 
-                <div className="mb-8 flex flex-wrap gap-3">
-                  {selectedModules.map((module) => (
-                    <motion.div
-                      key={module.id}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      exit={{ scale: 0 }}
-                      className={`flex items-center gap-2 rounded-full bg-gradient-to-r ${module.color} px-4 py-2 text-sm font-bold text-white shadow-lg`}
+                  <div className="mb-8 flex flex-wrap gap-2">
+                    {selectedModules.map((module) => (
+                      <motion.div
+                        key={module.id}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        className={`flex items-center gap-2 rounded-full bg-gradient-to-r ${module.color} px-3 py-1.5 text-xs font-bold text-white shadow-lg`}
+                      >
+                        <span>{module.name}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="rounded-2xl border border-moss-200 bg-white p-6">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-sage-600">Estimated Impact</p>
+                      <motion.p
+                        key={totalImpact}
+                        initial={{ scale: 1.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="mt-2 text-4xl font-bold text-moss-700"
+                      >
+                        +{totalImpact}%
+                      </motion.p>
+                      <p className="mt-1 text-xs text-sage-600">Efficiency Gain</p>
+                    </div>
+
+                    <div className="rounded-2xl border border-moss-200 bg-white p-6">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-sage-600">Time to Launch</p>
+                      <motion.p
+                        key={estimatedWeeks}
+                        initial={{ scale: 1.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="mt-2 text-4xl font-bold text-moss-700"
+                      >
+                        {estimatedWeeks}w
+                      </motion.p>
+                      <p className="mt-1 text-xs text-sage-600">Estimated Delivery</p>
+                    </div>
+
+                    <div className="rounded-2xl border border-moss-200 bg-white p-6">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-sage-600">Modules</p>
+                      <motion.p
+                        key={selected.length}
+                        initial={{ scale: 1.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="mt-2 text-4xl font-bold text-moss-700"
+                      >
+                        {selected.length}/{modules.length}
+                      </motion.p>
+                      <p className="mt-1 text-xs text-sage-600">Selected</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-8">
+                    <motion.a
+                      href="/contact"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex w-full items-center justify-center gap-2 rounded-full bg-moss-gradient px-8 py-4 text-base font-semibold text-white shadow-glow transition-all duration-300"
                     >
-                      <span>{module.name}</span>
-                    </motion.div>
-                  ))}
-                </div>
-
-                <div className="grid gap-6 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-moss-200 bg-white p-6 text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wider text-sage-600">Estimated Impact</p>
-                    <motion.p
-                      key={totalImpact}
-                      initial={{ scale: 1.5, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      className="mt-2 text-4xl font-bold text-moss-700"
-                    >
-                      +{totalImpact}%
-                    </motion.p>
-                    <p className="mt-1 text-xs text-sage-600">Efficiency Gain</p>
+                      Get Your Custom Proposal
+                      <span>→</span>
+                    </motion.a>
                   </div>
-
-                  <div className="rounded-2xl border border-moss-200 bg-white p-6 text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wider text-sage-600">Time to Launch</p>
-                    <motion.p
-                      key={estimatedWeeks}
-                      initial={{ scale: 1.5, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      className="mt-2 text-4xl font-bold text-moss-700"
-                    >
-                      {estimatedWeeks}w
-                    </motion.p>
-                    <p className="mt-1 text-xs text-sage-600">Estimated Delivery</p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="empty"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  className="overflow-hidden rounded-4xl border-2 border-dashed border-moss-300 bg-white p-8 text-center"
+                >
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-moss-50">
+                    <span className="text-3xl">👆</span>
                   </div>
-
-                  <div className="rounded-2xl border border-moss-200 bg-white p-6 text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wider text-sage-600">Modules</p>
-                    <motion.p
-                      key={selected.length}
-                      initial={{ scale: 1.5, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      className="mt-2 text-4xl font-bold text-moss-700"
-                    >
-                      {selected.length}/{modules.length}
-                    </motion.p>
-                    <p className="mt-1 text-xs text-sage-600">Selected</p>
-                  </div>
-                </div>
-
-                <div className="mt-8 text-center">
-                  <motion.a
-                    href="/contact"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center gap-2 rounded-full bg-moss-gradient px-8 py-4 text-base font-semibold text-white shadow-glow transition-all duration-300"
-                  >
-                    Get Your Custom Proposal
-                    <span>→</span>
-                  </motion.a>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  <h3 className="text-xl font-bold text-moss-950">Build Your Stack</h3>
+                  <p className="mt-2 text-sm text-sage-600">
+                    Select modules to see real-time impact estimates and delivery timelines
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </section>

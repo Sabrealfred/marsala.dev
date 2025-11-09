@@ -27,16 +27,18 @@ image: "/blog/launch-readiness.jpg"
 
 ## Context
 
-Too many rushed launches broke our funnels. PMM would announce “we go live Friday,” engineering would scramble, and growth would discover broken forms and stale dashboards hours later. I documented a launch-readiness scorecard covering Brand, Web, Data, Automations, and Operations. If any pillar fails, we pause. The runbook turned launch week from frantic to calm—and yes, we’ve delayed launches twice because the scorecard said “no.” Worth it.
+In the fast-paced world of product development, launches are a constant. But for a long time, our launches were anything but smooth. Too many rushed releases led to broken funnels, frustrated customers, and exhausted teams. It was a recurring nightmare: a Product Marketing Manager (PMM) would announce, "We go live Friday!" This would trigger a frantic scramble in engineering, only for the growth team to discover broken forms, stale dashboards, and critical bugs hours after the launch. The post-launch period was often a chaotic scramble to fix issues, leading to missed targets and a loss of trust.
+
+This unsustainable cycle highlighted a critical need for a more structured approach. We needed a way to ensure that every aspect of a launch was thoroughly vetted and ready before going live. That's why I developed a comprehensive launch-readiness scorecard. This scorecard covers five critical pillars: Brand, Web, Data, Automations, and Operations. The rule is simple: if any pillar fails to meet its readiness criteria, we pause the launch. This runbook has transformed our launch weeks from frantic, reactive events into calm, well-orchestrated processes. And yes, we've proudly delayed launches twice because the scorecard clearly indicated "no." It was absolutely worth it to prevent customer-impacting bugs and maintain our team's sanity.
 
 ## Stack I leaned on
 
-- **Linear** project with stage gates and required checklist tasks.
-- **Notion scorecard template** auto-calculating readiness per pillar.
-- **Metabase dashboards** for pre-launch KPIs and burn-down charts.
-- **PagerDuty**/Slack for launch guard duty and incident escalation.
-- **n8n automations** to remind owners when deliverables slip.
-- **Statuspage clone** to communicate readiness to execs.
+- **Linear project with stage gates and required checklist tasks:** We use Linear to manage our launch projects. Each launch is a project with clearly defined stage gates and a comprehensive list of required checklist tasks. This ensures that all necessary steps are completed before moving to the next stage.
+- **Notion scorecard template auto-calculating readiness per pillar:** Our launch readiness scorecard lives in Notion. It's a dynamic template that automatically calculates the readiness score for each pillar (Brand, Web, Data, Automations, Operations) based on the completion of checklist items. This provides a real-time view of our launch readiness.
+- **Metabase dashboards for pre-launch KPIs and burn-down charts:** We use Metabase to create dashboards that track our pre-launch Key Performance Indicators (KPIs) and burn-down charts. These dashboards provide critical insights into our progress and help us identify any potential bottlenecks.
+- **PagerDuty/Slack for launch guard duty and incident escalation:** During launch week, we have a dedicated launch guard team. PagerDuty is used for on-call rotations and incident escalation, while Slack serves as our primary communication channel for real-time updates and coordination.
+- **n8n automations to remind owners when deliverables slip:** To ensure accountability and keep things on track, we use n8n to automate reminders. If a deliverable is nearing its deadline or has slipped, n8n automatically pings the owner, ensuring that no task falls through the cracks.
+- **Statuspage clone to communicate readiness to execs:** For executive-level communication, we maintain a Statuspage clone. This provides a high-level, transparent overview of our launch readiness, allowing executives to quickly grasp the status without getting bogged down in details.
 
 ## Readiness Dimensions
 
@@ -75,6 +77,15 @@ Each dimension owns a checklist and risk score (Green/Amber/Red). Red blocks lau
 5. **Staff launch guard**: assign IC, comms lead, resolver; share on-call doc.
 6. **Launch & monitor**: use live dashboards + Slack bot to publish updates hourly.
 7. **Post-launch plan**: backlog of follow-ups, adoption metrics, retro schedule.
+
+## The Benefits of a Launch Readiness Runbook
+
+- **Reduced launch risk:** By systematically checking all aspects of a launch, we significantly reduce the risk of critical bugs and post-launch incidents.
+- **Improved cross-functional collaboration:** The runbook forces teams to work together and communicate effectively, breaking down silos and fostering a shared sense of ownership.
+- **Increased transparency:** The scorecard and dashboards provide a clear, real-time view of launch readiness to all stakeholders, from individual contributors to executives.
+- **Empowered decision-making:** With clear data and a structured process, we can make informed go/no-go decisions, even if it means delaying a launch.
+- **Faster incident response:** By having a dedicated launch guard and clear escalation paths, we can respond to and resolve any post-launch incidents much faster.
+- **Continuous improvement:** The post-launch retro ensures that we learn from every launch and continuously improve our processes.
 
 ## Roles & Responsibilities
 
@@ -139,14 +150,14 @@ We update the matrix at every gate review. If impact × likelihood ≥9, the lau
 
 Running drills forced us to write missing runbooks before launch day.
 
-## Metrics & telemetry
+## Metrics & Telemetry
 
-- Launches delayed due to readiness: +2 (worth it; prevented customer-impacting bugs).
-- Critical incidents after launch: -80%.
-- Post-launch adoption vs. forecast: +14% (we hit targets because everything worked).
-- Internal satisfaction with process: 9/10.
-- “Unknown owner” issues during launch: 0.
-- Average time to publish launch recap: 4 hours (down from 24).
+- **Strategic launch delays:** We've strategically delayed 2 launches due to readiness issues, preventing critical customer-impacting bugs.
+- **Reduced critical incidents:** Critical incidents after launch have been reduced by 80%.
+- **Exceeded adoption forecasts:** Post-launch adoption has exceeded forecasts by 14%, indicating successful and smooth rollouts.
+- **High internal satisfaction:** Internal satisfaction with the launch process is consistently at 9/10.
+- **Eliminated ownership ambiguity:** We've had zero "unknown owner" issues during launches.
+- **Faster launch recaps:** The average time to publish a launch recap has been reduced from 24 hours to 4 hours.
 
 We review metrics quarterly to keep leadership bought in.
 

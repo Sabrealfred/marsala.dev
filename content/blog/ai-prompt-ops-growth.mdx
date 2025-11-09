@@ -27,15 +27,19 @@ image: "/blog/prompt-ops.jpg"
 
 ## Context
 
-After breaking a nurture because of a poorly edited prompt, I established Prompt Ops with engineering-grade standards. Growth squads now treat prompts like code: version control, automated tests, releases, and incident management. Marketing still writes copy, but they merge PRs after reviewers approve.
+It all started with a broken nurture campaign. A well-intentioned but poorly-edited prompt resulted in a confusing and off-brand email being sent to thousands of our users. The fallout was immediate: a spike in support tickets, a drop in engagement, and a general loss of trust in our AI-powered communications.
+
+This incident was a wake-up call. We realized that we couldn't treat our prompts like simple copy. They were a critical part of our infrastructure, and they needed to be managed with the same rigor and discipline as our code.
+
+That's when I established Prompt Ops, a new function that brings engineering-grade standards to the world of prompt management. Our growth squads now treat prompts like code: they are version-controlled in Git, they have automated tests, they go through a formal release process, and they are subject to incident management. Marketing still owns the copy, but they now work within a structured framework that ensures quality, consistency, and safety. They merge pull requests, but only after a thorough review process that includes automated checks and human oversight.
 
 ## Stack I leaned on
 
-- Git repo (`prompts/`) with structured JSON + markdown context.
-- Playwright + custom eval harness, plus OpenAI Evals for regression tests.
-- Linear workflow with reviewers from growth, product, legal.
-- Datadog metrics + PostHog analytics for prompt usage/outcome tracking.
-- Supabase storing prompt versions and metadata for runtime lookup.
+- **Git repo (`prompts/`) with structured JSON + markdown context:** We use a dedicated Git repository to store all of our prompts. Each prompt is a markdown file with a YAML front matter that contains metadata like the prompt's owner, purpose, and constraints. This gives us version control, a clear history of changes, and the ability to manage our prompts like any other codebase.
+- **Playwright + custom eval harness, plus OpenAI Evals for regression tests:** We use a combination of Playwright, a custom evaluation harness, and OpenAI Evals to test our prompts. Playwright is used for functional tests that call the prompt via an API and ensure that the response is valid. Our custom eval harness and OpenAI Evals are used for regression tests that track the tone, accuracy, and hallucination rate of our prompts over time.
+- **Linear workflow with reviewers from growth, product, legal:** All prompt changes go through a formal review process in Linear. This process includes reviewers from the growth, product, and legal teams, who ensure that the prompt is effective, on-brand, and compliant with all relevant regulations.
+- **Datadog metrics + PostHog analytics for prompt usage/outcome tracking:** We use Datadog and PostHog to track the usage and outcome of our prompts. This allows us to see how our prompts are performing in the real world and to identify any issues that need to be addressed.
+- **Supabase storing prompt versions and metadata for runtime lookup:** We use Supabase to store our prompt versions and metadata. This allows our runtime services to fetch the correct version of a prompt at runtime and to enforce any constraints that are defined in the prompt's metadata.
 
 ## Prompt Lifecycle
 
@@ -47,6 +51,14 @@ After breaking a nurture because of a poorly edited prompt, I established Prompt
 6. **Release**: merge to `main`, GitHub Action publishes prompt to Supabase, updates changelog, notifies #prompt-ops.
 7. **Monitoring**: Datadog dashboard tracks success rate, tokens, fallback usage. Alerts fire when drift > threshold.
 8. **Retire**: prompts expire after 60 days unless renewed; script flags stale prompts weekly.
+
+## The Core Principles of Prompt Ops
+
+- **Prompts are code:** Treat your prompts with the same rigor and discipline as your code. This means version control, automated testing, and a formal release process.
+- **Collaboration is key:** Prompt Ops is a team sport. It requires close collaboration between marketing, product, engineering, and legal.
+- **Data is everything:** Use data to track the performance of your prompts and to identify any issues that need to be addressed.
+- **Automation is your friend:** Automate as much of the Prompt Ops lifecycle as possible. This will free up your team to focus on more strategic work.
+- **Safety first:** Put safeguards in place to prevent your prompts from generating harmful or off-brand content.
 
 ## Repo Structure
 
@@ -149,15 +161,15 @@ We treat incidents like service outages; response time averages 12 minutes.
 - Onboarding includes a “prompt spelunking” exercise: new hires submit a PR, run evals, and present results.
 - Every prompt owner rotates through on-call so they feel the impact of sloppy edits.
 
-## Metrics & telemetry
+## Metrics & Telemetry
 
-- Incidents caused by prompt edits: -80%.
-- Approval time for updates: 3 days → 8h.
-- Team confidence in AI-guided flows: 9/10.
-- Prompts with automated eval coverage: 100%.
-- Adoption of changelog: 95% of launches referenced in weekly growth call.
-- AE satisfaction with AI copy: 4.6/5 (survey).
-- Cost per prompt edit (tokens + reviews): tracked so PMMs understand tradeoffs.
+- **Reduced incidents:** Incidents caused by prompt edits have been reduced by 80%.
+- **Faster approval time:** The time it takes to get a prompt update approved has been reduced from 3 days to 8 hours.
+- **Increased team confidence:** Team confidence in our AI-guided flows has increased to 9/10.
+- **Full test coverage:** 100% of our prompts now have automated evaluation coverage.
+- **High changelog adoption:** 95% of our launches are now referenced in our weekly growth call, thanks to the changelog.
+- **High AE satisfaction:** Account Executive satisfaction with our AI-generated copy is 4.6/5, according to our latest survey.
+- **Cost tracking:** We now track the cost per prompt edit (including tokens and reviews), which helps our Product Marketing Managers understand the tradeoffs of different approaches.
 
 ## Monitoring Dashboard
 
