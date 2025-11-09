@@ -14,17 +14,19 @@ if (!fs.existsSync(BLOG_DIR)) {
 const author = "Marina Álvarez";
 
 const escapeQuotes = (str) => str.replace(/"/g, '\\"');
+const escapeInline = (value) =>
+  value.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 const formatArray = (items) =>
   items.map((item) => `  - "${escapeQuotes(item)}"`).join("\n");
 
 const bodyFromEntry = (entry) => {
-  const stack = entry.stack.map((item) => `- ${item}`).join("\n");
-  const playbook = entry.playbook
-    .map((item, idx) => `${idx + 1}. ${item}`)
-    .join("\n");
-  const metrics = entry.metrics.map((item) => `- ${item}`).join("\n");
-  const lessons = entry.lessons.map((item) => `- ${item}`).join("\n");
+const stack = entry.stack.map((item) => `- ${escapeInline(item)}`).join("\n");
+const playbook = entry.playbook
+  .map((item, idx) => `${idx + 1}. ${escapeInline(item)}`)
+  .join("\n");
+const metrics = entry.metrics.map((item) => `- ${escapeInline(item)}`).join("\n");
+const lessons = entry.lessons.map((item) => `- ${escapeInline(item)}`).join("\n");
 
   return `
 # ${entry.title}
@@ -33,7 +35,7 @@ const bodyFromEntry = (entry) => {
 
 ## Context
 
-${entry.context}
+${escapeInline(entry.context)}
 
 ## Stack I leaned on
 
@@ -53,7 +55,7 @@ ${lessons}
 
 ## What I'm building next
 
-${entry.next}
+${escapeInline(entry.next)}
 
 ---
 

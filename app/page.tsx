@@ -1,32 +1,11 @@
-'use client';
-
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-
-const modules = [
-  { id: 1, name: "Brand", color: "bg-moss-500", icon: "/icon-arc.svg" },
-  { id: 2, name: "Web", color: "bg-moss-600", icon: "/icon-path.svg" },
-  { id: 3, name: "CRM", color: "bg-sage-500", icon: "/icon-arc.svg" },
-  { id: 4, name: "AI", color: "bg-moss-700", icon: "/icon-path.svg" },
-  { id: 5, name: "Ads", color: "bg-sage-600", icon: "/icon-arc.svg" },
-  { id: 6, name: "Data", color: "bg-moss-500", icon: "/icon-path.svg" },
-];
-
-const metrics = [
-  { value: "10×", label: "Faster Launch", icon: "/icon-arc.svg" },
-  { value: "+47%", label: "Efficiency", icon: "/icon-path.svg" },
-  { value: "3×", label: "Engagement", icon: "/icon-arc.svg" },
-];
+import { getAllBlogPosts } from "@/lib/blog";
+import { HomePageClient } from "@/components/HomePageClient";
+import { BlogCarousel } from "@/components/BlogCarousel";
 
 export default function HomePage() {
-  const [activeModules, setActiveModules] = useState<number[]>([]);
-
-  const toggleModule = (id: number) => {
-    setActiveModules(prev =>
-      prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id]
-    );
-  };
+  const blogPosts = getAllBlogPosts();
 
   return (
     <main className="min-h-screen bg-cream-50">
@@ -76,106 +55,65 @@ export default function HomePage() {
 
           {/* Metrics */}
           <div className="mx-auto mt-10 grid max-w-4xl grid-cols-3 gap-4 lg:gap-6">
-            {metrics.map((metric) => (
-              <div
-                key={metric.label}
-                className="group relative overflow-hidden rounded-3xl border border-moss-200 bg-white/80 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-hover"
-              >
-                <div className="absolute right-0 top-0 h-20 w-20 translate-x-6 -translate-y-6 rounded-full bg-moss-100 transition-transform duration-500 group-hover:scale-150" />
-                <div className="relative text-center">
-                  <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center">
-                    <Image
-                      src={metric.icon}
-                      alt=""
-                      width={64}
-                      height={64}
-                      className="h-16 w-16"
-                    />
-                  </div>
-                  <p className="text-3xl font-bold text-moss-700">{metric.value}</p>
-                  <p className="mt-1 text-sm font-medium text-sage-600">{metric.label}</p>
+            <div className="group relative overflow-hidden rounded-3xl border border-moss-200 bg-white/80 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-hover">
+              <div className="absolute right-0 top-0 h-20 w-20 translate-x-6 -translate-y-6 rounded-full bg-moss-100 transition-transform duration-500 group-hover:scale-150" />
+              <div className="relative text-center">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center">
+                  <Image src="/icon-arc.svg" alt="" width={64} height={64} className="h-16 w-16" />
                 </div>
+                <p className="text-3xl font-bold text-moss-700">10×</p>
+                <p className="mt-1 text-sm font-medium text-sage-600">Faster Launch</p>
               </div>
-            ))}
+            </div>
+            <div className="group relative overflow-hidden rounded-3xl border border-moss-200 bg-white/80 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-hover">
+              <div className="absolute right-0 top-0 h-20 w-20 translate-x-6 -translate-y-6 rounded-full bg-moss-100 transition-transform duration-500 group-hover:scale-150" />
+              <div className="relative text-center">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center">
+                  <Image src="/icon-path.svg" alt="" width={64} height={64} className="h-16 w-16" />
+                </div>
+                <p className="text-3xl font-bold text-moss-700">+47%</p>
+                <p className="mt-1 text-sm font-medium text-sage-600">Efficiency</p>
+              </div>
+            </div>
+            <div className="group relative overflow-hidden rounded-3xl border border-moss-200 bg-white/80 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-hover">
+              <div className="absolute right-0 top-0 h-20 w-20 translate-x-6 -translate-y-6 rounded-full bg-moss-100 transition-transform duration-500 group-hover:scale-150" />
+              <div className="relative text-center">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center">
+                  <Image src="/icon-arc.svg" alt="" width={64} height={64} className="h-16 w-16" />
+                </div>
+                <p className="text-3xl font-bold text-moss-700">3×</p>
+                <p className="mt-1 text-sm font-medium text-sage-600">Engagement</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Interactive Module Builder */}
-      <section className="bg-white py-12 lg:py-20">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
+      <HomePageClient />
+
+      {/* Blog Carousel */}
+      <section className="bg-gradient-to-b from-white via-cream-50 to-white py-12 lg:py-20">
+        <div className="mx-auto max-w-6xl px-6 lg:px-8">
+          <div className="mb-8 text-center">
             <h2 className="text-4xl font-bold tracking-tight text-moss-950 lg:text-5xl">
-              Build Your Stack
+              Learn from Real Engagements
             </h2>
-            <p className="mt-4 text-lg text-sage-700">
-              Click modules to activate them and see your system grow
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-sage-700">
+              Case studies, frameworks, and operational playbooks from building modular growth systems
             </p>
           </div>
 
-          <div className="mx-auto mt-10 max-w-5xl">
-            {/* Module Grid */}
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:gap-6">
-              {modules.map((module) => {
-                const isActive = activeModules.includes(module.id);
-                return (
-                  <button
-                    key={module.id}
-                    onClick={() => toggleModule(module.id)}
-                    className={`group relative overflow-hidden rounded-4xl border-2 p-8 text-center transition-all duration-500 ${
-                      isActive
-                        ? "border-moss-500 bg-moss-gradient shadow-glow"
-                        : "border-moss-200 bg-cream-50 hover:border-moss-400"
-                    }`}
-                  >
-                    <div className="relative">
-                      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-moss-200 bg-white/60 p-2 transition-all duration-500 group-hover:border-moss-400">
-                        <Image
-                          src={module.icon}
-                          alt={`${module.name} module`}
-                          width={48}
-                          height={48}
-                          className="h-12 w-12"
-                        />
-                      </div>
-                      <h3
-                        className={`text-2xl font-bold transition-colors duration-300 ${
-                          isActive ? "text-white" : "text-moss-800"
-                        }`}
-                      >
-                        {module.name}
-                      </h3>
-                      <p
-                        className={`mt-2 text-sm transition-colors duration-300 ${
-                          isActive ? "text-moss-100" : "text-sage-600"
-                        }`}
-                      >
-                        {isActive ? "Active" : "Click to activate"}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+          <BlogCarousel posts={blogPosts} />
 
-            {/* Active Count */}
-            {activeModules.length > 0 && (
-              <div className="mt-8 text-center">
-                <div className="inline-flex items-center gap-3 rounded-full border-2 border-moss-500 bg-moss-gradient px-6 py-3 shadow-glow">
-                  <div className="flex -space-x-2">
-                    {activeModules.map((id) => (
-                      <div
-                        key={id}
-                        className="h-8 w-8 rounded-full border-2 border-white bg-moss-700"
-                      />
-                    ))}
-                  </div>
-                  <span className="text-base font-semibold text-white">
-                    {activeModules.length} module{activeModules.length !== 1 ? "s" : ""} active
-                  </span>
-                </div>
-              </div>
-            )}
+          <div className="mt-8 text-center">
+            <Link
+              href="/research"
+              className="inline-flex items-center gap-2 text-base font-semibold text-moss-700 transition-colors hover:text-moss-900"
+            >
+              Ver todos los artículos ({blogPosts.length})
+              <span>→</span>
+            </Link>
           </div>
         </div>
       </section>

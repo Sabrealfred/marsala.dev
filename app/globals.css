@@ -38,3 +38,13 @@ section + section {
     transform: translateY(0);
   }
 }
+
+/* Hide scrollbar for horizontal scroll in category filters */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
