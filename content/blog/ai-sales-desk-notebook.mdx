@@ -26,7 +26,7 @@ image: "/blog/sales-desk.jpg"
 
 ## Context
 
-Between the CRM, documents and email, context was always missing. I created a sales desk where AI summarizes, suggests and documents in one canvas.
+Our account executives were flipping between Attio, Notion, Google Docs, and Slack threads anytime a deal advanced. Discovery call notes lived in one doc, security responses in another, and finance approvals buried in email. That context switching destroyed deal velocity and made onboarding new reps painful. I built a “sales desk notebook” where AI assembles pipeline data, customer history, and recommended actions inside a single canvas. The desk feels like a living document: agents can edit anything, but the system keeps the data fresh and enforces process.
 
 ## Stack I leaned on
 
@@ -35,28 +35,92 @@ Between the CRM, documents and email, context was always missing. I created a sa
 - OpenAI for summaries and suggestions
 - Resend to trigger follow-ups directly
 
-## Playbook
+## The Failure Modes We Needed to Fix
 
-1. Created deal templates with sections for notes, risks and next steps.
-2. Synced real-time data from Attio via rollups.
-3. Added buttons that draft follow-ups with AI yet keep humans in control.
-4. Instrumented access controls and logs for every sensitive action.
-5. Captured feedback from reps and shipped iterations every sprint.
+1. **Fragmented notes**: discovery summaries, MEDDIC/CHAMP fields, and technical blockers never existed in the same place, so handoffs were messy.
+2. **Lost follow-ups**: reps left calls with action items but no automation to draft the recap or schedule next steps.
+3. **Compliance gaps**: selling into regulated industries required logging who accessed which doc and when; Notion alone wasn’t enough.
+4. **Onboarding lag**: new hires spent two weeks learning “which tab holds what” instead of learning the product.
 
-## Metrics & telemetry
+Every requirement for the notebook traced back to eliminating one of these failure modes.
 
-- Onboarding time for new AEs: -30%
-- Complete notes per call: +55%
-- Daily desk usage: 94% of the team
+## Notebook Architecture
+
+| Layer | Purpose | Notes |
+|-------|---------|-------|
+| **Data sync** | Pulls realtime CRM data | Attio webhooks push updates into a Supabase edge function that writes to Notion synced blocks |
+| **Notebook template** | Standardizes deal documentation | A Notion template with sections for context, stakeholders, risks, experiments, and mutual action plan |
+| **AI services** | Summaries + drafting | OpenAI GPT-4o mini with structured prompts referencing the latest synced data |
+| **Automation hooks** | Follow-ups, task creation | Resend for personalized emails, Linear for engineering asks, Slack for exec updates |
+| **Observability** | Logging + analytics | BigQuery stores every AI suggestion, human edit, and send event for audits |
+
+The template is duplicated per deal and bound to the CRM opportunity ID. When the status changes in Attio, the notebook receives a webhook and updates relevant sections instantly.
+
+## Playbook for Building the Desk
+
+1. **Design the golden template**: I mapped our best-performing deals and encoded every section we wished we’d captured earlier—business context, pains, politics, land-and-expand strategy, mutual success plan.
+2. **Wire data syncs**: Supabase functions listen to Attio webhooks and update Notion synced blocks (ARR, stage, health score, procurement notes). No one touches these blocks manually.
+3. **Layer AI copilots**: Buttons labeled “Summarize last 3 calls,” “Draft recap,” and “Suggest next experiment” call our AI service. Responses land in a staging block until the rep accepts/edits.
+4. **Embed guardrails**: Sensitive snippets (pricing, security promises) are templated. If AI drafts text referencing these areas, it must cite the approved language and link back to the source doc.
+5. **Integrate actions**: Reps trigger Resend follow-ups or create Attio tasks from inside the notebook. Context (call notes, next steps) is injected automatically, but humans approve before sending.
+6. **Instrument feedback loops**: Each notebook has a “feedback” synced block. Reps tag issues (data missing, tone off, automation bug). A nightly job aggregates tags and opens GitHub issues.
+
+## Permissioning & Compliance
+
+- **Row-level security**: Attio API tokens scoped per rep ensure they can only sync deals they own.
+- **Notion guest controls**: External advisors get view-only links with expiring tokens.
+- **Access logging**: Every AI invocation or send action writes a record (deal ID, user, fields touched) to BigQuery + LogSnag, satisfying SOC 2 evidence requirements.
+- **Redaction filters**: PII never leaves the workspace. Before text hits OpenAI, we run deterministic masking on names/emails and replace them with placeholders rehydrated in the final draft.
+
+Compliance sits in the same dashboard as RevOps, so they can audit without a manual export.
+
+## AI Prompt Strategy
+
+*Prompts are deterministic checklists, not creative writing briefs.*
+
+- **Call summaries**: “List the top 3 business outcomes mentioned, blockers, decision criteria, and named stakeholders. If missing, output `UNKNOWN` so the rep fills it in.”
+- **Risk assessment**: Model scores deal health (Champion strength, timing, legal blockers) and proposes mitigation tasks.
+- **Mutual action plan generator**: Pulls stage-based tasks from a library and tailors them with deal metadata (region, product line, security posture).
+- **Coaching tips**: When the deal stalls for >14 days, AI surfaces similar deals from the past year and what unblocked them.
+
+Reps can tweak prompts by toggling checkboxes (“Include pricing context,” “Focus on security”). All prompt versions live in Git with code review.
+
+## Automation Moments
+
+- **After every call**: Gong transcript hits Attio → triggers notebook refresh → AI drafts recap → rep edits → Resend email sent within 15 minutes.
+- **Stage change**: Notebook posts an update to #deal-desk with the AI risk summary plus requests for legal/finance input.
+- **Executive briefings**: Before QBRs, the system generates a one-page PDF combining ARR trajectory, mutual plan progress, and AI commentary.
+- **Alerting**: If a notebook goes 5 business days without updates while still in Commit pipeline, the owner and their manager get pinged.
+
+Automation freed reps from admin work without removing their judgement.
+
+## Adoption & Change Management
+
+1. **Pilot with top performers**: Two senior AEs stress-tested the earliest template and gave brutally honest feedback.
+2. **Run “tab funerals”**: We held a workshop where reps listed every tab they open in a typical day, then mapped which ones the notebook replaces. Seeing redundant tools vanish created buy-in.
+3. **Shadowing**: New hires shadow a veteran using the desk for two deals. They learn how to trust AI suggestions while editing aggressively.
+4. **Weekly desk retro**: 15-minute cadence where reps share wins (“AI found a blocker I missed”) and gaps (“Need procurement checklist for APAC banks”).
+5. **Enablement content**: Loom walkthroughs for every button plus an FAQ on AI behaviors (“What if the summary misses nuance?”).
+
+## Metrics & Telemetry
+
+- **Onboarding time for new AEs**: -30% (8 weeks → 5.5 weeks).
+- **Complete notes per call**: +55% thanks to structured templates and AI nudges.
+- **Daily desk usage**: 94% of the team logs activity at least once per business day.
+- **Follow-up SLA**: 92% of call recaps sent within 30 minutes (was 48% before).
+- **Audit coverage**: 100% of AI-generated emails have a corresponding log entry with the human approver.
+
+We track these metrics in Metabase dashboards embedded inside the RevOps home page and review them during weekly pipeline meetings.
 
 ## What stuck with me
 
-- AI doesn’t replace judgement; everything stays editable before sending.
-- Action-level logging keeps compliance happy.
+- AI doesn’t replace judgement; everything stays editable before sending, and reps get credit for the edits.
+- Action-level logging keeps compliance happy and gives leaders visibility into deal momentum.
+- Templates beat blank canvases—people adopt tools that remove work, not ones that add “write a narrative” homework.
 
 ## What I'm building next
 
-I'll be sharing this desk as a clonable template. Want it? leave me a ping.
+I'll be sharing this desk as a clonable template. Next on the roadmap: native Salesforce integration, multilingual recap drafts, and automated executive briefings triggered by ARR thresholds. Want it? leave me a ping.
 
 ---
 

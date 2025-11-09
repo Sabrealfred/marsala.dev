@@ -27,7 +27,7 @@ image: "/blog/cms-guardrails.jpg"
 
 ## Context
 
-Marketing asked for full autonomy but I refused to babysit releases. I built guardrails for Sanity/Contentful and Next.js.
+Marketing wanted to ship campaigns independently: regional landing pages, pricing tweaks, product launch hubs. The previous workflow relied on engineers to review every change and deploy manually—which meant bottlenecks and last-minute hotfixes. I agreed to flip the ownership model only if the CMS behaved like a tightly governed platform: zero broken layouts, zero rogue scripts, and instant visibility when something drifted. Over eight weeks we turned a classic “headless CMS + Next.js marketing site” into a self-serve environment guarded by automation, observability, and opinionated playbooks.
 
 ## Stack I leaned on
 
@@ -36,28 +36,99 @@ Marketing asked for full autonomy but I refused to babysit releases. I built gua
 - Playwright for visual QA
 - Resend notifications on publish
 
-## Playbook
+## Where Things Broke (Before Guardrails)
 
-1. Defined roles and approval workflows directly in the CMS.
-2. Implemented pixel-perfect previews wired to Slack approvals.
-3. Added SEO, accessibility and broken-link validators inside the editor.
-4. Ran end-to-end tests before publishing critical pages.
-5. Published a marketing handbook with best practices and no-gos.
+1. **Unreviewed embeds**: marketers pasted experimental widgets that loaded third-party JS and tanked Core Web Vitals.
+2. **404 forests**: regional teams cloned pages but forgot to update internal links, killing organic traffic.
+3. **Accessibility regressions**: rich text blocks introduced unlabelled CTAs or images missing alt text.
+4. **Release whiplash**: multiple editors published changes simultaneously, causing race conditions in the CDN cache.
 
-## Metrics & telemetry
+We documented every failure mode and used it as the acceptance criteria for the new system.
 
-- Incidents caused by content changes: 0
-- Time to launch campaigns: -50%
-- Marketing satisfaction: 9.4/10
+## Architecture Blueprint
 
-## What stuck with me
+* **Authoring layer** (Sanity Studio) sits behind SSO + roles, with custom input components that enforce schema constraints.
+* **Preview layer**: Next.js preview mode hosts staging builds of every page. Editors click “Open preview” and are routed through a signed URL that reflects their draft exactly.
+* **Validation layer**: background webhooks run Linting + Playwright + Axe + Broken-link crawlers before a publish event is accepted.
+* **Publish layer**: only once validations pass does the CMS call a Netlify/Vercel deploy hook, tagging the git commit with the content release ID.
+* **Observability layer**: Resend pushes a digest of every deployment (what changed, who approved, automated test results) into #marketing-ships.
 
-- Previews must be identical to prod; 'close enough' is not enough.
-- The CMS should educate with clear messages when something breaks.
+## Permission Model and Workflow
 
-## What I'm building next
+| Role | Capabilities | Approval path |
+|------|--------------|---------------|
+| **Contributors** | Draft sections, upload media, request changes | Needs manager approval before preview |
+| **Publishers** | Edit localized variants, schedule releases | Requires automated QA + peer sign-off |
+| **Admins** | Modify schemas, feature flags, emergency rollbacks | Auto-notifies engineering + RevOps |
 
-Next I'll add AI-powered SEO suggestions in real time. Want a demo? send me a note.
+Key additions:
+
+- **Change requests** live next to each document. Editors must attach a Jira ticket or campaign brief before publishing.
+- **Timeboxed holds**: if QA doesn’t finish within 4 hours, the CMS auto-cancels the release so drafts don’t sit half-baked.
+- **Audit trail**: we store every state transition (draft → ready → previewed → published) in BigQuery for weekly reviews.
+
+## Preview + QA Pipeline
+
+1. Editor clicks **“Generate preview”**. Sanity triggers a Next.js preview build scoped to that document slug.
+2. A Playwright suite opens the preview URL, captures full-page screenshots, and compares them to the last approved baseline.
+3. Accessibility checks (axe-core) run on the DOM; failures block the publish button and annotate the offending block in Studio.
+4. An internal **SEO linter** validates meta tags, canonical URLs, hreflang pairs, and checks for missing schema.
+5. Results get posted in Slack with a ✅/❌ summary plus direct links to diffs.
+
+If everything passes, the publish workflow unlocks for 60 minutes. If editors need more changes they restart the pipeline; no manual overrides.
+
+## Inline Validators Inside the CMS
+
+- **Link resolver**: as marketers type, the component checks whether the internal slug exists and highlights broken references instantly.
+- **Image guard**: enforces focal points, alt text, and size ratios; rejects files above 500 KB unless tagged as “hero.”
+- **Structured snippets**: components for pricing tables, testimonials, and hero copy ship with schema + copy guidelines. Editors fill structured forms instead of raw rich text.
+- **CTA library**: drop-down ensures only approved CTA variants (copy, color, tracking IDs) go live, keeping instrumentation intact.
+
+These validators removed 90% of the “human error” we used to fix in code reviews.
+
+## Automation & Alerts
+
+- **Resend digests** notify marketing + eng every time a document hits preview, publish, or rollback. Each email contains diff summaries, Lighthouse scores, and reviewer comments.
+- **PagerDuty light policy** fires if three failed publishes happen in a row—signals systemic issues (schema drift, breaking change in Next.js, etc.).
+- **Uptime checks** on key landing pages run every 5 minutes; spikes auto-tag the last content release so we know who to ping.
+
+## Rollout Playbook
+
+1. **Week 1 – Discovery**: map existing content models, collect horror stories, rank failure modes.
+2. **Week 2 – Schema hardening**: lock down types, add migration scripts, introduce CTA library + structured snippets.
+3. **Week 3 – Automation**: wire previews, validations, and Slack/Resend notifications; create baseline screenshots.
+4. **Week 4 – Pilot**: empower one regional marketer to ship end-to-end. Track every error, refine guardrails, document best practices.
+5. **Week 5 – Global launch**: train rest of marketing via office hours, ship the handbook, turn on PagerDuty policy.
+
+## Governance Handbook + Checklists
+
+The handbook is a living doc that mirrors the guardrails so editors always know “why” not just “how.” Highlights:
+
+- **Campaign launch checklist** (pre-launch copy review, preview link, QA screenshot, SEO lint result, analytics tag verification).
+- **Localization playbook** covering hreflang rules, translation memory usage, and when to clone vs. extend a document.
+- **Emergency rollback SOP** with screenshots of the CMS buttons, expected Slack template, and timelines for comms.
+- **Glossary of banned patterns** (inline scripts, raw iframes, non-responsive tables) plus the approved alternatives.
+- **Training labs**: 30-minute missions where new marketers intentionally break things in staging and learn how alerts fire.
+
+We require every editor to certify on the handbook annually; completion unlocks publisher permissions. That ritual keeps the guardrails culturally relevant instead of tribal knowledge.
+
+## Metrics & Telemetry
+
+- **Incidents caused by content changes**: 0 in the six months post-launch.
+- **Time to launch campaigns**: 8 days → 4 days thanks to parallel drafting + automated QA.
+- **Rollback time**: &lt;3 minutes (publish event tags the git commit and we expose a “Revert to prior release” button).
+- **Marketing satisfaction**: 9.4/10 in quarterly survey.
+- **SEO health**: broken internal links detected per month dropped from 47 to 3.
+
+## What Stuck With Me
+
+- Previews must be identical to prod; “close enough” introduces false confidence and wastes reviewer time.
+- The CMS should educate: every validator error links to the handbook so editors learn instead of escalating.
+- Observability belongs to marketing too—dashboards, alerts, and audits shouldn’t be an engineering-only playground.
+
+## What I'm Building Next
+
+Next I'll add AI-powered SEO suggestions in real time (structured data, tone, keyword density) and experiment with automatic hreflang generation. Want a demo? send me a note.
 
 ---
 
