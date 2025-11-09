@@ -2,20 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  min-height: 100vh;
-  background:
-    radial-gradient(circle farthest-side at 20% 20%, rgba(91, 103, 244, 0.12), transparent 55%),
-    radial-gradient(circle farthest-side at 80% 10%, rgba(155, 105, 255, 0.1), transparent 60%),
-    #f6f7fb;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply text-foreground;
+    min-height: 100vh;
+  }
 }
 
-main {
-  @apply mx-auto w-full max-w-6xl px-6 pb-24 md:px-10;
-}
+@layer utilities {
+  /* Container utilities for consistent max-widths */
+  .container-sm {
+    @apply mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8;
+  }
 
-section + section {
-  @apply mt-24;
+  .container-md {
+    @apply mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-lg {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-xl {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Section spacing utilities */
+  .section-py {
+    @apply py-12 lg:py-20;
+  }
+
+  .section-py-sm {
+    @apply py-8 lg:py-12;
+  }
+
+  .section-py-lg {
+    @apply py-16 lg:py-28;
+  }
 }
 
 .fade-up {

@@ -70,6 +70,16 @@ const config: Config = {
         'moss-gradient': 'linear-gradient(135deg, #6a8a6c 0%, #435a45 100%)',
         'sage-gradient': 'linear-gradient(135deg, #a3b1a5 0%, #627465 100%)',
       },
+      spacing: {
+        '18': '4.5rem',
+        '22': '5.5rem',
+        '26': '6.5rem',
+        '30': '7.5rem',
+      },
+      gap: {
+        '18': '4.5rem',
+        '22': '5.5rem',
+      },
     },
   },
   plugins: [],

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Types importados localmente para evitar dependencias de servidor
 type BlogPost = {
@@ -48,18 +49,31 @@ type BlogCarouselProps = {
 export function BlogCarousel({ posts }: BlogCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [direction, setDirection] = useState(0);
 
-  const featuredPosts = posts.slice(0, 5); // Show top 5 posts
+  const featuredPosts = posts.slice(0, 10); // Show top 10 posts for more variety
 
   useEffect(() => {
     if (!isAutoPlaying || featuredPosts.length === 0) return;
 
     const interval = setInterval(() => {
+      setDirection(1);
       setCurrentIndex((prev) => (prev + 1) % featuredPosts.length);
     }, 5000); // Change every 5 seconds
 
     return () => clearInterval(interval);
   }, [isAutoPlaying, featuredPosts.length]);
+
+  // Re-enable auto-play after 10 seconds of inactivity
+  useEffect(() => {
+    if (isAutoPlaying) return;
+
+    const timeout = setTimeout(() => {
+      setIsAutoPlaying(true);
+    }, 10000);
+
+    return () => clearTimeout(timeout);
+  }, [isAutoPlaying, currentIndex]);
 
   if (featuredPosts.length === 0) return null;
 
@@ -67,18 +81,36 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
   const categoryIcon = getCategoryIcon(currentPost.tags);
 
   const goToSlide = (index: number) => {
+    setDirection(index > currentIndex ? 1 : -1);
     setCurrentIndex(index);
     setIsAutoPlaying(false);
   };
 
   const goToPrev = () => {
+    setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + featuredPosts.length) % featuredPosts.length);
     setIsAutoPlaying(false);
   };
 
   const goToNext = () => {
+    setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % featuredPosts.length);
     setIsAutoPlaying(false);
+  };
+
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 50 : -50,
+      opacity: 0,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+    },
+    exit: (direction: number) => ({
+      x: direction > 0 ? -50 : 50,
+      opacity: 0,
+    }),
   };
 
   return (
@@ -125,53 +157,68 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
         </div>
 
         {/* Post Content */}
-        <Link
-          href={`/blog/${currentPost.slug}`}
-          className="block space-y-4 transition-opacity duration-300"
-        >
-          {/* Category & Meta */}
-          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-            <span className="rounded-full bg-moss-gradient px-3 py-1 text-white shadow-sm">
-              {categoryIcon} {currentPost.type || "Insight"}
-            </span>
-            <span className="text-sage-600">·</span>
-            <span className="text-sage-600">{formatBlogDate(currentPost.date)}</span>
-            {currentPost.readingTime && (
-              <>
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={currentIndex}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 },
+            }}
+          >
+            <Link
+              href={`/blog/${currentPost.slug}`}
+              className="block space-y-4"
+            >
+              {/* Category & Meta */}
+              <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                <span className="rounded-full bg-moss-gradient px-3 py-1 text-white shadow-sm">
+                  {categoryIcon} {currentPost.type || "Insight"}
+                </span>
                 <span className="text-sage-600">·</span>
-                <span className="text-sage-600">{currentPost.readingTime}</span>
-              </>
-            )}
-          </div>
+                <span className="text-sage-600">{formatBlogDate(currentPost.date)}</span>
+                {currentPost.readingTime && (
+                  <>
+                    <span className="text-sage-600">·</span>
+                    <span className="text-sage-600">{currentPost.readingTime}</span>
+                  </>
+                )}
+              </div>
 
-          {/* Title & Summary */}
-          <div>
-            <h4 className="text-2xl font-bold text-moss-950 transition-colors group-hover:text-moss-700 lg:text-3xl">
-              {currentPost.title}
-            </h4>
-            <p className="mt-3 line-clamp-2 text-base text-sage-700 lg:text-lg">
-              {currentPost.summary}
-            </p>
-          </div>
+              {/* Title & Summary */}
+              <div>
+                <h4 className="text-2xl font-bold text-moss-950 transition-colors group-hover:text-moss-700 lg:text-3xl">
+                  {currentPost.title}
+                </h4>
+                <p className="mt-3 line-clamp-2 text-base text-sage-700 lg:text-lg">
+                  {currentPost.summary}
+                </p>
+              </div>
 
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2">
-            {currentPost.tags?.slice(0, 4).map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full border border-moss-200 bg-white/60 px-3 py-1 text-xs font-semibold text-moss-700 backdrop-blur-sm"
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
+              {/* Tags */}
+              <div className="flex flex-wrap gap-2">
+                {currentPost.tags?.slice(0, 4).map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-moss-200 bg-white/60 px-3 py-1 text-xs font-semibold text-moss-700 backdrop-blur-sm"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
 
-          {/* CTA */}
-          <div className="flex items-center gap-2 text-sm font-semibold text-moss-700 transition-all duration-300 group-hover:translate-x-1">
-            <span>Leer artículo completo</span>
-            <span>→</span>
-          </div>
-        </Link>
+              {/* CTA */}
+              <div className="flex items-center gap-2 text-sm font-semibold text-moss-700 transition-all duration-300 group-hover:translate-x-1">
+                <span>Leer artículo completo</span>
+                <span>→</span>
+              </div>
+            </Link>
+          </motion.div>
+        </AnimatePresence>
 
         {/* Dots Navigation */}
         <div className="mt-6 flex items-center justify-center gap-2">

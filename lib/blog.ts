@@ -190,24 +190,36 @@ export function getRelatedPosts(currentSlug: string, limit = 3): BlogPost[] {
   const currentPost = getBlogPost(currentSlug);
   if (!currentPost) return [];
 
+  const currentTags = (currentPost.tags || []).map(t => t.toLowerCase());
   const currentCategory = getCategoryForPost(currentPost);
-  const allPosts = getAllBlogPosts();
+  const allPosts = getAllBlogPosts().filter(post => post.slug !== currentSlug);
 
-  // Filter posts from same category, excluding current post
-  const sameCategoryPosts = allPosts
-    .filter(post => post.slug !== currentSlug)
-    .filter(post => getCategoryForPost(post).id === currentCategory.id);
+  // Score each post based on tag overlap and category match
+  const scoredPosts = allPosts.map(post => {
+    const postTags = (post.tags || []).map(t => t.toLowerCase());
+    const postCategory = getCategoryForPost(post);
 
-  // If not enough posts in same category, add posts from other categories
-  if (sameCategoryPosts.length < limit) {
-    const otherPosts = allPosts
-      .filter(post => post.slug !== currentSlug)
-      .filter(post => getCategoryForPost(post).id !== currentCategory.id);
+    // Count matching tags
+    const matchingTags = currentTags.filter(tag => postTags.includes(tag)).length;
 
-    return [...sameCategoryPosts, ...otherPosts].slice(0, limit);
-  }
+    // Calculate score
+    let score = 0;
+    score += matchingTags * 10; // 10 points per matching tag
+    score += postCategory.id === currentCategory.id ? 5 : 0; // 5 points for same category
 
-  return sameCategoryPosts.slice(0, limit);
+    // Bonus for same type (Playbook, Guide, Tutorial, etc.)
+    if (post.type === currentPost.type) {
+      score += 3;
+    }
+
+    return { post, score };
+  });
+
+  // Sort by score (descending) and return top posts
+  return scoredPosts
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(item => item.post);
 }
 
 export function getNextPost(currentSlug: string): BlogPost | null {
