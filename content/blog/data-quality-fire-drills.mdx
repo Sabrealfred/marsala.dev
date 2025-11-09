@@ -26,7 +26,7 @@ image: "/blog/data-drills.jpg"
 
 ## Context
 
-Whenever a dashboard broke Slack turned into chaos. I instituted monthly drills to train the response muscle.
+Whenever a dashboard broke, Slack turned into chaos: growth blamed data, data blamed engineering, and leadership demanded hourly updates. We realized our “incident process” was a Google Doc nobody opened. I borrowed from SRE playbooks and instituted monthly fire drills so growth, analytics, and eng practiced together. Drills simulate real corruption, chart drops, and schema changes so when production breaks we default to muscle memory instead of panic.
 
 ## Stack I leaned on
 
@@ -35,28 +35,130 @@ Whenever a dashboard broke Slack turned into chaos. I instituted monthly drills 
 - PagerDuty for simulations
 - Notion as the incident logbook
 
-## Playbook
+## Symptoms We Target
 
-1. Plan realistic scenarios (freshness, duplicates, schema changes).
-2. Inject controlled bad data and trigger fake alerts.
-3. Run the drill with clear roles (incident commander, scribe, comms).
-4. Close with a retro and PRs to improve scripts/tests.
-5. Archive learnings and repeat monthly with variations.
+1. **Freshness gaps**: dashboards stuck at T-24 hours because ingestion paused.
+2. **Silent schema drift**: product added a column, dbt failed, but alerts never fired.
+3. **Duplicate leads**: marketing automation double-counted conversions, skewing CAC.
+4. **Incorrect filters**: Looker explores referencing deprecated fields.
 
-## Metrics & telemetry
+Each drill focuses on one of these so the team practices detection, comms, and resolution.
 
-- Time to detect real incidents: -40%
-- Team confidence during incidents: 9/10
-- Runbooks updated after drills: 100%
+## Roles & RACI
+
+| Role | Responsibilities |
+|------|------------------|
+| **Incident Commander** (IC) | Owns timeline, decides when to escalate, manages Zoom room |
+| **Data Detective** | Digs into logs, dbt runs, Supabase clones to pinpoint root cause |
+| **Communications Lead** | Posts updates in #growth-ops and leadership channel every 15 minutes |
+| **Scribe** | Logs events, decisions, and follow-ups in Notion incident doc |
+| **Shadow** | Rotating trainee who observes and learns the playbook |
+
+Everyone rotates so the process survives vacations.
+
+## Scenario Design
+
+1. **Write a press release**: describe what leadership sees (“ARR dashboard shows zero for EU”) and what assumptions they’ll make.
+2. **Outline injected failure**: e.g., run a dbt seed that multiplies revenue by 0.1 or delay Fivetran sync.
+3. **Define success criteria**: detect within X minutes, fix within Y, produce RCA summary.
+4. **Prepare artifacts**: corrupted CSV, fake PagerDuty alert, Slack messages from “sales leader” asking for status.
+
+We store scenarios in Notion with difficulty ratings and reuse them annually.
+
+## Drill Execution
+
+1. **Kickoff**: send calendar hold + context 24h prior so people block time (but not details—surprise matters).
+2. **Inject issue**: run automation that corrupts staging data or pauses an Airbyte sync. PagerDuty fires a simulated alert.
+3. **Run response**: IC opens Zoom, assigns roles, and starts the timeline. Comms lead posts standardized updates (“T+5: investigating ingestion job xyz”).
+4. **Escalate intentionally**: halfway through we throw a curveball (e.g., legal requests impact analysis) to test communication load.
+5. **Resolve + rollback**: once root cause is identified, team applies fix to staging, prepares prod steps, and confirms metrics recovered.
+6. **Retro**: immediate debrief (15 min) capturing what went well, what broke, and which runbooks/tests to update.
+
+## Tooling Details
+
+- **Supabase clones** let us mess with data without touching prod; each drill uses a fresh clone with labeled timestamps.
+- **dbt seeds + macros** generate corruption (duplicate rows, nulls, schema drift). We version scenarios so we can reproduce them later.
+- **PagerDuty** has a “drill” service with fake on-call schedule. Alerts include runbook links so responders practice using them.
+- **Notion incident template** collects timeline, metrics impact, screenshots, Slack links, and follow-up tasks. Scribe fills it live.
+- **Metabase** dashboard tracks detection time, resolution time, and participants per drill to measure improvement.
+
+## Communication Templates
+
+We keep copy-paste snippets like:
+
+```
+Channel update (Comms lead)
+T+10 — Investigating dashboards/growth ARR showing 0 for EU.
+Suspect: freshness delay in `revenue_daily` table (last load T-26h).
+Next update in 15 min. IC: @marina, Detective: @daniel.
+```
+
+Leadership knows to expect updates every 15 minutes during drills and real incidents.
+
+## Automation for Drills
+
+- **n8n playbook** selects a scenario, spins up Supabase clone, runs dbt corruption macro, and fires PagerDuty.
+- **Slack bot** posts DM to participants: “Drill in progress. Join Zoom link. Roles: ...”
+- **GitHub action** opens a dummy PR representing the fix; reviewers practice code review under time pressure.
+
+Automation keeps setup consistent and makes it easy to run drills even when I’m on vacation.
+
+## Measuring Progress
+
+- **Time to detect real incidents**: -40% (we measure using Metabase + PagerDuty timestamps).
+- **Mean time to communicate**: went from 18 min → 6 min for first leadership update.
+- **Runbooks updated**: 100% of drills result in at least one improved doc or test.
+- **Confidence surveys**: participants rate readiness afterward; average jumped from 6/10 to 9/10.
+
+We share these metrics in our monthly ops review to prove the drills pay off.
+
+## Sample Scenario: Duplicate Leads
+
+1. Inject duplicate contacts into Supabase clone via dbt seed.
+2. Fake HubSpot workflow sends two welcome emails; marketing sees spike in unsubscribes.
+3. Drill objective: detect duplication, identify root cause (misconfigured enrichment job), and patch workflow.
+4. Success criteria: incident open &lt;45 min, fix &lt;90 min, follow-up PR to add uniqueness test + monitoring.
+
+The scenario helped marketing, data, and RevOps practice collaborating instead of pointing fingers.
+
+## Retrospective Template
+
+We answer five prompts:
+
+1. **What signals alerted us?** (Which metrics/alerts fired, were they clear?)
+2. **Where did we lose time?** (Tooling, access, decision paralysis?)
+3. **Which runbooks/tests need updates?**
+4. **What would leadership/customers have felt?**
+5. **What experiment or automation will we ship before next drill?**
+
+Answers turn into Jira tickets with owners and due dates.
+
+## Cultural Buy-In
+
+- **Exec briefing**: before starting the program we told leadership to expect fake alerts so they wouldn’t escalate to the board.
+- **Gamification**: we keep a leaderboard showing “fastest detection” and “best comms” to keep morale high.
+- **Inclusion**: rotate in PMMs, engineers, even finance so everyone learns how data incidents ripple.
+
+After three drills, people started volunteering because they saw how calm real incidents became.
+
+## Scheduling Cadence & Variations
+
+- **Monthly core drill**: always covers ingestion/data warehouse stack.
+- **Quarterly “black swan”**: simulate cloud outage, vendor lockout, or permissions issue—forces us to test backup pipelines and data export plans.
+- **Shadow pager**: once per month a new teammate carries the on-call phone for 24 hours (with supervision) to build confidence.
+- **Async tabletop**: remote-friendly version where we walk through scenario via Notion timelines instead of live data injection.
+
+We alternate office hours-style drills with surprise ones so nobody can script their response. The key is consistency—skip one month and the muscle memory fades fast.
 
 ## What stuck with me
 
 - Warn leadership ahead of time to avoid unnecessary escalations.
 - Document immediately or the drill evaporates from memory.
+- Incidents are team sports—run drills cross-functionally, not just within data.
 
 ## What I'm building next
 
-I'm publishing a library of ready-made scenarios. Want to contribute? DM me.
+I'm publishing a library of ready-made scenarios (CSV corruption, reverse ETL outage, GA4 quota issues) plus the n8n scripts that inject them. Want to contribute? DM me.
 
 ---
 

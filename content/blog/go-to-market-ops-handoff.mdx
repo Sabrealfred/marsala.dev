@@ -27,7 +27,7 @@ image: "/blog/gtm-handoff.jpg"
 
 ## Context
 
-Too many experiments die because they never get productized. I built a handoff framework that forces us to document owners, metrics and runbooks.
+Too many experiments die because they never get productized. Growth teams celebrate a win, then throw a Notion doc over the fence to operations. Weeks later the play stops working, nobody knows who owns alerts, and leadership questions why we invested at all. I built a handoff framework that forces us to capture owners, metrics, runbooks, and dependencies before we declare victory. It behaves like a contract: if ops can’t run it on day one, we aren’t done shipping.
 
 ## Stack I leaned on
 
@@ -36,28 +36,112 @@ Too many experiments die because they never get productized. I built a handoff f
 - Supabase to check exit metrics
 - Slack workflows for reminders
 
+## The Five Questions We Answer
+
+1. **Owner**: Who runs the play after launch? Include backup owner and escalation path.
+2. **Metric**: Which KPI proves it’s working, and where is that metric instrumented?
+3. **Runbook**: What steps, scripts, and SLAs keep the play healthy?
+4. **Risks & guardrails**: What could break (capacity, compliance, dependencies) and how do we monitor it?
+5. **Backlog & roadmap**: Which follow-up tasks remain, and who prioritizes them?
+
+The experiment doesn’t close in Linear until each question has a documented answer and the ops lead signs off.
+
+## Handoff Packet Anatomy
+
+| Section | Tool | Notes |
+|---------|------|-------|
+| Summary + video | Notion + Loom | 5-minute walkthrough showing flows, metrics, and failure modes |
+| Process checklist | Notion template | Step-by-step instructions with links to scripts, dashboards |
+| Data contract | Supabase / dbt docs | Defines tables, fields, freshness targets, alert thresholds |
+| Automation map | Miro diagram embedded | Shows n8n/Zapier/Fly flows with owners |
+| SLA + escalation | PagerDuty runbook | Who is paged, how fast, what “good” looks like |
+| Backlog | Linear project | Remaining items labeled “post-handoff” with owners and due dates |
+
+Ops can ramp by consuming the packet without booking extra meetings.
+
 ## Playbook
 
-1. Ask five key questions before closing a sprint (owner, metric, risks, playbooks, backlog).
-2. Record five-minute walkthroughs that travel with every handoff.
-3. Verify instrumentation and alerts before the build squad shuts down.
-4. Create status dashboards so operations can monitor without pinging engineering.
-5. Schedule quarterly retros to adjust process and tooling.
+1. **Co-design during discovery**: Ops lead joins the kickoff and helps define success metrics + constraints. No late surprises.
+2. **Instrument exit criteria**: Supabase + Metabase dashboards watch the KPI for two weeks pre-handoff. If it’s unstable, we keep it in the build squad.
+3. **Create the packet**: Growth squad fills in the Notion template, records Loom walkthrough, and links every script or dashboard. Slack workflow reminds them 48h before the handoff review.
+4. **Live handoff meeting**: 30-minute session where growth demos the play, ops runs it themselves, and we capture open questions. Meeting recorded and linked back to the packet.
+5. **Shadow period**: For two weeks ops runs the play with growth on standby. Alerts route to both teams, so knowledge transfer happens via real incidents.
+6. **Formal sign-off**: Once ops confirms they can operate without help, the experiment is archived in growth backlog and moved to the ops roadmap.
+7. **Quarterly retros**: Ops + growth review which handoffs succeeded, which slipped, and what tooling/process needs updates.
+
+## Contracts & Checklists
+
+- **Experiment contract**: single-page doc that states scope, KPIs, dependencies, and support model. Signed by PM, Ops lead, and RevOps director.
+- **Run checklist**: e.g., for a lifecycle email play: verify segment sync, run A/B test schedule, check unsubscribe alerts, deploy new creative. Each step links to script or UI path.
+- **Stop checklist**: criteria for pausing or rolling back (metric drop, deliverability issues, compliance review).
+
+Checklists live as Notion databases so we track completion and spot skipped steps.
+
+## Instrumentation & Alerts
+
+- **Supabase triggers** track metric thresholds and push updates to Slack (#gtm-health).
+- **PagerDuty light policy** ensures someone is paged if the KPI breaches for >4 hours.
+- **Metabase dashboards** show daily performance, backlog tasks, and on-call schedule for the play, giving leadership transparency.
+
+Handoffs fail when ops inherits a black box; we make telemetry part of the deliverable.
 
 ## Metrics & telemetry
 
-- Initiatives still alive after three months: 92%
-- Transition time to ops: 14 days → 4 days
-- Incidents due to missing context: -60%
+- **Initiatives still alive after three months**: 92% (up from 54%).
+- **Transition time to ops**: 14 days → 4 days because artifacts exist before the meeting.
+- **Incidents due to missing context**: -60%.
+- **Average onboarding hours per ops analyst**: -35% once Loom + checklists became standard.
+- **Executive confidence score**: 9/10 in quarterly survey (“I know who owns launched plays.”)
+
+## Sample Handoff Timeline
+
+| Day | Activity |
+|-----|----------|
+| -7  | Ops joins discovery sync, confirms KPIs + constraints |
+| -3  | Growth squad drafts packet skeleton, records first Loom |
+| -2  | Slack workflow pings owners to finalize runbooks/alerts |
+| 0   | Live handoff walkthrough + Q&A |
+| +3  | Ops runs play with growth shadowing; log issues in Notion |
+| +7  | Shadow period review; tune alerts/dashboards |
+| +14 | Formal sign-off + backlog transfer |
+
+By visualizing the timeline we eliminated last-minute scrambles.
+
+## Cost & Tooling Snapshot
+
+- **Linear**: already in use; we added templates and automations (no extra cost).
+- **Notion**: $8/user; playbook templates live here with relational databases.
+- **Loom**: $12/user for recording walkthroughs.
+- **Supabase**: free tier for monitoring exit metrics; upgraded to Pro ($25/mo) once we tracked >1M rows.
+- **Slack workflow builder**: part of Slack Pro plan; sends reminders and routes approvals.
+
+Under $100/mo in incremental tooling to keep multi-million dollar plays alive.
+
+## Common Failure Modes (and Fixes)
+
+1. **Docs without narrative** → We require Loom walkthroughs; humans remember stories better than bullet points.
+2. **Ops looped in too late** → Add ops to discovery invites automatically via Slack workflow.
+3. **Invisible backlog** → Post-handoff tasks stay in Linear under an “Ops” team board with clear owners, not in secret spreadsheets.
+4. **Alert fatigue** → During shadow period we tune alerts; ops cannot inherit noisy PagerDuty rules.
+5. **Tool access gaps** → Handoff checklist includes “permissions verified” for every system (Segment, Resend, n8n, Metabase).
+
+## Cultural Tactics
+
+- **Demo days**: every Friday ops demos one newly adopted play to the broader team. Reinforces accountability and creates a feedback loop.
+- **Office hours**: growth squad hosts a weekly 30-minute slot for ops questions during the first month post-handoff.
+- **Recognition**: we shout out ops leads in #wins when a handoff goes smoothly. Incentives matter.
+- **Runbook drills**: once a quarter ops reruns a random handoff play from scratch to ensure docs stay fresh.
+- **Escalation simulations**: similar to chaos engineering; we intentionally break a handoff and watch how ops responds, then adjust the packet.
 
 ## What stuck with me
 
 - A solid handoff needs storytelling; cold documents flop.
 - Operations must show up in discovery, not only at the finish line.
+- Ownership becomes real when dashboards, alerts, and scripts are handed over—not when a PM says “it’s done.”
 
 ## What I'm building next
 
-I'm writing a reusable template for any squad. Want to pilot it? leave me your email.
+I'm writing a reusable template for any squad plus a Linear workflow that enforces the five questions before you can mark an experiment “done.” Want to pilot it? leave me your email.
 
 ---
 
