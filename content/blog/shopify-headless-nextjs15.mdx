@@ -31,7 +31,7 @@ Shopify Plus gave us a reliable checkout and ops tooling, but every marketing la
 
 Instead of bolting on more scripts, we rebuilt the storefront as a headless architecture: Next.js 15 App Router for UI, Shopify Storefront API for commerce data, Sanity as the content brain, and a thin synchronization layer for inventory and merchandising. The goal was not just visual freedom; we wanted SLOs, observability, preview environments, and modular components that marketing can orchestrate without pinging engineering.
 
-This guide distills how we implemented the stack, governed releases, and hit <2s largest contentful paint globally. If you are planning to take Shopify headless with Next.js, this is the blueprint we wish we had on day one.
+This guide distills how we implemented the stack, governed releases, and hit &lt;2s largest contentful paint globally. If you are planning to take Shopify headless with Next.js, this is the blueprint we wish we had on day one.
 
 ## Stack / Architecture
 
@@ -67,7 +67,7 @@ The architecture treats Shopify as the commerce kernel, Sanity as the storytelli
 
 ### 4. Synchronize inventory and merchandising
 
-- Shopify webhooks → n8n workflows → Supabase + Sanity. We update Algolia, trigger Slack notifications (“Size M < 10 units”), and revalidate relevant caches via Vercel API.
+- Shopify webhooks → n8n workflows → Supabase + Sanity. We update Algolia, trigger Slack notifications (“Size M &lt; 10 units”), and revalidate relevant caches via Vercel API.
 - For bundles and preorders, Sanity stores the narrative while Shopify keeps the truth. n8n ensures both stay aligned.
 
 ### 5. Implement preview + release hygiene
