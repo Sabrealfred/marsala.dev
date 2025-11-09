@@ -96,10 +96,38 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
 
   return (
     <>
-      {/* Category Filter */}
+      {/* Search and Filters */}
       <section className="sticky top-0 z-20 bg-gradient-to-b from-white to-white/95 backdrop-blur-xl border-b-2 border-moss-200/50 py-6 shadow-sm">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          {/* Filter Label */}
+          {/* Search Bar */}
+          <div className="mb-6">
+            <div className="relative">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                <svg className="h-5 w-5 text-moss-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search articles by title, content, or tags..."
+                className="w-full rounded-2xl border-2 border-moss-200 bg-white py-3 pl-12 pr-4 text-sm text-moss-950 placeholder-sage-500 transition-all focus:border-moss-500 focus:outline-none focus:ring-2 focus:ring-moss-500/20"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute inset-y-0 right-0 flex items-center pr-4 text-sage-500 hover:text-moss-700"
+                >
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Category Filter Label */}
           <div className="mb-4 flex items-center gap-2">
             <svg className="h-5 w-5 text-moss-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -163,20 +191,60 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
           </div>
 
           {/* Active Category Description */}
-          {selectedCategory && categories.find(c => c.id === selectedCategory)?.description && (
-            <div className="mt-4 rounded-2xl border border-moss-200 bg-moss-50/30 px-6 py-4 backdrop-blur-sm">
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-moss-gradient text-lg shadow-lg">
-                  {categories.find(c => c.id === selectedCategory)?.icon}
+          {selectedCategory && (() => {
+            const activeCategory = categories.find(c => c.id === selectedCategory);
+            return activeCategory?.description && (
+              <div className="mt-4 rounded-2xl border border-moss-200 bg-moss-50/30 px-6 py-4 backdrop-blur-sm">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-moss-gradient text-lg shadow-lg">
+                    {activeCategory.icon}
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-moss-800">
+                      {activeCategory.name}
+                    </p>
+                    <p className="mt-1 text-sm leading-relaxed text-sage-700">
+                      {activeCategory.description}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-moss-800">
-                    {categories.find(c => c.id === selectedCategory)?.name}
-                  </p>
-                  <p className="mt-1 text-sm leading-relaxed text-sage-700">
-                    {categories.find(c => c.id === selectedCategory)?.description}
-                  </p>
-                </div>
+              </div>
+            );
+          })()}
+
+          {/* Tag Filter */}
+          {allTags.length > 0 && (
+            <div className="mt-6">
+              <div className="mb-3 flex items-center gap-2">
+                <svg className="h-4 w-4 text-moss-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                <span className="text-xs font-bold uppercase tracking-widest text-moss-700">Filter by Tag</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSelectedTag(null)}
+                  className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
+                    selectedTag === null
+                      ? "bg-moss-gradient text-white shadow-md"
+                      : "border border-moss-200 bg-white text-moss-700 hover:border-moss-400 hover:bg-moss-50"
+                  }`}
+                >
+                  All Tags
+                </button>
+                {allTags.map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
+                    className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
+                      selectedTag === tag
+                        ? "bg-moss-gradient text-white shadow-md"
+                        : "border border-moss-200 bg-white text-moss-700 hover:border-moss-400 hover:bg-moss-50"
+                    }`}
+                  >
+                    #{tag}
+                  </button>
+                ))}
               </div>
             </div>
           )}
@@ -187,8 +255,32 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
       <section className="bg-gradient-to-b from-white via-cream-50 to-white py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           {displayPosts.length === 0 && (
-            <div className="rounded-4xl border-2 border-dashed border-moss-200 bg-white/70 p-12 text-center text-sage-600">
-              Research essays coming soon. Drop MDX files inside <code className="font-mono text-moss-800">content/blog</code>.
+            <div className="rounded-4xl border-2 border-dashed border-moss-200 bg-white/70 p-12 text-center">
+              <div className="mx-auto max-w-md">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-moss-100">
+                  <svg className="h-8 w-8 text-moss-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold text-moss-950">No articles found</h3>
+                <p className="mt-2 text-sm text-sage-600">
+                  {searchQuery || selectedTag || selectedCategory
+                    ? "Try adjusting your search or filter criteria to find what you're looking for."
+                    : "Check back soon for new content!"}
+                </p>
+                {(searchQuery || selectedTag || selectedCategory) && (
+                  <button
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSelectedTag(null);
+                      setSelectedCategory(null);
+                    }}
+                    className="mt-4 inline-flex items-center gap-2 rounded-full border-2 border-moss-200 bg-white px-6 py-2 text-sm font-semibold text-moss-700 transition-all hover:border-moss-500 hover:bg-moss-50"
+                  >
+                    Clear all filters
+                  </button>
+                )}
+              </div>
             </div>
           )}
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "./LanguageProvider";
 
 // Types importados localmente para evitar dependencias de servidor
 type BlogPost = {
@@ -47,6 +48,7 @@ type BlogCarouselProps = {
 };
 
 export function BlogCarousel({ posts }: BlogCarouselProps) {
+  const { t } = useLanguage();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [direction, setDirection] = useState(0);
@@ -213,7 +215,7 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
 
               {/* CTA */}
               <div className="flex items-center gap-2 text-sm font-semibold text-moss-700 transition-all duration-300 group-hover:translate-x-1">
-                <span>Leer artículo completo</span>
+                <span>{t("common.readMore")}</span>
                 <span>→</span>
               </div>
             </Link>

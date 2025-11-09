@@ -2,25 +2,27 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-
-const footerLinks = [
-  { href: "/modules", label: "Modules" },
-  { href: "/research", label: "Research" },
-  { href: "/lab", label: "Lab" },
-  { href: "/about", label: "About" },
-];
-
-const legalLinks = [
-  { href: "/legal/terms", label: "Terms" },
-  { href: "/legal/privacy", label: "Privacy" },
-  { href: "/legal/ai-usage", label: "AI Usage" },
-  { href: "/legal/sla", label: "Support SLA" },
-];
+import { useLanguage } from "./LanguageProvider";
 
 export function Footer() {
+  const { t } = useLanguage();
   const [mounted, setMounted] = useState(false);
   const currentQuarter = `Q${Math.floor(new Date().getMonth() / 3) + 1}`;
   const currentYear = new Date().getFullYear();
+
+  const footerLinks = [
+    { href: "/modules", label: t("nav.modules") },
+    { href: "/research", label: t("nav.research") },
+    { href: "/lab", label: t("nav.lab") },
+    { href: "/about", label: t("nav.about") },
+  ];
+
+  const legalLinks = [
+    { href: "/legal/terms", label: t("footer.terms") },
+    { href: "/legal/privacy", label: t("footer.privacy") },
+    { href: "/legal/ai-usage", label: t("footer.aiUsage") },
+    { href: "/legal/sla", label: t("footer.sla") },
+  ];
 
   useEffect(() => {
     setMounted(true);
@@ -37,18 +39,18 @@ export function Footer() {
                 <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-moss-950">All Systems Operational</p>
-                <p className="text-xs text-sage-600">99.97% uptime this quarter</p>
+                <p className="text-sm font-semibold text-moss-950">{t("footer.status")}</p>
+                <p className="text-xs text-sage-600">99.97% {t("footer.uptime")}</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 text-center sm:flex sm:gap-6">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-sage-600">Response Time</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-sage-600">{t("footer.response")}</p>
                 <p className="mt-1 text-lg font-bold text-moss-700">1.2hrs</p>
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-sage-600">Deployments {currentQuarter}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-sage-600">{t("footer.deployments")} {currentQuarter}</p>
                 <p className="mt-1 text-lg font-bold text-moss-700">12</p>
               </div>
             </div>
@@ -71,18 +73,18 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-3 pt-2 text-xs text-sage-500">
               <span className="flex items-center gap-1">
-                <span className="text-moss-600">📍</span> Remote-first
+                <span className="text-moss-600">📍</span> {t("footer.remote")}
               </span>
               <span>•</span>
               <span className="flex items-center gap-1">
-                <span className="text-moss-600">🔒</span> SOC 2 Type II
+                <span className="text-moss-600">🔒</span> {t("footer.certified")}
               </span>
             </div>
           </div>
 
           <div className="flex flex-col gap-6 sm:flex-row sm:gap-12">
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-moss-700">Explore</p>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-moss-700">{t("footer.explore")}</p>
               <ul className="grid gap-2">
                 {footerLinks.map((link) => (
                   <li key={link.href}>
@@ -97,7 +99,7 @@ export function Footer() {
               </ul>
             </div>
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-moss-700">Legal</p>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-moss-700">{t("footer.legal")}</p>
               <ul className="grid gap-2">
                 {legalLinks.map((link) => (
                   <li key={link.href}>
@@ -112,7 +114,7 @@ export function Footer() {
               </ul>
             </div>
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-moss-700">Connect</p>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-moss-700">{t("footer.connect")}</p>
               <ul className="grid gap-2">
                 <li>
                   <a
@@ -139,7 +141,7 @@ export function Footer() {
                     href="/contact"
                     className="text-sage-600 transition-colors duration-200 hover:text-moss-700"
                   >
-                    Contact
+                    {t("nav.contact")}
                   </Link>
                 </li>
               </ul>
@@ -152,7 +154,7 @@ export function Footer() {
       <div className="border-t border-moss-200 bg-moss-950 py-4 text-center text-xs text-sage-300">
         <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-2 px-6 sm:flex-row md:px-10">
           <p>© {mounted ? currentYear : '2025'} Marsala.dev</p>
-          <p className="text-sage-400">Crafted with modular intelligence</p>
+          <p className="text-sage-400">{t("footer.crafted")}</p>
         </div>
       </div>
     </footer>
