@@ -1,0 +1,70 @@
+---
+title: "Launch Council Metrics Playbook"
+slug: "launch-council-metrics-playbook"
+category: "RevOps & GTM Systems"
+type: "Insight"
+status: "draft"
+summary: "How we measure readiness, SLO adherence, and QA health in a monthly council using Linear, Notion, and Slack."
+---
+
+## Context
+
+Successful product launches are critical for business growth, yet often suffer from a lack of standardized readiness assessment and post-launch performance tracking. This playbook introduces the "Launch Council Metrics Playbook," a structured approach to measuring readiness, Service Level Objectives (SLOs), and Quality Assurance (QA) within a monthly launch council. By leveraging tools like Linear for project tracking, Notion for documentation, and Slack for real-time communication, organizations can ensure that every launch is meticulously planned, executed, and monitored. This framework aims to reduce launch-related risks, improve cross-functional alignment, and provide clear, data-driven insights into launch success.
+
+## Stack / Architecture
+
+The Launch Council Metrics Playbook integrates the following tools:
+
+*   **Linear:** A fast and efficient issue tracking tool used for managing launch-related tasks, bugs, and project progress.
+*   **Notion:** A flexible workspace for documentation, meeting notes, launch plans, and knowledge sharing.
+*   **Slack:** The primary communication platform for real-time updates, alerts, and cross-functional discussions during launches.
+*   **Data Visualization Tool (e.g., Tableau, Metabase, custom dashboards):** (Optional but recommended) For visualizing launch metrics and trends.
+*   **Monitoring Tools (e.g., Datadog, Prometheus):** (Optional but recommended) For tracking system performance and SLOs post-launch.
+
+The architecture focuses on creating a transparent and collaborative environment where all stakeholders have access to relevant launch information and metrics.
+
+## Playbook
+
+1.  **Establish a Monthly Launch Council:** Convene a cross-functional team (product, engineering, marketing, sales, support) to review upcoming launches.
+2.  **Define Launch Readiness Criteria:** For each launch, establish clear, measurable criteria for readiness across all functions (e.g., code complete, marketing assets ready, support documentation published).
+3.  **Track Readiness in Linear:** Create a Linear project or specific issues to track each readiness item, assigning owners and due dates.
+4.  **Document Launch Plans in Notion:** Use Notion to create detailed launch plans, including objectives, target metrics, communication strategies, and rollback procedures.
+5.  **Define Service Level Objectives (SLOs):** For critical post-launch metrics (e.g., uptime, response time, error rate), define clear SLOs and how they will be measured.
+6.  **Implement QA Procedures:** Establish comprehensive QA processes, including automated tests and manual checks, to ensure product quality before and after launch.
+7.  **Communicate via Slack:** Use dedicated Slack channels for each launch to facilitate real-time communication, share updates, and address issues promptly.
+8.  **Conduct Post-Launch Review:** After each launch, hold a review meeting to analyze performance against readiness criteria, SLOs, and QA results, documenting lessons learned in Notion.
+
+## Metrics & Telemetry
+
+*   **Launch Readiness Score:** Percentage of readiness criteria met before the target launch date. Target: >95%.
+*   **SLO Adherence:** Percentage of time post-launch that critical system metrics meet their defined Service Level Objectives. Target: >99.9%.
+*   **QA Defect Rate:** Number of critical bugs or issues identified during pre-launch QA and post-launch monitoring. Target: <0.01%.
+*   **Cross-Functional Alignment Score:** Survey-based metric on perceived alignment and communication effectiveness among launch council members. Target: >4/5.
+*   **Time to Resolution (Post-Launch Issues):** Average time taken to resolve critical issues identified after launch. Target: <1 hour.
+
+## Lessons
+
+*   **Early Alignment Prevents Late Surprises:** Involving all stakeholders from the beginning ensures a shared understanding of launch goals and potential roadblocks.
+*   **Data-Driven Decisions are Superior:** Relying on measurable metrics for readiness, SLOs, and QA provides objective insights for go/no-go decisions and post-launch analysis.
+*   **Clear Communication is Key:** A centralized communication strategy, especially through tools like Slack, minimizes misunderstandings and accelerates issue resolution.
+*   **Learn from Every Launch:** Post-launch reviews are invaluable for continuous improvement, identifying best practices and areas for refinement in future launches.
+*   **Empower Teams with Tools:** Providing efficient tools like Linear and Notion streamlines task management and documentation, freeing up time for strategic work.
+
+## Next Steps/FAQ
+
+### Next Steps:
+
+*   **Automate Readiness Checks:** Develop scripts or integrations to automatically verify certain readiness criteria (e.g., code deployment status, documentation completeness).
+*   **Integrate with Customer Feedback:** Incorporate customer feedback channels (e.g., surveys, support tickets) into post-launch reviews to get a holistic view of impact.
+*   **Build a Launch Playbook Template:** Create a standardized template in Notion for all future launch plans, ensuring consistency and efficiency.
+
+### FAQ:
+
+**Q: How do we handle last-minute changes or blockers identified during the launch council?**
+A: The launch council should have a clear process for escalating blockers, assessing their impact, and making informed decisions on whether to proceed, delay, or adjust the launch scope. Linear can be used to track these critical issues.
+
+**Q: What if a team consistently fails to meet their readiness criteria?**
+A: This indicates a systemic issue that needs to be addressed. The launch council should investigate the root cause, provide support, and potentially adjust future launch schedules or resource allocation for that team.
+
+**Q: How can we ensure that SLOs are realistic and achievable?**
+A: SLOs should be defined collaboratively with engineering and operations teams, based on historical performance data and business requirements. They should be challenging but attainable, with clear consequences for non-adherence.

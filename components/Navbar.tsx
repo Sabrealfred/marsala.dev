@@ -4,16 +4,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useLanguage } from "./LanguageProvider";
 
 const links = [
-  { href: "/modules", label: "Modules" },
-  { href: "/research", label: "Research" },
-  { href: "/lab", label: "Lab" },
-  { href: "/about", label: "About" },
+  { href: "/modules", labelKey: "nav.modules" },
+  { href: "/research", labelKey: "nav.research" },
+  { href: "/lab", labelKey: "nav.lab" },
+  { href: "/about", labelKey: "nav.about" },
 ];
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const listener = () => setIsScrolled(window.scrollY > 4);
@@ -45,17 +48,18 @@ export function Navbar() {
                   href={link.href}
                   className="transition-colors duration-200 hover:text-moss-700 dark:text-sage-400 dark:hover:text-moss-300"
                 >
-                  {link.label}
+                  {t(link.labelKey)}
                 </Link>
               </li>
             ))}
           </ul>
+          <LanguageSwitcher />
           <ThemeToggle />
           <Link
             href="/contact"
             className="rounded-full bg-moss-gradient px-6 py-2.5 text-sm font-semibold text-white shadow-card transition-transform duration-200 hover:scale-105"
           >
-            Contact
+            {t("nav.contact")}
           </Link>
         </nav>
       </div>

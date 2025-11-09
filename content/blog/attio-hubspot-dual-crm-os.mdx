@@ -1,0 +1,69 @@
+---
+title: "Attio + HubSpot Dual CRM OS"
+slug: "attio-hubspot-dual-crm-os"
+category: "RevOps & GTM Systems"
+type: "Case Study"
+status: "draft"
+summary: "How to orchestrate parallel pipelines between Attio and HubSpot without breaking reporting or data contracts."
+---
+
+## Context
+
+In today's fast-paced business environment, RevOps teams often grapple with the challenge of integrating multiple CRM systems. This case study explores the complexities and solutions involved in orchestrating parallel data pipelines between Attio and HubSpot. The primary goal is to maintain data integrity and consistent reporting across both platforms, ensuring that sales and marketing efforts are synchronized without data discrepancies or broken contracts. We will delve into the common pitfalls and strategic approaches to achieve a seamless dual CRM operating system. This setup is crucial for organizations that leverage specialized functionalities of each CRM while needing a unified view of their customer journey and revenue operations.
+
+## Stack / Architecture
+
+This dual CRM operating system leverages the following key tools and services:
+
+*   **Attio:** Utilized for its flexible data model and powerful relationship tracking, often serving as the primary source for deal progression and customer interactions.
+*   **HubSpot:** Employed for its robust marketing automation, sales engagement, and service hub functionalities, managing broader customer lifecycle stages.
+*   **Integration Platform (e.g., n8n, Zapier, custom API integrations):** Acts as the middleware to synchronize data between Attio and HubSpot, ensuring real-time or near real-time updates.
+*   **Data Warehouse (e.g., BigQuery, Snowflake):** Central repository for aggregated data from both CRMs, enabling comprehensive reporting and analytics.
+*   **Business Intelligence Tool (e.g., Metabase, Tableau):** Visualizes data from the data warehouse to provide actionable insights into RevOps performance.
+
+The architecture involves a bidirectional data flow, carefully designed to prevent data loops and ensure a single source of truth for critical metrics. Webhooks and API calls are configured to trigger updates across systems, with robust error handling and logging mechanisms in place.
+
+## Playbook
+
+1.  **Define Data Ownership and Source of Truth:** Clearly establish which CRM is the authoritative source for each data point (e.g., Attio for deal stages, HubSpot for marketing qualified leads).
+2.  **Map Data Fields:** Create a comprehensive mapping document outlining how fields in Attio correspond to fields in HubSpot, including data types and validation rules.
+3.  **Design Integration Flows:** Develop detailed flowcharts for data synchronization, specifying triggers, actions, and conditional logic for each integration point.
+4.  **Implement Incremental Syncs:** Prioritize incremental data synchronization to reduce API call volume and improve performance, focusing on changes rather than full data dumps.
+5.  **Establish Error Handling and Alerting:** Configure automated alerts for integration failures and implement retry mechanisms to ensure data consistency.
+6.  **Monitor Data Quality:** Regularly audit data across both CRMs and the data warehouse to identify and rectify discrepancies promptly.
+7.  **Document the Entire System:** Maintain up-to-date documentation of the dual CRM architecture, data flows, and integration logic for future reference and troubleshooting.
+
+## Metrics & Telemetry
+
+*   **Data Synchronization Latency:** Average time taken for a data point to propagate from one CRM to the other. Target: <5 minutes.
+*   **Data Consistency Score:** Percentage of matching data points for key fields across Attio and HubSpot. Target: >99%.
+*   **Integration Error Rate:** Number of failed integration events per day/week. Target: <0.1%.
+*   **Reporting Accuracy:** Percentage of reports that align with the single source of truth in the data warehouse. Target: >98%.
+*   **User Adoption Rate:** Percentage of RevOps team members actively using both CRMs as intended. Target: >90%.
+
+## Lessons
+
+*   **Clear Data Governance is Paramount:** Without explicit rules on data ownership, conflicts and inconsistencies will inevitably arise.
+*   **Start Simple, Iterate Often:** Begin with essential data points and gradually expand the integration scope, testing thoroughly at each stage.
+*   **Invest in Robust Monitoring:** Proactive monitoring of data flows and system health is crucial for early detection and resolution of issues.
+*   **Educate Your Team:** Ensure all stakeholders understand the purpose, functionality, and best practices for using the dual CRM system.
+*   **Anticipate Edge Cases:** Design integration logic to handle unusual scenarios and data anomalies to prevent system breakdowns.
+
+## Next Steps/FAQ
+
+### Next Steps:
+
+*   **Automate Data Quality Checks:** Implement scripts or tools to automatically identify and flag data inconsistencies.
+*   **Optimize API Usage:** Explore batch processing and event-driven architectures to further enhance integration efficiency.
+*   **Expand to Additional Systems:** Integrate other critical business tools (e.g., customer success platforms, billing systems) into the unified data ecosystem.
+
+### FAQ:
+
+**Q: How do we handle duplicate records across Attio and HubSpot?**
+A: Implement a robust de-duplication strategy at the integration layer, often involving a master record ID and a clear hierarchy for merging information.
+
+**Q: What if a field is updated simultaneously in both CRMs?**
+A: The integration logic should define a clear conflict resolution strategy, typically by prioritizing updates from the designated source of truth for that specific field.
+
+**Q: How can we ensure our reporting remains accurate with data flowing between two systems?**
+A: By centralizing all relevant data in a dedicated data warehouse and building reports from this single source, you eliminate discrepancies caused by disparate data views in individual CRMs.

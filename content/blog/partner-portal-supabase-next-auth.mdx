@@ -1,0 +1,70 @@
+---
+title: "Partner Portal Supabase + Next Auth"
+slug: "partner-portal-supabase-next-auth"
+category: "Enablement & Playbooks"
+type: "Playbook"
+status: "draft"
+summary: "Modular partner portal built with Supabase, Row Level Security, and living enablement guides."
+---
+
+## Context
+
+Building a robust and secure partner portal is essential for fostering strong relationships and enabling efficient collaboration with your ecosystem of partners. This playbook outlines the development of a modular partner portal leveraging Supabase for its backend services and Next.js with NextAuth.js for a secure and scalable frontend. The goal is to provide partners with a centralized hub for resources, data, and communication, while ensuring data privacy and access control through Supabase's Row Level Security (RLS). This architecture allows for dynamic content delivery, personalized experiences, and "living guides" that evolve with your partnership programs.
+
+## Stack / Architecture
+
+The Partner Portal is built using a modern full-stack JavaScript architecture:
+
+*   **Next.js:** The React framework for building performant and SEO-friendly web applications. It handles server-side rendering and API routes.
+*   **Supabase:** An open-source Firebase alternative providing a PostgreSQL database, authentication, real-time subscriptions, and storage. It forms the core backend.
+*   **NextAuth.js:** A complete open-source authentication solution for Next.js applications, offering various authentication providers and secure session management.
+*   **Tailwind CSS (or similar utility-first CSS framework):** For rapid and consistent styling of the user interface.
+*   **MDX (Markdown with JSX):** To render rich, interactive content for "living guides" and documentation within the portal.
+
+The architecture prioritizes security, scalability, and a developer-friendly experience, enabling rapid iteration and feature development.
+
+## Playbook
+
+1.  **Set Up Supabase Project:** Initialize a new Supabase project, configure your database schema, and enable Row Level Security (RLS) for all partner-related tables.
+2.  **Configure Next.js Application:** Create a new Next.js project and integrate NextAuth.js for authentication. Define your desired authentication providers (e.g., email/password, OAuth).
+3.  **Implement Partner Authentication:** Securely integrate NextAuth.js with Supabase's authentication system, ensuring partners can log in and their sessions are managed.
+4.  **Design Database Schema with RLS:** Create tables for partners, resources, deals, and other relevant data. Implement RLS policies to ensure each partner can only access their own data.
+5.  **Develop Modular UI Components:** Build reusable React components for the portal's interface, including dashboards, resource libraries, and communication tools.
+6.  **Create "Living Guides" with MDX:** Use MDX to author dynamic and interactive guides for partners, embedding React components directly within markdown content.
+7.  **Implement API Routes for Data Access:** Create Next.js API routes to securely fetch and update data from Supabase, respecting RLS policies.
+8.  **Deploy and Monitor:** Deploy the Next.js application and Supabase project. Set up monitoring and logging for performance and security.
+
+## Metrics & Telemetry
+
+*   **Partner Engagement Rate:** Frequency and depth of partner interactions with the portal (e.g., logins, resource downloads, guide views). Target: >70% monthly active partners.
+*   **Resource Utilization:** Tracking of which resources and guides are most accessed and found useful by partners. Target: High utilization of key enablement materials.
+*   **Data Security Incidents:** Number of unauthorized access attempts or RLS policy violations. Target: 0.
+*   **Partner Satisfaction Score:** Regular surveys to gauge partner satisfaction with the portal's usability and value. Target: >8.5/10.
+*   **Time to Partner Onboarding:** Reduction in the time it takes for new partners to become fully enabled using the portal. Target: 20% reduction.
+
+## Lessons
+
+*   **Security First with RLS:** Supabase's Row Level Security is a powerful feature that must be meticulously configured to prevent data breaches.
+*   **Modular Design for Scalability:** A modular approach allows for easy expansion of the portal with new features and content without re-architecting the entire system.
+*   **Content is King:** "Living guides" and up-to-date resources are crucial for partner success and engagement.
+*   **User Experience Matters:** A well-designed, intuitive interface encourages partners to actively use the portal.
+*   **Feedback Loops are Vital:** Continuously gather feedback from partners to iterate and improve the portal's functionality and content.
+
+## Next Steps/FAQ
+
+### Next Steps:
+
+*   **Integrate with CRM/PRM:** Connect the partner portal with your existing CRM or Partner Relationship Management (PRM) system for seamless data flow.
+*   **Implement Partner Deal Registration:** Add functionality for partners to register deals directly through the portal, streamlining the sales process.
+*   **Develop a Partner Community Forum:** Foster collaboration among partners by integrating a forum or discussion board within the portal.
+
+### FAQ:
+
+**Q: How does Row Level Security (RLS) in Supabase work to protect partner data?**
+A: RLS allows you to define policies that restrict which rows a user can access or modify in a database table. For a partner portal, this means you can write policies that ensure a partner can only see data associated with their own `partner_id`.
+
+**Q: Can NextAuth.js support multiple types of partner authentication (e.g., social logins, enterprise SSO)?**
+A: Yes, NextAuth.js is highly flexible and supports a wide range of authentication providers, including OAuth providers (Google, GitHub), email/password, and enterprise SSO solutions, making it adaptable to various partner requirements.
+
+**Q: How can we ensure the "living guides" remain up-to-date and engaging?**
+A: Implement a content management workflow that allows for easy updates to MDX files. Encourage partners to provide feedback directly on the guides, and consider integrating analytics to see which sections are most viewed or need improvement.

@@ -1,0 +1,69 @@
+---
+title: "DuckDB Growth Warehouse"
+slug: "duckdb-growth-warehouse"
+category: "Data & Analytics Stack"
+type: "Guide"
+status: "draft"
+summary: "How to build a portable warehouse with DuckDB + dbt + Metabase for growth teams."
+---
+
+## Context
+
+In the pursuit of agile and data-driven growth, traditional data warehousing solutions can often be cumbersome and resource-intensive. This guide introduces a lightweight, portable, and powerful "Growth Warehouse" built upon DuckDB, dbt, and Metabase. Designed specifically for growth teams, this stack enables rapid experimentation, self-service analytics, and efficient data transformation without the overhead of complex infrastructure. It addresses the need for quick insights and democratized data access, empowering growth marketers, product managers, and analysts to make informed decisions directly from their local environments or easily deployable cloud instances.
+
+## Stack / Architecture
+
+The DuckDB Growth Warehouse leverages the following open-source tools:
+
+*   **DuckDB:** An in-process SQL OLAP database known for its speed and efficiency, especially with analytical queries on large datasets. It runs directly within the application, eliminating the need for a separate server.
+*   **dbt (data build tool):** Facilitates data transformation and modeling, allowing growth teams to define, test, and document their data pipelines using SQL.
+*   **Metabase:** An open-source business intelligence tool that provides an intuitive interface for data exploration, dashboard creation, and sharing insights. It connects directly to DuckDB.
+*   **Parquet/CSV Files:** Data sources are typically stored as flat files (e.g., Parquet, CSV) which DuckDB can query directly, making data ingestion simple and flexible.
+*   **Git:** For version controlling dbt projects and SQL models, ensuring collaborative development and change tracking.
+
+The architecture is designed for simplicity and portability, allowing the entire stack to be run locally or deployed to a minimal cloud environment.
+
+## Playbook
+
+1.  **Prepare Your Data Sources:** Consolidate raw data into Parquet or CSV files. Ensure data quality and consistency at the source level.
+2.  **Set Up DuckDB:** Initialize a DuckDB database. This can be an in-memory database for temporary analysis or a persistent file-based database for longer-term use.
+3.  **Configure dbt Project:** Create a dbt project and define your data models using SQL. Connect dbt to your DuckDB instance.
+4.  **Transform and Model Data with dbt:** Write dbt models to clean, transform, and aggregate your raw data into growth-specific metrics and dimensions.
+5.  **Connect Metabase to DuckDB:** Configure Metabase to connect to your DuckDB database. This allows Metabase to query the transformed data directly.
+6.  **Build Dashboards and Reports in Metabase:** Create interactive dashboards and reports in Metabase to visualize key growth metrics, track experiments, and identify trends.
+7.  **Automate Data Refresh:** Implement a simple script (e.g., Python, Bash) to periodically refresh your raw data files, run dbt transformations, and update Metabase dashboards.
+
+## Metrics & Telemetry
+
+*   **Query Latency (Metabase):** Average time taken for Metabase dashboards and reports to load. Target: <5 seconds.
+*   **Data Freshness:** Time elapsed since the last data refresh in the warehouse. Target: Daily or real-time, depending on data criticality.
+*   **dbt Model Test Coverage:** Percentage of dbt models with defined tests to ensure data quality. Target: >80%.
+*   **User Engagement (Metabase):** Number of active users and frequently accessed dashboards in Metabase. Target: Consistent growth.
+*   **Time to Insight:** Average time from raw data availability to actionable insight generation. Target: Reduced by 50% compared to previous methods.
+
+## Lessons
+
+*   **Simplicity Drives Adoption:** The lightweight nature of DuckDB and Metabase makes it easier for non-technical users to engage with data.
+*   **SQL as the Universal Language:** dbt's SQL-centric approach empowers analysts to build robust data pipelines without extensive programming knowledge.
+*   **Portability is a Superpower:** The ability to run the entire warehouse locally or deploy it easily accelerates experimentation and reduces infrastructure costs.
+*   **Focus on Business Outcomes:** Always align data modeling and reporting with specific growth objectives and KPIs.
+*   **Iterate and Refine:** Data needs evolve. Continuously refine dbt models and Metabase dashboards based on new questions and insights.
+
+## Next Steps/FAQ
+
+### Next Steps:
+
+*   **Integrate with Data Orchestration Tools:** For more complex automation, consider integrating the data refresh process with tools like Apache Airflow or Prefect.
+*   **Explore Cloud Deployment Options:** Deploy the DuckDB Growth Warehouse to a cloud environment (e.g., AWS EC2, Google Cloud Run) for shared access and scalability.
+*   **Implement Advanced Analytics:** Leverage DuckDB's extensibility to integrate with Python or R for more advanced statistical analysis and machine learning.
+
+### FAQ:
+
+**Q: Is DuckDB suitable for very large datasets (terabytes)?**
+A: While DuckDB is highly performant, for datasets in the multi-terabyte range or requiring distributed processing, a traditional data warehouse like Snowflake or BigQuery might be more appropriate. However, for many growth teams, DuckDB handles gigabytes to hundreds of gigabytes with ease.
+
+**Q: How does this stack compare to a full-fledged data lakehouse solution?**
+A: This stack is a more agile and cost-effective alternative for growth teams, offering many benefits of a data lakehouse (flexible data formats, SQL analytics) without the complexity and cost of a full-scale enterprise solution.
+
+**Q: Can I use other BI tools with DuckDB?**
+A: Yes, DuckDB supports standard SQL interfaces (e.g., ODBC/JDBC), allowing it to connect with various BI tools beyond Metabase, such as Tableau, Power BI, or custom dashboards.

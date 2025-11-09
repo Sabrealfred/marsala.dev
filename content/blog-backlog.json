@@ -4,7 +4,7 @@
     "slug": "attio-hubspot-dual-crm-os",
     "category": "RevOps & GTM Systems",
     "type": "Case Study",
-    "status": "todo",
+    "status": "draft",
     "summary": "Cómo orquestar pipelines paralelos entre Attio y HubSpot sin romper reporting ni contratos de datos."
   },
   {
@@ -12,7 +12,7 @@
     "slug": "prompt-ops-control-plane",
     "category": "AI & Copilots",
     "type": "Playbook",
-    "status": "todo",
+    "status": "draft",
     "summary": "Framework para versionar prompts, contratos y guardrails usando LangChain + Supabase + PostHog."
   },
   {
@@ -20,7 +20,7 @@
     "slug": "n8n-mission-critical-kit",
     "category": "Automation & n8n",
     "type": "Tutorial",
-    "status": "todo",
+    "status": "draft",
     "summary": "Plantillas y monitoreo para flujos de revenue sensibles construidos con n8n, Attio y Slack."
   },
   {
@@ -28,7 +28,7 @@
     "slug": "duckdb-growth-warehouse",
     "category": "Data & Analytics Stack",
     "type": "Guide",
-    "status": "todo",
+    "status": "draft",
     "summary": "Cómo armar un warehouse portable con DuckDB + dbt + Metabase para equipos de growth."
   },
   {
@@ -36,7 +36,7 @@
     "slug": "design-tokens-darkmode-i18n",
     "category": "Design Systems & UX",
     "type": "Tutorial",
-    "status": "todo",
+    "status": "draft",
     "summary": "Playbook para expandir Brand/Web OS con tokens que soporten dark mode y 5 idiomas clave."
   },
   {
@@ -44,7 +44,7 @@
     "slug": "privacy-layer-experimentation",
     "category": "Platform & Infrastructure",
     "type": "Insight",
-    "status": "todo",
+    "status": "draft",
     "summary": "Arquitectura para cumplir AI Act/SOC2 sin frenar growth experiments en Next.js + Supabase."
   },
   {
@@ -52,7 +52,7 @@
     "slug": "treasury-os-drift-hummingbot",
     "category": "DeFi / Fintech Ops",
     "type": "Case Study",
-    "status": "todo",
+    "status": "draft",
     "summary": "Automatizar coberturas y liquidez usando Drift Protocol, Hummingbot y monitorización en Grafana."
   },
   {
@@ -60,7 +60,7 @@
     "slug": "partner-portal-supabase-next-auth",
     "category": "Enablement & Playbooks",
     "type": "Playbook",
-    "status": "todo",
+    "status": "draft",
     "summary": "Portal modular para partners con Supabase, Row Level Security y guías vivas."
   },
   {
@@ -68,7 +68,7 @@
     "slug": "commerce-localization-pipeline",
     "category": "Tutorials & Tooling",
     "type": "Guide",
-    "status": "todo",
+    "status": "draft",
     "summary": "Configurar catálogos headless multi-mercado con Next.js, Commerce Layer y automatización de traducciones."
   },
   {
@@ -76,7 +76,103 @@
     "slug": "launch-council-metrics-playbook",
     "category": "RevOps & GTM Systems",
     "type": "Insight",
-    "status": "todo",
+    "status": "draft",
     "summary": "Cómo medimos readiness, SLO y QA en un council mensual con Linear + Notion + Slack."
+  },
+  {
+    "title": "Federated App Store for Self-Hosted AI Agents",
+    "slug": "federated-ai-agent-app-store",
+    "category": "AI & Infrastructure",
+    "type": "Tutorial",
+    "status": "draft",
+    "summary": "Plataforma Apache-2.0 para descubrir y ejecutar agentes IA auto hospedados con contenedores aislados y control híbrido cloud/local.",
+    "tutorial": "Cómo usarlo: desplegar el catálogo en tu propia nube, definir plantillas de contenedores por agente y exponerlo como módulo plug-and-play dentro de Marsala OS para clientes que requieren privacidad.",
+    "bibliografia": [
+      "https://news.ycombinator.com/item?id=45814036"
+    ]
+  },
+  {
+    "title": "DevOpsAgent ChatOps para Despliegues Cloud",
+    "slug": "devopsagent-chatops-cloud",
+    "category": "Automation & DevOps",
+    "type": "Tutorial",
+    "status": "draft",
+    "summary": "Agente de IA que automatiza IaC, optimización de costos y despliegues multicloud vía interfaz ChatOps.",
+    "tutorial": "Cómo usarlo: conectar repos Terraform/Kubernetes al agente, definir políticas de despliegue y mapear comandos ChatOps a runbooks de Marsala para acelerar la entrega.",
+    "bibliografia": [
+      "https://news.ycombinator.com/item?id=43798112"
+    ]
+  },
+  {
+    "title": "Vercel para Agentes IA con Estado",
+    "slug": "vercel-stateful-ai-agents",
+    "category": "AI & Copilots",
+    "type": "Tutorial",
+    "status": "draft",
+    "summary": "Plataforma open-source para desplegar agentes IA con memoria persistente y recuperación automática.",
+    "tutorial": "Cómo usarlo: empaquetar agentes de contenido o marca en Marsala, conectarlos a esta infraestructura y ofrecerlos como servicio gestionado con observabilidad integrada.",
+    "bibliografia": [
+      "https://news.ycombinator.com/item?id=44716929"
+    ]
+  },
+  {
+    "title": "Pica: Infraestructura Agentic en Rust",
+    "slug": "pica-agentic-rust",
+    "category": "Platform & Infrastructure",
+    "type": "Tutorial",
+    "status": "draft",
+    "summary": "Runtime open-source en Rust para agentes IA con foco en rendimiento y confiabilidad.",
+    "tutorial": "Cómo usarlo: compilar módulos de análisis en tiempo real o pipelines sensibles de Marsala aprovechando su runtime en Rust para clientes con requisitos de latencia estricta.",
+    "bibliografia": [
+      "https://news.ycombinator.com/item?id=42781017"
+    ]
+  },
+  {
+    "title": "Geniusrise: Framework de Redes de Agentes IA",
+    "slug": "geniusrise-agent-network",
+    "category": "AI & Copilots",
+    "type": "Tutorial",
+    "status": "draft",
+    "summary": "Framework open-source para construir ecosistemas de agentes IA reutilizables.",
+    "tutorial": "Cómo usarlo: definir módulos Marsala como agentes especializados (marca, datos, automatización) y orquestarlos con Geniusrise para ensamblar soluciones por cliente.",
+    "bibliografia": [
+      "https://news.ycombinator.com/item?id=37623695"
+    ]
+  },
+  {
+    "title": "Agentes IA para Ingeniería y Debugging",
+    "slug": "engineering-ai-agents-debugging",
+    "category": "Automation & Tooling",
+    "type": "Tutorial",
+    "status": "draft",
+    "summary": "Colección open-source de agentes IA para depuración, diseño de bajo nivel y flujos dev.",
+    "tutorial": "Cómo usarlo: integrar estos agentes en el taller interno de Marsala o empaquetarlos como módulo \"Engineering Copilot\" para clientes fintech/infra.",
+    "bibliografia": [
+      "https://news.ycombinator.com/item?id=42041368"
+    ]
+  },
+  {
+    "title": "Human-in-the-Loop API para Sistemas IA",
+    "slug": "human-loop-api-agents",
+    "category": "AI Governance",
+    "type": "Tutorial",
+    "status": "todo",
+    "summary": "API que permite a agentes IA solicitar aprobación humana o tratarlos como herramientas dentro del flujo.",
+    "tutorial": "Cómo usarlo: incrustar esta API en tus módulos de IA regulados (soporte, compliance) para garantizar revisiones humanas y trazabilidad completa.",
+    "bibliografia": [
+      "https://news.ycombinator.com/item?id=42247368"
+    ]
+  },
+  {
+    "title": "Kanto.ai: Agente Infra SOC2 Ready",
+    "slug": "kanto-infra-soc2-agent",
+    "category": "Security & Compliance",
+    "type": "Tutorial",
+    "status": "todo",
+    "summary": "Agente IA orientado a infraestructura con cumplimiento SOC 2 listo para producción.",
+    "tutorial": "Cómo usarlo: extender tus módulos AI + Data + Automation para clientes regulados, ofreciendo monitoreo y acciones con controles SOC2 embebidos.",
+    "bibliografia": [
+      "https://ycombinator.com/item?id=45070372"
+    ]
   }
 ]
