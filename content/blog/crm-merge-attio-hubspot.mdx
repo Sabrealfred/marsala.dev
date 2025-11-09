@@ -73,7 +73,7 @@ Before touching records we cataloged every property with owner, description, dat
 
 ## QA & Validation Framework
 
-- **Match Confidence**: anything <85 required human review. We created a Notion queue + keyboard shortcuts for bulk approval.
+- **Match Confidence**: anything &lt;85 required human review. We created a Notion queue + keyboard shortcuts for bulk approval.
 - **Field Battle Resolution**: precedence rules (e.g., Attio wins for `owner`, HubSpot wins for `utm_source`). Exceptions logged in Supabase.
 - **Audit Trail**: every record stored `pre_merge_payload`, `post_merge_payload`, `operator`, `timestamp`. Rollback scripts referenced these logs.
 - **Spot Checks**: each wave included 25 random accounts. A script compared CRM timelines, open deals, and owner fields before/after. If more than two accounts failed, the wave paused automatically.
@@ -86,7 +86,7 @@ select account_id,
        hubspot_owner,
        attio_owner,
        case
-         when hubspot_owner <> attio_owner then 'owner_mismatch'
+         when hubspot_owner &lt;&gt; attio_owner then 'owner_mismatch'
          when hubspot_lifecycle not in ('lead','customer','churned') then 'bad_stage'
        end as issue
 from sandbox.account_comparison
@@ -108,15 +108,15 @@ We ran reports like this after every wave and attached CSVs to the Slack digest 
 
 ## Metrics & Telemetry
 
-- **High merge success rate:** 118,000 records were merged with a 98.7% success rate, with the rest flagged for manual review.
-- **High match confidence:** The match confidence was 92 at the 95th percentile.
-- **Fast automation re-enablement:** 15 automation flows were re-enabled within two weeks.
-- **Quick support ticket resolution:** Support tickets related to the merge were resolved in under 12 hours, with fewer than 10 tickets in total.
-- **Improved reporting accuracy:** The variance between forecast and actuals dropped from 15% to 3%.
-- **Low data lag:** The delta feed lag between HubSpot and Attio was an average of 6 minutes.
-- **High user adoption:** 94% of sales representatives logged into Attio in the first week.
-- **Faster automation runtime:** The average automation runtime was reduced from 32 seconds in HubSpot to 18 seconds.
-- **Improved data quality:** The composite data quality score (completeness, accuracy, timeliness) improved from 71 to 93 in Metaplane.
+- **Records merged**: 118k (98.7% success, rest flagged for manual review).
+- **Match confidence**: 92 p95.
+- **Automation re-enabled**: 15 flows within two weeks.
+- **Time to resolve support tickets** related to merge: &lt;12 hours (under 10 total tickets).
+- **Reporting accuracy**: forecast vs. actual variance dropped from 15% → 3%.
+- **Delta feed lag**: 6 minutes average from HubSpot update → Attio mirror (monitored via Snowflake tasks).
+- **Adoption**: 94% of reps logged into Attio in week one; measured via event tracking.
+- **Automation runtime**: average 18 seconds per workflow after migration (down from 32 in HubSpot) thanks to cleaner triggers.
+- **Data quality score**: composite score (completeness, accuracy, timeliness) improved from 71 → 93 in Metaplane.
 
 ## Risk Register
 
