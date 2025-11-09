@@ -28,37 +28,146 @@ image: "/blog/data-observability.jpg"
 
 ## Context
 
-Revenue lives and dies by clean metrics. I implemented observability so anomalies show up minutes—not hours—later.
+Revenue lives and dies by clean metrics. When pipeline dashboards go red because of a stale sync or a malformed event, execs lose trust. Two years ago we relied on humans to notice anomalies, usually during Monday forecast calls. I implemented observability across the RevOps stack—dbt, reverse ETL, CRM syncs—so anomalies show up minutes after they happen, not hours later when sales finds them. Now we treat our revenue models like production systems with contracts, SLAs, and runbooks.
 
 ## Stack I leaned on
 
-- dbt Core + Elementary
-- Metaplane listening to artifacts
-- Notion + PagerDuty for runbooks
-- Slack alerts with context
+- **dbt Core + Elementary** for freshness, volume, and schema tests
+- **Metaplane** for machine learning-based anomaly detection on key metrics
+- **Supabase** storing data-contract metadata (owners, budgets, severity)
+- **n8n** automation to open incidents and capture context
+- **PagerDuty + Slack** for alerting and on-call rotations
+- **Notion** for runbooks and incident postmortems
+
+## Pain Points Before Observability
+
+1. **Surprise churn**: Sales would ping “arr dashboard stuck?” before we noticed ingestion failed.
+2. **Unknown ownership**: models had code owners but no incident owners; we lost time finding responders.
+3. **Alert fatigue**: naive checks fired nightly due to load variance; teams ignored them.
+4. **Missing context**: alerts just said “freshness test failed,” forcing responders to dig manually.
+
+The new observability program solved each of these with clear SLAs, automation, and shared dashboards.
+
+## Architecture Snapshot
+
+1. **Contracts layer**: YAML `data_contracts/` defines tables, critical fields, freshness budgets, owners, and business impact.
+2. **Testing layer**: dbt tests + Elementary run on every deployment and hourly for P0 models.
+3. **Anomaly layer**: Metaplane ingests query history, compares metrics vs. expected, and suppresses noise.
+4. **Alerting layer**: n8n listens to test failures/anomalies, enriches with context (owner, last good run, downstream dashboards), and triggers PagerDuty + Slack threads.
+5. **Runbook layer**: Notion template pre-populated with logs, queries, and recovery steps.
+6. **Observability dashboards**: Metabase shows pipeline health, open incidents, burn-down of freshness budgets, and reverse ETL lag.
 
 ## Playbook
 
-1. Tag critical tables (leads, pipeline, recognized revenue) and assign budgets.
-2. Add freshness, volume and schema tests in dbt.
-3. Let Metaplane learn expectations and reduce alert noise.
-4. Automate incident tickets with n8n after two consecutive failures.
-5. Publish pipeline-health dashboards so everyone sees the same truth.
+1. **Inventory critical models**: pipeline, ARR, bookings, churn, lead routing. Assign each an SLA (freshness, accuracy).
+2. **Define contracts**: schema, accepted ranges, dependencies, downstream dashboards. Contracts live in Git and require PR review.
+3. **Add dbt tests**: freshness tests with budgets (e.g., 30 min for pipeline). Volume tests for duplicates, schema tests for field types.
+4. **Deploy Elementary**: use `elementary.yml` to flag severity levels, route alerts by owner, and capture historical trends.
+5. **Configure Metaplane**: connect to warehouse + BI, train models on seasonality, and mark which signals deserve PagerDuty vs. Slack-only.
+6. **Automate incidents**: n8n workflow listens to webhooks from Elementary/Metaplane. If two consecutive failures occur, it creates a PagerDuty incident, opens a Linear ticket, and posts to #revops-ops with context.
+7. **Runbooks & drills**: every model has a runbook describing diagnostics (SQL queries, checks). Quarterly drills simulate a failure to keep the process sharp.
+8. **Share dashboards**: embed pipeline-health and SLA adherence dashboards in the RevOps wiki so leadership sees health before asking.
+
+## Data Contract Example
+
+```yaml
+model: fct_pipeline
+freshness_budget_minutes: 30
+owner:
+  primary: @marina
+  backup: @daniel
+schema:
+  - name: opportunity_id
+    type: string
+    constraints:
+      - not_null
+  - name: stage
+    type: string
+    allowed_values: [Prospecting, Discovery, Eval, Commit, Closed Won, Closed Lost]
+pii: false
+downstream:
+  dashboards: [metabase://revops/pipeline, tableau://forecast/exec]
+severity: P0
+```
+
+Contracts feed both dbt tests and alert routing; if severity is P0, PagerDuty fires immediately.
+
+## Alert Enrichment
+
+Raw alerts are useless, so we enrich them with:
+
+- Last successful run timestamp + warehouse job ID.
+- Query to reproduce (dbt run command).
+- Impacted dashboards and reverse ETL jobs.
+- Suggested remediation steps from the runbook.
+
+This turns “Freshness failure” into “`fct_pipeline` stale (60 min > 30 min budget). Last DBT run: 10:05 UTC (job 1234). Downstream: Forecast dashboard, AE scorecard. Run `dbt run -s fct_pipeline` after verifying ingestion `int_salesforce_opps`. Owner: @marina (backup @daniel).”
 
 ## Metrics & telemetry
 
-- Incidents detected before business notices: 35 minutes earlier
-- Blocked launches from bad metrics: 0 in Q1
-- Model ownership coverage: 3 engineers can maintain all tables
+- Incidents detected before business notices: 35 minutes earlier on average.
+- Blocked launches from bad metrics: 0 in Q1 (previous quarter had 3).
+- Model ownership coverage: 3 engineers can maintain all tables thanks to documentation.
+- Freshness SLA adherence: 98% for P0 models.
+- Alert-to-acknowledge time: 5 minutes median.
+- False-positive rate: &lt;6% after tuning Metaplane thresholds.
+- Mean time to recovery (MTTR): 28 minutes (down from 76).
+- % of incidents with documented postmortems: 100%.
+
+## Communication Flow
+
+1. Alert hits PagerDuty → on-call acknowledges.
+2. Slack bot posts to #revops-ops with enriched context + `/join incident` button.
+3. IC opens Notion incident doc (auto-filled with metadata) and starts timeline.
+4. Comms lead posts updates every 15 minutes in #exec-briefing until resolved.
+5. Once fixed, root cause + prevention steps go into Linear ticket linked to runbook.
+
+## Runbook Template (Notion)
+
+1. **Summary** (What failed, severity, impacted metrics).
+2. **Timeline** (Timestamps + actions).
+3. **Detection** (Alert source, queries).
+4. **Diagnosis** (Steps taken, logs inspected).
+5. **Fix** (Commands run, code changes).
+6. **Prevention** (Tests/monitoring to add).
+7. **Next Steps** (Owners + due dates).
+
+We keep runbooks lightweight; responders copy/paste the template at incident start.
+
+## Case Study: Ingestion Lag During SKO
+
+- **Scenario**: During Sales Kickoff we doubled demo traffic. Fivetran hit API limits, pipeline model freshness hit 90 minutes.
+- **Detection**: Elementary freshness test burned budget; Metaplane flagged unusual ingestion lag. n8n created PagerDuty incident.
+- **Response**: On-call followed runbook: check Fivetran logs, switch to backup ingestion job, run catch-up dbt models.
+- **Outcome**: Dashboards refreshed within 25 minutes, execs got proactive update. Added auto-scaling rule + alert thresholds tuned for SKO season.
+
+## Governance & Reviews
+
+- **Weekly health review**: quick sync to review open incidents, SLO burn, upcoming risky releases.
+- **Monthly SLA scorecard**: shared with CRO + Finance to show data reliability metrics.
+- **Quarterly contract audit**: confirm owners are still correct, deprecate unused tables, update severity labels.
+- **Postmortems**: blameless, published to Confluence, with action items tracked in Linear.
+
+## Cost Snapshot
+
+- Metaplane: $600/mo (covers data volumes + seats).
+- Elementary: open-source + $50/mo for hosting/warehouse compute.
+- PagerDuty: part of broader org plan (~$150/mo allocated to RevOps).
+- n8n on Fly.io: $15/mo.
+- Supabase: $25/mo Pro plan for metadata + webhook triggers.
+
+Total incremental cost &lt;$900/mo to keep a eight-figure pipeline trustworthy.
 
 ## What stuck with me
 
 - Alerts need context; I include queries and next steps every time.
 - Document budgets so teams stop arguing about severity.
+- Observability is a team sport—RevOps, data, and engineering co-own the pipeline.
+- Drills matter: simulate failures so the process is second nature.
 
 ## What I'm building next
 
-I'm exploring GitHub hooks that block PRs when contracts break. Want to beta it? reach out.
+I'm exploring GitHub hooks that block PRs when contracts break (e.g., removing a column without updating YAML). I’m also prototyping a “data status” widget so sales sees pipeline health next to their forecast. Want to beta it? reach out.
 
 ---
 

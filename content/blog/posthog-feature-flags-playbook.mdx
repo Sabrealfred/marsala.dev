@@ -27,37 +27,186 @@ image: "/blog/feature-flags.jpg"
 
 ## Context
 
-We needed cohort-based rollouts without LaunchDarkly pricing. PostHog plus a bit of discipline did the trick.
+We needed cohort-based rollouts, experimentation, and kill switches, but LaunchDarkly pricing was overkill for a lean team. PostHog’s feature flags plus discipline gave us 90% of the power for a fraction of the cost. The trick: treat flags like code. That means naming conventions, contracts, auditing, middleware integration, and dashboards that show who flipped what. This playbook explains how we govern flags end to end so product, growth, and RevOps can launch safely.
 
 ## Stack I leaned on
 
-- PostHog feature flags and cohorts
-- Next.js middleware for gating
-- Supabase edge functions for server toggles
-- Slack + Linear for communication
+- **PostHog feature flags** (boolean, multivariate, condition-based)
+- **PostHog cohorts** built from real events and properties
+- **Next.js middleware + server components** to evaluate flags at the edge
+- **Supabase edge functions** for non-Next surfaces and backend jobs
+- **Linear + Slack workflows** for approval, change logs, and cleanup tasks
+- **Metabase dashboards** summarizing flag status and experiment outcomes
+
+## Pain Points Before Governance
+
+1. **Random flag names** (`flag123`, `test_newcta`) cluttered the dashboard.
+2. **Permanent flags** living for months because nobody cleaned them.
+3. **Who flipped this?**—zero audit trail or change log.
+4. **Inconsistent rollouts**: some flags gated components, others only hid buttons.
+
+We fixed this by building a governance model similar to what we use for experiments.
+
+## Flag Taxonomy & Naming
+
+- **Format**: `surface_segment_feature_goal` (e.g., `web_signup_copytest_ctr`).
+- **Types**:
+  - `launch`: kill switch or phased rollout for new features.
+  - `experiment`: A/B/n tests tied to hypotheses.
+  - `ops`: temporary toggles for pricing, messaging, partners.
+- **Metadata**: owner Slack handle, creation date, expiry date, related Linear ticket, and rollback plan.
+
+PostHog’s tags + descriptions store metadata; we also sync to Supabase for reporting.
 
 ## Playbook
 
-1. Defined naming conventions and expiration dates for every flag.
-2. Use dynamic cohorts built from real events.
-3. Wire flags into middleware to guard entire routes.
-4. Track in Linear which flags must be removed post-experiment.
-5. Measure impact directly in PostHog and close the loop in dashboards.
+1. **Intake & Approval**
+   - Create a Linear ticket using the “Feature Flag” template.
+   - Specify purpose, cohorts, success metric, and risk level.
+   - Slack workflow notifies product + growth leads for approval.
+2. **Create Flag in PostHog**
+   - Name using taxonomy.
+   - Add description, owner, expiry date (default 30 days).
+   - Configure filters/cohorts (e.g., `country = "US" AND plan != Enterprise`).
+   - Link to metrics dashboards (PostHog insight) so owners can monitor impact quickly.
+3. **Integrate with Next.js**
+   - Use `@posthog/nextjs` and middleware to fetch flags server-side.
+   - Expose flags via React context/hook for client components.
+   - For edge cases (SSR + client hydration), rely on `posthog.isFeatureEnabled` with caching.
+4. **Backend & Jobs**
+   - Supabase edge functions fetch flags via PostHog API for scheduled jobs (e.g., B2B nurture send).
+   - Use fallback defaults in code to avoid failing open when PostHog is unreachable.
+5. **Experimentation Workflow**
+   - If flag type = `experiment`, auto-create PostHog experiment entry referencing the flag.
+   - Cohorts auto-update from live events (no manual CSV).
+   - PostHog calculates significance; once concluded, Slack bot posts summary + recommended action.
+6. **Change Logging**
+   - n8n listens to PostHog flag update webhooks; logs changes (who toggled, when) into Supabase and posts to #flag-log channel.
+7. **Cleanup**
+   - Daily script checks expired flags; if past expiry, open Linear cleanup ticket and ping owner.
+   - Run “flag debt” review during weekly growth standup to ensure we remove or merge code paths.
+
+## Data Contracts for Flags
+
+Each flag entry includes:
+
+- **Owner** (primary + backup)
+- **Purpose** (launch, experiment, ops) with Linear ticket link
+- **Affected surfaces** (web, API, lifecycle email)
+- **Rollback path** (command or code to revert)
+- **Metrics** (PostHog insight ID + success threshold)
+- **Expiry** (default 30 days, extend via PR)
+
+Contracts live in a JSON file synced with PostHog via API, so dashboards and automation stay consistent.
+
+## Middleware Pattern (Next.js)
+
+```ts
+// middleware.ts
+import { NextResponse } from "next/server";
+import { createClient } from "@posthog/nextjs";
+
+export async function middleware(req: Request) {
+  const posthog = createClient({ apiKey: process.env.POSTHOG_KEY });
+  const sessionId = req.cookies.get("ph_id")?.value;
+
+  const flags = await posthog.getFeatureFlags({
+    distinctId: sessionId ?? "anonymous",
+    groups: { organization: req.headers.get("x-org-id") },
+  });
+
+  if (!flags["web_signup_copytest_ctr"]) {
+    // Redirect variant B users to control page
+    return NextResponse.rewrite(new URL("/signup/control", req.url));
+  }
+  return NextResponse.next();
+}
+```
+
+Middleware ensures routing decisions happen before render; no flashes between variants.
+
+For client-only widgets, we wrap components with a `useFlag` hook that hydrates from server-provided defaults to avoid mismatched UI.
+
+## Backend Pattern (Supabase)
+
+```ts
+import { createClient } from "@supabase/supabase-js";
+import fetch from "node-fetch";
+
+export async function shouldSendNurture(contactId: string) {
+  const { data } = await supabase
+    .from("contacts")
+    .select("ph_distinct_id")
+    .eq("id", contactId)
+    .single();
+
+  const res = await fetch("https://app.posthog.com/decide/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.POSTHOG_KEY}` },
+    body: JSON.stringify({ distinct_id: data.ph_distinct_id }),
+  });
+  const { featureFlags } = await res.json();
+  return featureFlags.includes("ops_nurture_pause") === false;
+}
+```
+
+Server jobs call PostHog’s Decide API so non-Next services respect the same toggles.
 
 ## Metrics & telemetry
 
-- Orphaned flags: 0 (automatic expiry FTW)
-- Time to launch an experiment: 1 day
-- Incidents caused by misconfigured flags: zero in 6 months
+- Orphaned flags: 0 (daily cleanup + expiry).
+- Time to launch an experiment: 1 day (from ticket to live).
+- Incidents caused by misconfigured flags: 0 in 6 months.
+- Flags with documented rollback steps: 100%.
+- Avg. lifetime of temporary flags: 19 days (vs. 90 before).
+- Flag change audit coverage: 100% logged in Supabase + Slack.
+- Percentage of flags with automated cleanup tasks: 100%.
+- Weekly "flag debt" backlog items: &lt;3.
 
-## What stuck with me
+## Monitoring Dashboard
 
-- Every flag needs an owner and a death date.
-- Document activation/deactivation steps to avoid late-night nerves.
+Metabase dashboard displays:
+
+- Active flags by type with owners and expiry.
+- Experiments nearing significance (plus effect sizes).
+- Flags per repo/service (to detect code hotspots).
+- Cleanup backlog with due dates.
+
+We review this in the weekly release meeting.
+
+## Incident Response
+
+If a flag causes issues (e.g., variant crash):
+
+1. Owner hits the “Kill switch” button in PostHog (preconfigured action).
+2. n8n logs the change, reverts to control variant, and posts to #flag-log with context.
+3. Linear incident ticket auto-creates with checklist: collect stack traces, disable code path, communicate to stakeholders.
+4. After resolution, we update the flag contract to document the issue and prevent reactivation without a new review.
+
+Because PostHog provides audit logs, compliance can see exactly when toggles changed.
+
+## Cost Snapshot
+
+- PostHog Scale plan: ~$200/mo in our tenant (covers product analytics + flags).
+- n8n automation: $15/mo on Fly.io.
+- Supabase metadata store: $25/mo.
+
+Total incremental cost to run disciplined flags: &lt;$250/mo.
 
 ## What I'm building next
 
-I'm writing reusable middleware snippets. Want them? let me know and I’ll share.
+I'm writing reusable middleware snippets (Next.js, Supabase functions, Remix) plus a Supabase+Slack bot that enforces expiry. Want them? let me know and I’ll share.
+
+## Lessons Learned
+
+- Every flag needs an owner and a death date.
+- Document activation/deactivation steps to avoid late-night nerves.
+- Cohorts should use real behavioral data; static lists rot fast.
+- Logging toggles builds trust—product knows who changed what.
+
+## What I'm building next
+
+I'm writing reusable middleware snippets (Next.js, Supabase functions, Remix) plus a Supabase+Slack bot that enforces expiry. Want them? let me know and I’ll share.
 
 ---
 

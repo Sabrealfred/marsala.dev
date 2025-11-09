@@ -26,39 +26,163 @@ image: "/blog/posthog-cdp.jpg"
 
 > I hacked PostHog until it behaved like a mini CDP and saved us $60k a year.
 
+# Turn PostHog into a Mini CDP
+
+> I hacked PostHog until it behaved like a mini CDP and saved us $60k a year.
+
 ## Context
 
-We needed audiencies that update in real time without enterprise pricing. PostHog plus microservices delivered.
+We needed real-time audiences for lifecycle emails, ads exclusions, and product nudges, but CDP pricing (Segment Personas, mParticle, Braze) didn’t fit. PostHog already collected our events, so I extended it into a “mini CDP” with Kafka, Firestore, and a few microservices. The goal: unify tracking + traits, build cohorts, score people, and activate across channels without maintaining yet another platform.
 
 ## Stack I leaned on
 
-- PostHog Cloud with custom properties
-- Kafka + Cloud Run consumers
-- Firestore for rapid segmentation
-- Resend + Meta Marketing API for activation
+- **PostHog Cloud** (events, cohorts, feature flags)
+- **Kafka** (Confluent Cloud) streaming destination
+- **Cloud Run consumers** (TypeScript) validating and transforming payloads
+- **Firestore** for low-latency audience storage
+- **Supabase** for long-term profiles and consent states
+- **Resend + Meta Marketing API** for activation (email + paid)
+- **n8n** orchestrating QA + refresh jobs
+
+## Architecture Overview
+
+1. **Tracking plan** → PostHog collects canonical events/properties.
+2. **Kafka destination** → PostHog streams events into Kafka topics (one per product surface).
+3. **Consumers** → Cloud Run functions validate schema, enrich with CRM traits, and push to Firestore + Supabase.
+4. **Audience service** → Cloud Run service builds segments (SQL-like filters) and exposes REST endpoints.
+5. **Activation** → Resend uses Firestore queries for email; Meta API ingests hashed audiences for paid; app uses PostHog cohorts to drive in-product messaging.
+6. **Observability** → Grafana monitors pipeline lag; Notion runbooks capture schemas; QA scripts run weekly to ensure cohorts behave.
+
+```
+PostHog  →  Kafka topics  →  Cloud Run consumer  →  Firestore (realtime)
+                                         ↘ Supabase (historical + consent)
+Firestore → Audience API → Resend / Meta / App flags
+```
+
+## Event + Trait Design
+
+- 12 canonical events (Signup Started, Signup Completed, Trial Activated, Feature Used, Payment Failed, etc.).
+- Each event contains stable IDs (user_id, account_id), context (plan, channel), and PII tokens.
+- Traits synced via PostHog Identify + backend enrichment (ARR, health score, CSM owner).
+- Traits stored in Supabase tables with row-level security; PostHog receives hashed versions for privacy.
 
 ## Playbook
 
-1. Defined a tracking plan with 12 canonical events and owners.
-2. Activated the Kafka destination and built a consumer that validates payloads.
-3. Synced CRM attributes through the API to enrich profiles.
-4. Created microservices to generate audiences and trigger nurtures.
-5. Automated QA scripts that simulate cohorts weekly.
+1. **Define tracking plan** with owners, schema, and property validations (dbt + scripts).
+2. **Enable Kafka destination** in PostHog; configure topics per surface (`web`, `app`, `billing`, `support`).
+3. **Build consumer** that:
+   - Validates payloads against JSON schema.
+   - Enriches with CRM data (Attio API).
+   - Masks PII (hash emails, drop sensitive fields).
+   - Writes normalized events to Firestore (for realtime queries) and Supabase (for historical analytics).
+4. **Sync CRM attributes** daily via PostHog’s `/api/person/` to keep flags + cohorts aware of sales state.
+5. **Audience builder microservice** reads Firestore, applies filters (SQL-like DSL), and caches results.
+6. **Activation connectors**:
+   - Resend: daily job fetches `activation_ready == true` audiences and sends email sequences.
+   - Meta Marketing API: hashed audiences exported via Cloud Run, with TTL to comply with policy.
+   - PostHog cohorts: automatically update using computed properties; reused in feature flags and experiments.
+7. **QA + monitoring**:
+   - Weekly script generates synthetic users to ensure flows update the right traits/cohorts.
+   - Grafana monitors Kafka lag, consumer failures, and audience sizes vs. expected.
+   - Alerts route to #cdp-ops Slack.
+
+## Audience DSL
+
+Example audience definition stored in Git:
+
+```yaml
+audience: upsell_ready
+description: "Customers nearing plan limits who engaged with AI module"
+filters:
+  - type: property
+    field: usage_pct
+    operator: ">="
+    value: 0.8
+  - type: event_count
+    event: ai_module_used
+    window_days: 14
+    operator: ">="
+    value: 3
+  - type: property
+    field: plan
+    operator: "not_in"
+    value: ["Enterprise"]
+activation:
+  - channel: resend
+    template: upsell-ai
+  - channel: meta
+    campaign: AI-Upsell-Lookalike
+expiry_days: 30
+owner: @marina
+```
+
+The microservice interprets this YAML, builds Firestore queries, and registers the audience in PostHog for reuse.
+
+## Audience Examples
+
+| Audience | Logic | Destination |
+|----------|-------|-------------|
+| **Trial Engaged** | `event:feature_used >= 3` AND `days_since_signup < 10` | Product nudges + CS follow-up |
+| **Churn Risk** | `no_login_14d` AND `plan = Pro` AND `support_tickets >= 2` | CSM Slack alert + email |
+| **Upsell Ready** | `usage_pct > 80%` OR `new_feature_flag = true` | Meta lookalike, account-based ads |
+| **Do Not Target** | `arr >= 50k` AND `deal_stage = Commit` | Ads exclusion, email suppression |
+
+All logic lives in Git (JSON DSL) so we can code review changes.
+
+## Security & Privacy
+
+- PII tokenization before Kafka (emails hashed with SHA256 + salt).
+- Supabase row-level security ensures only specific services access raw data.
+- Consent states synced from OneTrust → Supabase → Firestore to enforce channel opt-outs automatically.
+- Audit logs stored for every activation job (audience name, destination, timestamp, payload count).
 
 ## Metrics & telemetry
 
-- Contextual email CTR: +46%
-- Paid CAC by excluding active users: -28%
-- Feature adoption on flagged cohorts: +19%
+- Contextual email CTR: +46%.
+- Paid CAC by excluding active users: -28%.
+- Feature adoption on flagged cohorts: +19%.
+- Audience freshness: 5 minutes p95 (from event to Firestore).
+- Pipeline uptime: 99.4% (tracked via Grafana).
+- QA pass rate: 100% for the last nine weekly runs.
 
-## What stuck with me
+## Incident Response
+
+- If Kafka lag &gt; 5 minutes or consumer errors spike, PagerDuty alerts the on-call data engineer.
+- Runbook instructs to pause activation jobs, replay Kafka offsets, and backfill Firestore using the Supabase history table.
+- After resolution, we document root cause (usually schema mismatch) and open PRs to update validation rules.
+
+## Change Management
+
+- **Weekly audience review**: marketing + growth triage new audience requests, review performance, and retire unused ones.
+- **Monthly privacy check**: legal reviews hashed exports + consent logs to ensure compliance.
+- **Versioned releases**: each audience update merges via PR; changelog posts to #cdp-ops automatically.
+
+## Cost Breakdown
+
+- PostHog Scale + additional events: ~$400/mo.
+- Kafka (Confluent) with modest throughput: $120/mo.
+- Cloud Run + Firestore + Supabase: ~$180/mo combined.
+- Resend + Meta API usage: variable (~$90/mo average).
+
+Total &lt;$800/mo vs. $60k+ for commercial CDP.
+
+## Roadblocks & Fixes
+
+- **Kafka schema drift**: initial deployments failed when engineering added new event fields. Fixed by checking PRs against JSON schema and blocking merges when validation fails.
+- **Audience freshness spikes**: Firestore caches grew stale during big launches. Added change streams + TTL to automatically refresh when new events arrive.
+- **PII compliance**: hashed contact IDs with rotating salts stored in Vault; nightly job rehashes exports for ad platforms.
+- **Team adoption**: marketers feared YAML. Built a Notion front-end that writes to the repo via GitHub Actions so they can request audiences without touching code.
+
+## Lessons Learned
 
 - Without governance PostHog becomes a junk drawer.
-- Tokenize PII before sending it anywhere; privacy isn't optional.
+- Tokenize PII before sending it anywhere; privacy isn’t optional.
+- Keep audiences declarative and versioned; marketing loves Git history.
+- Monitoring is mandatory; treat the pipeline like production infra.
 
 ## What I'm building next
 
-I'll open-source part of the pipeline. Want the repo link when it's ready? let me know.
+I'll open-source part of the pipeline (Kafka consumer, audience DSL, QA scripts). Want the repo link when it's ready? let me know.
 
 ---
 

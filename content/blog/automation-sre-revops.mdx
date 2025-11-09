@@ -27,37 +27,126 @@ image: "/blog/automation-sre.jpg"
 
 ## Context
 
-Every time a workflow failed, sales chased us. I implemented SRE practices to stabilize automations and sleep better.
+Revenue automations (lead routing, lifecycle nurtures, pipeline hygiene) ran on n8n and Zapier with minimal monitoring. When something broke, sales noticed before we did. We had no SLOs, no error budgets, and no on-call rotation—just chaotic pings. I borrowed SRE practices from product engineering and applied them to RevOps. Now every automation behaves like a service: it has SLOs, alerts, dashboards, and runbooks. Incidents dropped, response time shrank, and trust skyrocketed.
 
 ## Stack I leaned on
 
-- n8n + healthchecks.io
-- Grafana + Loki for logs
-- PagerDuty for shared on-call
-- Supabase for audit trails
+- n8n + Fly.io for orchestrated workflows
+- healthchecks.io + custom pings for heartbeat monitoring
+- Grafana + Loki + Prometheus for telemetry/logs
+- PagerDuty for on-call rotations
+- Supabase for audit trails + replay queues
 
 ## Playbook
 
-1. Defined SLOs for every critical workflow (latency, availability).
-2. Instrumented structured logging and centralized storage.
-3. Built error-budget dashboards and maintenance plans.
-4. Wrote runbooks and executed quarterly drills.
-5. Shared on-call rotations between automation and RevOps.
+1. **Inventory workflows**: categorize as P0 (revenue critical), P1 (important), P2 (nice-to-have). Only P0/P1 get 24/7 coverage.
+2. **Define SLOs**: e.g., Lead Router availability 99.5%, latency &lt;3 minutes. Publish SLOs in Notion with clear math.
+3. **Instrument telemetry**: add structured logging (request ID, payload size, outcome) and metrics exported to Prometheus/Loki.
+4. **Build dashboards**: Grafana panels for latency, success rate, queue depth, error types. Share them with sales + marketing.
+5. **Create error budgets**: track minutes of downtime per quarter; when exceeded, freeze feature work and invest in reliability.
+6. **Write runbooks**: each workflow has a Markdown runbook (signals, steps, rollback, comms). Stored in repo + Notion.
+7. **Train on-call**: shared rotation between automation engineers and RevOps analysts. Everyone shadows before carrying the pager.
+8. **Drill quarterly**: simulate a failure (e.g., API rate limit) and walk through response, comms, and RCAs.
+
+## SLO Examples
+
+- **Lead Router Availability**: 99.5% weekly (.5% error budget ≈ 50 min). Violations triggered when any run exceeds 10 minutes or fails twice consecutively.
+- **Lifecycle Nurture Latency**: 95% of emails send within 15 minutes of trigger.
+- **Deal Sync Freshness**: pipeline updates propagate to CRM within 5 minutes 99% of the time.
+
+SLO math lives in a shared spreadsheet and Grafana shows burn-down charts for each workflow.
+
+### Error Budget Policy
+
+- If burn rate >2x for three days → freeze new automations, focus on reliability.
+- If burn rate >4x in a week → leadership review + dedicated “stability sprint.”
+- If burn rate stays healthy (&lt;1x) for 6 weeks → we allow more experimental workflows (future capacity planning).
+
+Publishing the policy removed debates about “is this outage serious?”—the math decides.
+
+## Architecture Blueprint
+
+1. **Workflow tier** (n8n) runs in Fly.io with autoscaling. Each workflow ships as code (YAML) in Git.
+2. **Observability tier** collects metrics/logs via Prometheus exporters and Loki, visualized in Grafana.
+3. **Control tier** uses Supabase for state storage (queues, audit logs) and provides APIs for replays.
+4. **Alerting tier** integrates healthchecks.io + Grafana alert rules pushing into PagerDuty and Slack.
+5. **Governance tier** stores runbooks, SLOs, and contracts in Notion/Git, linked per workflow.
+
+We diagram this in Miro and review quarterly to ensure new workflows plug into the same backbone.
+
+## Telemetry & Tooling
+
+- **healthchecks.io**: each workflow pings after a successful run. Missed pings trigger PagerDuty.
+- **Custom Prometheus exporter**: n8n posts metrics to Supabase; we export them to Grafana for real-time dashboards.
+- **Loki logs**: structured JSON logs let us trace a lead through every step. We add `correlation_id` to tie events back to CRM records.
+- **Replay queue**: Supabase table stores failed payloads; runbooks include SQL snippets to requeue after fix.
+
+## Incident Response Flow
+
+1. **Alert fires** (PagerDuty or Slack). IC acknowledges within 5 minutes.
+2. **Triaging**: check Grafana panel, inspect latest logs with correlation ID. If it’s a vendor outage, apply runbook “vendor degraded.”
+3. **Comms**: Comms lead posts template update in #revops-ops and #sales-leads (“Lead Router degraded; expect delays up to 10 minutes”).
+4. **Fix or rollback**: follow runbook steps—restart n8n workflow, replay queue, or flip feature flag.
+5. **Verification**: confirm metrics return to normal, sample payloads succeed, and SLO burn-down recovers.
+6. **Post-incident doc**: Scribe logs timeline, root cause, and follow-ups in Notion. Meeting scheduled if severity ≥2.
+
+We keep the flow identical for drills and real incidents so nobody hesitates.
+
+## Case Study: Lead Router Outage
+
+- **Scenario**: Salesforce API rate limit hit during a product launch, blocking 35% of lead assignments.
+- **Detection**: healthchecks.io missed two heartbeats, Grafana latency panel spiked, PagerDuty paged on-call.
+- **Response**: IC put “Lead Router degraded” status in #sales. Detective saw rate-limit errors in Loki, toggled backup queue mode which stored leads in Supabase for replay.
+- **Resolution**: within 22 minutes we enabled the fallback router that batches assignments hourly, preventing loss. Once Salesforce limits reset, we replayed the queue with a single SQL command from the runbook.
+- **Follow-up**: Added adaptive rate limiting in n8n, negotiated API burst limit with Salesforce, and updated drill scenario.
+
+The incident would have been catastrophic pre-SRE; with the framework it became a 30-minute blip.
+
+## Training & Adoption
+
+- **SRE 101 for RevOps**: 60-minute workshop explaining SLOs, error budgets, and pager etiquette tailored to RevOps.
+- **Shadow shifts**: new responders shadow an on-call engineer for one week before taking pager.
+- **Runbook drills**: monthly 30-minute session where we pick a random workflow, read the runbook aloud, and verify steps are current.
+- **Blameless culture**: postmortems focus on system gaps (monitoring, tests) rather than blaming the responder.
+
+Sales appreciated being part of the review—they finally saw how much rigor goes into keeping automations alive.
+
+## Cost Snapshot
+
+- n8n on Fly.io: ~$20/mo.
+- healthchecks.io: $12/mo for 60 checks.
+- Grafana Cloud (free tier + $49 for logs when we exceeded quota).
+- PagerDuty: 10 seats on Essentials plan (~$200/mo).
+- Supabase: Pro plan $25/mo for retention + RLS.
+
+Total spend ≈ $300/mo, peanuts compared to lost deals when lead routing fails.
+
+## Governance & Reviews
+
+- **Weekly reliability standup**: 15 minutes reviewing open incidents, SLO burn, and upcoming risky releases.
+- **Monthly error-budget review**: Ops + Sales leadership review dashboards, decide if we pause feature work, and approve capacity investments.
+- **Quarterly architecture review**: Reassess dependencies (new APIs, vendor changes) and update runbooks + diagrams.
+- **Audit readiness**: Supabase audit logs and Notion runbooks export into a SOC2 evidence folder automatically each month.
+
+Governance keeps the system from decaying—we treat automation reliability as a living product backlog.
 
 ## Metrics & telemetry
 
-- Incident response time: 25 min → 7 min
-- Critical errors/month: -70%
-- Sales satisfaction with automations: 9/10
+- Incident response time: 25 min → 7 min.
+- Critical errors/month: -70%.
+- Sales satisfaction with automations: 9/10.
+- Error budget breaches per quarter: 0 (down from 3).
+- On-call load per responder: &lt;3 hours/month thanks to automation.
 
 ## What stuck with me
 
-- Workflows need owners, alerts and documentation just like microservices.
+- Workflows need owners, alerts, and documentation just like microservices.
 - Sharing on-call builds empathy between dev and RevOps.
+- Error budgets keep priorities honest—no new features if reliability slips.
 
 ## What I'm building next
 
-I'm releasing runbook + SLO templates for RevOps. Want the bundle? drop your email.
+I'm releasing runbook + SLO templates (Notion + Markdown) plus a starter Grafana dashboard for RevOps automation. Want the bundle? drop your email.
 
 ---
 

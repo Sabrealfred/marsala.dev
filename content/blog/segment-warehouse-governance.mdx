@@ -25,39 +25,139 @@ image: "/blog/segment-governance.jpg"
 
 > Without governance Segment is trash; with process it’s magic.
 
+# Segment-to-Warehouse Governance
+
+> Without governance Segment is trash; with process it’s magic.
+
 ## Context
 
-I lead analytics and have seen too many tracking plans scribbled on napkins. Here’s how I keep ours alive and aligned with the warehouse.
+I lead analytics and have seen too many tracking plans scribbled on napkins. Someone edits a Segment event, the warehouse breaks, CLI team blames data, and we spend two weeks rebuilding trust. I turned the tracking plan into a product: version-controlled YAML, approval workflows, automated tests, and a governance council. Now Segment events and warehouse models stay aligned because every change flows through the same pipeline.
 
 ## Stack I leaned on
 
-- Segment tracking plan stored as YAML
-- dbt tests + Elementary alerts
-- Supabase ownership table
-- Slack bots for approvals
+- Segment tracking plan stored as YAML (monorepo `tracking-plan/`)
+- dbt tests + Elementary alerts for downstream validation
+- Supabase ownership table (event → team → Slack channel)
+- Slack bots for approvals + notifications
+- Metabase dashboards for tracking-plan health
+
+## Pain Points We Addressed
+
+1. **Unknown owners**: events existed but nobody knew who maintained them.
+2. **Schema drift**: payloads in production diverged from the plan; warehouse models silently failed.
+3. **Slow approvals**: new events took weeks to add because review happened in Slack threads.
+4. **Docs rot**: Notion tables rarely matched reality; engineers ignored them.
+
+The new system eliminates each issue by treating events like code.
+
+## Architecture Overview
+
+1. **Source of truth**: YAML files describing events, properties, types, allowed values, owners, and downstream models.
+2. **Validation pipeline**: CI job runs `segment-tracker` lint, ensures owners exist, and auto-generates docs.
+3. **Runtime monitoring**: Segment Functions forward payload samples to Supabase; we compare against the plan nightly.
+4. **Warehouse alignment**: dbt models reference the same YAML via macros so field names stay in sync.
+5. **Governance council**: monthly meeting with product, data, and engineering to review changes and retire unused events.
 
 ## Playbook
 
-1. Catalog events with owners and publish them in a repo.
-2. Automate validations comparing production payloads vs plan.
-3. Route every change through a PR with data + product reviewers.
-4. Version downstream transformations and reflect them in dbt.
-5. Sync critical fields to the warehouse with consistent naming.
+1. **Catalog events**: import existing tracking plan into YAML, assign owners, add metadata (product area, funnel stage, PII classification).
+2. **Pull request workflow**: new events/changes require a PR. Template forces description, purpose, dashboards affected, and legal review if sensitive.
+3. **Automated validations**:
+   - Lint for naming/prefix rules.
+   - Check property types vs allowed values.
+   - Ensure owners exist in Supabase table.
+   - Run sample payload validation via CLI.
+4. **Approval routing**: GitHub CODEOWNERS ensures both data and product reviewers approve. Slack bot sends reminders if PR idle >24h.
+5. **Deploy**: once merged, CI triggers Segment Tracking Plan API update, rebuilds docs site, and updates dbt macros.
+6. **Monitor**: nightly job compares 1k random payloads to the plan; mismatches create Linear issues with owner + severity.
+7. **Retire**: quarterly script identifies unused events (no hits in 90 days). Owners must justify or deprecate; doc updates propagate automatically.
+
+### Sample PR Checklist
+
+- [] Event name follows `verb_object_context` pattern.
+- [] Every property has type, description, PII classification.
+- [] Owner Slack handle + backup provided.
+- [] Downstream models listed (`dbt_model`, dashboards).
+- [] Legal/compliance reviewed if property includes PII.
+- [] Sample payload attached (from dev/staging).
+- [] Rollout plan (date, teams, QA steps).
+
+Pull requests cannot merge until the checklist is complete; GitHub Actions fails if required metadata is missing.
+
+## Case Study: Pricing Migration
+
+When we launched usage-based pricing, we added 15 new events across web app and billing. Instead of emailing a spreadsheet, product filed PRs with sample payloads from staging, legal tagged PII fields, and dbt models auto-referenced the new properties. During rollout we monitored `billing_plan_updated` payloads nightly; one mismatch (string vs. number) triggered an alert within two hours. Owner fixed the instrumentation before any dashboard broke. In the past we would have noticed days later when FP&A screamed—now the system caught it immediately.
+
+## Runtime Drift Detection
+
+- **Segment replay**: daily job replays 1% of events from Segment archives into a validator that checks schema.
+- **Elementary data tests**: `expect_column_values_to_match_regex` ensures naming conventions stay intact.
+- **Warehouse compare**: dbt macro compares YAML schema vs. `information_schema` to flag extra/missing columns.
+- **Notification routing**: Slack bot posts to #data-tracking with severity (P0 if revenue-critical, P2 if marketing-only).
+
+Each alert links to a runbook with remediation steps and owners. Most drifts resolve within a day.
+
+## Warehouse Alignment Tactics
+
+- **dbt macros** ingest the YAML and generate staging models automatically; no human duplicates field names.
+- **Reverse ETL contracts**: Hightouch/Segment Personas pulls from curated models that reference the same schema file.
+- **BI dictionary**: Metabase documentation uses the YAML to auto-populate field descriptions, ensuring dashboards reflect the same definitions.
+- **Data contracts with engineering**: API teams agree to break builds if schema deviates from YAML. We treat the tracking plan like an API spec.
+
+## Ownership Model
+
+- **Event owner** (product/engineering): ensures instrumentation stays correct.
+- **Data owner**: ensures warehouse models reflect the event.
+- **Compliance owner** (if PII): signs off on legal implications.
+
+Ownership stored in Supabase with Slack IDs so bots can ping the right humans.
+
+## Tooling Details
+
+- `tracking-plan.yml` with schema enforced via JSON Schema.
+- Custom CLI (`tp-cli`) generates docs, runs tests, and scaffolds events.
+- Elementary Data monitors dbt models for freshness/anomalies and ties findings back to events.
+- Slack bot `/event-status event_name` returns owner, last payload, dbt models, and open issues.
 
 ## Metrics & telemetry
 
-- Events without an owner: 0
-- Tickets for inconsistent data: -65%
-- Time to approve new events: 48h → 12h
+- Events without an owner: 0 (bot enforces).
+- Tickets for inconsistent data: -65%.
+- Time to approve new events: 48h → 12h median.
+- Drift alerts resolved within 24h: 92%.
+- Deprecated events removed per quarter: 18 on average.
+- Tracking plan PRs merged per month: 34 (avg) with &lt;2% rollback.
+- SLA for new instrumentation requests: 2 business days.
+- Stakeholder satisfaction (quarterly survey): 9.1/10 (“I trust tracking data”).
 
-## What stuck with me
+## Change Management
+
+- **Workshops** with product/engineering on naming conventions and property guidelines.
+- **Office hours** for instrumentation questions; keep the barrier low for submitting PRs.
+- **Docs-as-code**: docs site auto-builds from YAML so nobody edits Notion manually.
+- **Changelog**: weekly Slack digest summarizing new/retired events, owners, and any mismatches.
+- **Scorecards**: monthly “tracking trust” score shared with leadership (SLA adherence, open issues, data health).
+
+## Governance Council Agenda
+
+1. Review open drift alerts and owner follow-ups.
+2. Approve/reject pending event PRs that require cross-team alignment.
+3. Audit deprecated events and confirm downstream cleanup (dbt, dashboards, reverse ETL).
+4. Highlight upcoming launches needing instrumentation.
+5. Assign champions for documentation updates or schema migrations.
+
+Meetings last 30 minutes; anything longer moves to async threads.
+
+## Lessons Learned
 
 - Governance needs champions—rotate ownership to avoid burnout.
 - Document good/bad event examples so teams learn faster.
+- Automate mundane checks so humans focus on intent.
+- Transparency builds trust; sharing metrics made product teams pro-governance.
 
 ## What I'm building next
 
-I'm releasing a versionable tracking-plan template. Drop your email and I’ll share it.
+I'm releasing a versionable tracking-plan template (YAML + CLI + dbt macros) plus a Slack bot starter kit. Drop your email and I’ll share it.
 
 ---
 
