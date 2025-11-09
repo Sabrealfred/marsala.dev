@@ -70,6 +70,7 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
                 description: "Launch your first module in under 30 minutes",
                 color: "from-blue-500 to-indigo-600",
                 time: "15 min read",
+                href: "/modules",
               },
               {
                 icon: "⚙️",
@@ -77,6 +78,7 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
                 description: "Connect modules seamlessly with proven workflows",
                 color: "from-purple-500 to-fuchsia-600",
                 time: "20 min read",
+                href: "/research",
               },
               {
                 icon: "📈",
@@ -84,11 +86,12 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
                 description: "Scale intelligently with AI-powered systems",
                 color: "from-green-500 to-emerald-600",
                 time: "25 min read",
+                href: "/lab",
               },
             ].map((tutorial, index) => (
               <Link
                 key={index}
-                href="/research"
+                href={tutorial.href}
                 className="group relative overflow-hidden rounded-3xl border-2 border-moss-200 bg-white p-8 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl hover:-translate-y-2"
               >
                 <div className={`mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${tutorial.color} text-3xl shadow-lg`}>
@@ -184,7 +187,7 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
           </div>
 
           <div className="grid gap-8 lg:grid-cols-2">
-            <div className="group relative overflow-hidden rounded-4xl border-2 border-moss-300 bg-white p-10 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl">
+            <Link href="/modules" className="group relative overflow-hidden rounded-4xl border-2 border-moss-300 bg-white p-10 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl hover:-translate-y-1">
               <div className="absolute right-8 top-8 text-6xl opacity-10 transition-opacity duration-500 group-hover:opacity-20">
                 🎯
               </div>
@@ -197,9 +200,9 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
                 <span>Explore Analytics Module</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </div>
-            </div>
+            </Link>
 
-            <div className="group relative overflow-hidden rounded-4xl border-2 border-moss-300 bg-white p-10 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl">
+            <Link href="/legal/sla" className="group relative overflow-hidden rounded-4xl border-2 border-moss-300 bg-white p-10 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl hover:-translate-y-1">
               <div className="absolute right-8 top-8 text-6xl opacity-10 transition-opacity duration-500 group-hover:opacity-20">
                 🔒
               </div>
@@ -212,9 +215,9 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
                 <span>View Security Details</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </div>
-            </div>
+            </Link>
 
-            <div className="group relative overflow-hidden rounded-4xl border-2 border-moss-300 bg-white p-10 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl">
+            <Link href="/lab" className="group relative overflow-hidden rounded-4xl border-2 border-moss-300 bg-white p-10 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl hover:-translate-y-1">
               <div className="absolute right-8 top-8 text-6xl opacity-10 transition-opacity duration-500 group-hover:opacity-20">
                 ⚡
               </div>
@@ -227,9 +230,9 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
                 <span>See Performance Metrics</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </div>
-            </div>
+            </Link>
 
-            <div className="group relative overflow-hidden rounded-4xl border-2 border-moss-300 bg-white p-10 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl">
+            <Link href="/contact" className="group relative overflow-hidden rounded-4xl border-2 border-moss-300 bg-white p-10 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl hover:-translate-y-1">
               <div className="absolute right-8 top-8 text-6xl opacity-10 transition-opacity duration-500 group-hover:opacity-20">
                 🤝
               </div>
@@ -242,7 +245,7 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
                 <span>Talk to Our Team</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </section>
