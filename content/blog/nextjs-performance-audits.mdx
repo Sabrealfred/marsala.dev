@@ -27,38 +27,167 @@ image: "/blog/next-performance.jpg"
 
 ## Context
 
-I maintain landing pages and content-heavy apps. To avoid nuking Web Vitals I run frequent audits with repeatable processes.
+I maintain landing pages, docs hubs, and product surfaces that marketing edits weekly. Performance used to degrade quietly until a VP noticed LCP &gt;4s. I built a repeatable audit program: budgets, CI, bundle analysis, real-user monitoring, and a rotating “performance guard.” Now regressions surface before release.
 
 ## Stack I leaned on
 
-- Lighthouse CI + GitHub Actions
-- WebPageTest for real scenarios
-- Calibre for continuous monitoring
-- Next.js analyzer + bundle buddy
+- Lighthouse CI + GitHub Actions for lab checks on every PR.
+- WebPageTest + Calibre for synthetic + field data.
+- Next.js analyzer + Bundle Buddy for JS diagnostics.
+- Cloudinary/ImageKit for responsive media.
+- Grafana dashboard fed by CrUX + PostHog RUM.
+- n8n bots to post weekly digests and auto-create Linear tickets when metrics drift.
 
-## Playbook
+## Budgets & Config
 
-1. Define budgets (LCP, CLS, JS weight) and document them in the repo.
-2. Run Lighthouse on every PR and block merges on regressions.
-3. Use optimized images and streaming for heavy assets.
-4. Review shared bundles and convert heavy libs into dynamic imports.
-5. Share results weekly via a simple dashboard.
+`performance.budgets.json` (excerpt):
+
+```json
+{
+  "lcp": { "mobile": 2600, "desktop": 2200 },
+  "cls": 0.1,
+  "inp": 200,
+  "js_kb": 180,
+  "css_kb": 90,
+  "api_latency_ms": 400
+}
+```
+
+Budgets live in Git; only platform + product leads approve changes. GitHub workflow compares Lighthouse results + bundle sizes to the file and fails fast.
+
+Route-specific overrides live in `performance.routes.json`, letting us set tighter budgets for `/pricing` than `/blog`. We review overrides quarterly to avoid “budget creep.”
+
+## GitHub Action Snippet
+
+```yaml
+name: performance
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build && npm run start &
+      - run: npx @lhci/cli autorun --config=./lighthouserc.cjs
+```
+
+If LHCI fails, a bot comments with before/after metrics and blocking resources.
+
+## Workflow
+
+1. **Instrument RUM**: PostHog + Calibre capture real-user metrics per route; Grafana compares lab vs. field.
+2. **CI enforcement**: preview URLs get audited via Lighthouse (desktop + mobile). Failures block merge and comment JSON + HTML artifacts into PR.
+3. **Bundle reviews**: `next build --analyze` runs nightly. Bundle Buddy highlights shared chunks; we split or lazy-load accordingly.
+4. **Media strategy**: Next.js Image, Cloudinary transformations, AVIF/WebP, streaming video via Mux/HLS keep bytes low.
+5. **API audits**: log SSR/data fetch times; budgets fail if p95 &gt; 400ms. Use caching + `stale-while-revalidate`.
+6. **Synthetic monitoring**: WebPageTest + Calibre hit top routes hourly from three regions; alerts mirror budgets.
+7. **Incident response**: PagerDuty alerts guard on breach; we roll back offending PR or toggle feature flag using LaunchDarkly/PostHog.
+8. **Weekly performance review**: share digest (#perf-watch) summarizing regressions, fixes, and backlog items.
+
+## Audit Checklist
+
+- [ ] Primary routes Lighthouse ≥ budget (desktop + mobile).
+- [ ] JS delta vs. main &lt;= 20KB.
+- [ ] Fonts served via `next/font` with subsets.
+- [ ] Images use `<Image>` with defined sizes + priority flags.
+- [ ] Third-party scripts behind `next/script` with `strategy="lazyOnload"`.
+- [ ] API calls cached or SSR/ISR tuned; no blocking >400ms.
+- [ ] RUM dashboard updated with new baseline screenshot.
+
+PR templates require linking Lighthouse report + analyzer screenshot.
+
+## Automation Highlights
+
+- **GitHub comment bot** posts sparkline of LCP/CLS for the PR route.
+- **Calibre webhooks** open Linear tickets when metrics drift for 2 consecutive runs.
+- **n8n digest** posts Monday summary (best/worst routes, JS shipped, outstanding tickets).
+- **Chromatic + Percy** run visual diffs; flagged changes automatically join the performance review.
+
+## Performance Guard Rotation
+
+- **Guard IC** (weekly rotation) receives alerts, triages regressions, coordinates fixes.
+- **Comms lead** posts Slack updates + status notes.
+- **Analyst** compares RUM vs. lab data, updates dashboards.
+- Playbook lives in Notion; guard roster sits in PagerDuty. If guard sees three breaches in a week, we pause new marketing experiments until budgets recover.
+
+We also run quarterly “perf drills” where new engineers walk through diagnosing a staged regression so they learn the tooling without pressure.
+
+## Field vs. Lab Strategy
+
+- Lab results catch regressions pre-merge.
+- Field data (Calibre RUM, CrUX) catches CDN, geo, or device-specific issues.
+- Dashboard shows both; we annotate marketing campaigns so we know if a hero video spiked CLS, for example.
+
+## Instrumenting APIs & Edge
+
+- Each Route Handler logs timing metrics to Grafana.
+- Edge Middleware tracks total execution time + cache hit ratio.
+- Budgets include SSR/ISR metrics; slow API = slow LCP.
+
+## Cost Snapshot
+
+- Calibre Pro: $180/mo for multi-route monitoring.
+- WebPageTest API credits: ~$40/mo.
+- Chromatic: $60/mo.
+- Total performance tooling: <$300/mo—worth it compared to lost conversions when LCP spikes.
+
+## Case Study: Pricing Revamp
+
+- Marketing added autoplay hero video + interactive calculator.
+- CI flagged JS budget violation (+120KB) and LCP 3.5s mobile.
+- We converted video to streaming HLS, lazy loaded chat widget, split calculator into React Server Components with Suspense.
+- Launch delayed 24h but shipped with mobile LCP 2.1s and CLS 0.04.
+
+### Bonus Case: Localization Rollout
+
+When we added five localized hero images, CLS spiked due to missing dimensions. Visual regression suite + Lighthouse caught it. Fix was simply adding `sizes` + width/height plus reserving space with CSS `aspect-ratio`. Having automation saved hours of detective work.
 
 ## Metrics & telemetry
 
-- Average LCP: &lt;2.2s desktop, &lt;2.6s mobile
-- JS shipped per page: -35%
-- Post-release performance bugs: near zero
+- Average LCP: &lt;2.2s desktop, &lt;2.6s mobile.
+- JS shipped per page: -35% YoY.
+- Post-release performance incidents: near zero.
+- PRs with Lighthouse evidence: 100%.
+- Regression detection time: 10 min median (down from hours).
+- Budget breaches per quarter: ≤2 (down from 11).
 
-## What stuck with me
+## Lessons Learned
 
-- Audits must live inside the sprint, not as an extra chore.
-- Budgets only work if every squad knows them by heart.
+- Audits must live inside the sprint, not as a side quest.
+- Budgets only work if every squad knows them by heart—print them in the repo.
+- Field data ends debates; show CrUX before arguing.
+- Automate nagging; humans forget, bots don’t.
+- Performance debt behaves like interest; pay it weekly or compound pain later.
+
+## Performance Backlog Buckets
+
+1. **Quick wins** (under 2 hours): image format fixes, lazy load toggles.
+2. **Structural** (1–3 days): bundle splits, caching strategies.
+3. **Strategic** (1–2 sprints): redesigning hero layout, migrating to streaming.
+
+We keep backlog prioritized in Linear with owner + expected gain (ms saved). Guards pull from it during slow weeks.
+
+## Cost of Ignoring Performance
+
+Before this program we lost ~12% conversion during a seasonal campaign because LCP hit 4s. That single incident cost more than a year of performance tooling. Use numbers like that to justify the investment.
+
+## Implementation Timeline
+
+- **Week 1**: define budgets, wire Lighthouse CI, publish playbook.
+- **Week 2**: add RUM instrumentation + Grafana dashboards, configure Calibre/WebPageTest.
+- **Week 3**: analyze bundles, refactor hot paths, document guard rotation.
+- **Week 4**: run first performance retro, tune alerts, socialize weekly digests.
+
+Keeping it iterative avoided a monolithic “perf project” that never ships.
 
 ## What I'm building next
 
-I’m sharing a GitHub Actions workflow template with configurable budgets. Want it? let me know.
+I’m sharing a GitHub Actions workflow with configurable budgets, WebPageTest hooks, and Slack digests. Want it? let me know.
 
----
-
-Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.
+Next on my list: adopt Next.js Flight Recorder + profiling via `react-devtools-profile` in CI so we catch slow renders even before Lighthouse notices.

@@ -7,6 +7,7 @@ import { AnimatedGradientMesh } from "@/components/AnimatedGradientMesh";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { TiltCard } from "@/components/TiltCard";
 import { MagneticButton } from "@/components/MagneticButton";
+import { ImpactCalculator } from "@/components/ImpactCalculator";
 
 export default function HomePage() {
   const blogPosts = getAllBlogPosts();
@@ -165,37 +166,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-moss-100 via-sage-100 to-cream-100 py-12 lg:py-20">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute left-0 top-0 h-full w-1/3 bg-moss-gradient blur-3xl" />
-          <div className="absolute right-0 bottom-0 h-full w-1/3 bg-sage-gradient blur-3xl" />
-        </div>
-
-        <div className="relative z-10 mx-auto max-w-4xl px-6 text-center lg:px-8">
-          <Image src="/logo.png" alt="Marsala" width={80} height={80} className="mx-auto mb-6 h-20 w-20" />
-
-          <h2 className="text-4xl font-bold tracking-tight text-moss-950 lg:text-5xl">
-            Ready to grow?
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-sage-700">
-            Schedule a call to design your ideal modular system
-          </p>
-
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-            <MagneticButton href="/contact" strength={0.5}>
-              <span className="inline-flex items-center justify-center gap-2 rounded-full bg-moss-gradient px-10 py-4 text-base font-semibold text-white shadow-glow transition-all duration-300">
-                Get in Touch
-              </span>
-            </MagneticButton>
-            <MagneticButton href="/modules" strength={0.5}>
-              <span className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-moss-600 bg-white px-10 py-4 text-base font-semibold text-moss-700 transition-all duration-300 hover:bg-moss-600 hover:text-white">
-                View All Modules
-              </span>
-            </MagneticButton>
-          </div>
-        </div>
-      </section>
+      {/* Impact Calculator CTA */}
+      <ImpactCalculator />
     </main>
   );
 }

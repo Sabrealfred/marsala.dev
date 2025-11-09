@@ -27,37 +27,201 @@ image: "/blog/prompt-ops.jpg"
 
 ## Context
 
-After breaking a nurture because of a poorly edited prompt, I established Prompt Ops with engineering-grade standards.
+After breaking a nurture because of a poorly edited prompt, I established Prompt Ops with engineering-grade standards. Growth squads now treat prompts like code: version control, automated tests, releases, and incident management. Marketing still writes copy, but they merge PRs after reviewers approve.
 
 ## Stack I leaned on
 
-- Git repo dedicated to prompts
-- Playwright + custom evals
-- Linear issues with cross-functional reviewers
-- Datadog for usage metrics
+- Git repo (`prompts/`) with structured JSON + markdown context.
+- Playwright + custom eval harness, plus OpenAI Evals for regression tests.
+- Linear workflow with reviewers from growth, product, legal.
+- Datadog metrics + PostHog analytics for prompt usage/outcome tracking.
+- Supabase storing prompt versions and metadata for runtime lookup.
 
-## Playbook
+## Prompt Lifecycle
 
-1. Tag every prompt with context, inputs and expected outputs.
-2. Create automated tests that validate length, tone and critical fields.
-3. Run monthly evals against real datasets to detect drift.
-4. Version templates and publish release notes for marketing.
-5. Handle incidents as if it were broken code (postmortem + fixes).
+1. **Proposal**: marketing/product opens Linear ticket with business goal, inputs, outputs, KPIs.
+2. **Design doc**: Notion template describing context, persona, risks, guardrails.
+3. **Implementation**: create prompt file with metadata header (owner, expiry, dataset).
+4. **Testing**: run `npm run prompt:test slug` to execute Playwright/regression suite.
+5. **Review**: CODEOWNERS require AI lead + growth PM approval. Legal reviews sensitive flows.
+6. **Release**: merge to `main`, GitHub Action publishes prompt to Supabase, updates changelog, notifies #prompt-ops.
+7. **Monitoring**: Datadog dashboard tracks success rate, tokens, fallback usage. Alerts fire when drift > threshold.
+8. **Retire**: prompts expire after 60 days unless renewed; script flags stale prompts weekly.
+
+## Repo Structure
+
+```
+prompts/
+  onboarding/
+    nurture_onboarding_v3.md
+    nurture_onboarding_v3.tests.ts
+  support/
+    escalation_summary_v2.md
+datasets/
+  onboarding_es.jsonl
+  onboarding_en.jsonl
+scripts/
+  publish.ts
+  eval.ts
+```
+
+Markdown files include YAML front matter (owner, purpose, constraints) followed by template text. Tests live next to prompts so contributors see everything in one place.
+
+### Runtime API
+
+At runtime services hit a lightweight API:
+
+```ts
+const prompt = await promptStore.fetch({
+  id: "nurture_onboarding_v3",
+  locale: "es-MX",
+  version: "latest"
+});
+const response = await aiClient.generate(prompt.render({ user_name, usage_summary }));
+```
+
+Versions are immutable; rollbacks simply switch the pointer to a previous version.
+
+## Changelog
+
+- Every merge triggers `scripts/publish.ts` which updates `CHANGELOG.md`.
+- Entries include prompt id, intent, datasets touched, success metrics, and fallback instructions.
+- Growth + support read the changelog before campaigns; trust improved dramatically because people know what changed.
+
+## Prompt Schema Example
+
+```yaml
+id: nurture_onboarding_v3
+owner: @marina
+purpose: "Post-signup activation email"
+inputs:
+  - user_name
+  - product_usage_summary
+  - plan_type
+constraints:
+  length: "<200 words"
+  tone: "confident, warm"
+  required_sections:
+    - value_statement
+    - single CTA
+eval_sets:
+  - onboarding_es
+  - onboarding_en
+expiry: 2025-03-01
+```
+
+Runtime services fetch metadata alongside prompt text to enforce constraints (e.g., the transformer ensures CTA exists).
+
+## Testing & Evals
+
+- **Unit tests**: snapshots verifying placeholders, markdown structure, guardrail text.
+- **Functional tests**: Playwright flows calling the prompt via API, ensuring responses include CTA and no banned phrases.
+- **Regression evals**: monthly dataset of real user contexts; we track tone score, accuracy, hallucinations.
+- **Red-team prompts**: legal/compliance create adversarial inputs (PII requests, policy violations) to ensure safeguards hold.
+
+CI fails if tests/evals drop below thresholds. Reports attach to PR for reviewers.
+
+### Eval Harness Snippet
+
+```bash
+npm run prompt:eval nurture_onboarding_v3 \
+  --dataset datasets/onboarding_en.jsonl \
+  --metrics tone,length,cta_presence
+```
+
+Results persist in Supabase so we can graph drift over time.
+
+## Incident Response
+
+If a prompt misbehaves (e.g., hallucinated pricing):
+
+1. PagerDuty alert triggered from Datadog metric (success rate < threshold).
+2. On-call flips feature flag to fallback prompt (stored in Supabase).
+3. Incident doc auto-creates with offending inputs/outputs.
+4. Root cause analysis, fix/new version, release notes, and communication to stakeholders.
+
+We treat incidents like service outages; response time averages 12 minutes.
+
+## Governance & Training
+
+- Monthly “prompt council” reviews upcoming experiments, approves new data sources, and audits incidents.
+- Designers + PMMs attend workshops on writing structured instructions and negative examples.
+- Onboarding includes a “prompt spelunking” exercise: new hires submit a PR, run evals, and present results.
+- Every prompt owner rotates through on-call so they feel the impact of sloppy edits.
 
 ## Metrics & telemetry
 
-- Incidents caused by prompt edits: -80%
-- Approval time for updates: 3 days → 8h
-- Team confidence in AI-guided flows: 9/10
+- Incidents caused by prompt edits: -80%.
+- Approval time for updates: 3 days → 8h.
+- Team confidence in AI-guided flows: 9/10.
+- Prompts with automated eval coverage: 100%.
+- Adoption of changelog: 95% of launches referenced in weekly growth call.
+- AE satisfaction with AI copy: 4.6/5 (survey).
+- Cost per prompt edit (tokens + reviews): tracked so PMMs understand tradeoffs.
+
+## Monitoring Dashboard
+
+- Success rate (user took intended action).
+- Escalation rate (prompt fell back to human copy).
+- Token usage per prompt (cost visibility).
+- Drift vs. baseline metrics (tone, length, key phrases).
+- Recent releases and incident statuses.
+
+Ops + marketing watch the same dashboard, so no one wonders “is AI behaving?”.
+
+## Cost of Skipping Prompt Ops
+
+Before this system, a bad prompt blasted 4k customers with outdated pricing and cost us two enterprise deals. That single incident cost more than the engineer time we now invest in governance.
 
 ## What stuck with me
 
 - Ownerless prompts become Frankenstein monsters; assign module captains.
 - Documentation needs negative examples so people know what to avoid.
+- Treat prompts as config; smaller files, more reusability.
+- Bundle prompts with datasets; drift detection matters more than clever wording.
+
+## Cost Snapshot
+
+- OpenAI usage: ~$320/mo (we cut tokens by enforcing constraints).
+- Datadog dashboards: part of existing plan; incremental $0.
+- Supabase: $25/mo for metadata API + eval logs.
+
+Cheap compared to lost revenue when a prompt hallucinates pricing.
+
+## Case Study: Support Escalation
+
+Support wanted AI summaries of ongoing incidents. Prompt Ops ensured:
+
+1. Prompt stored next to dataset with legal-approved language.
+2. Tests verified no sensitive PII leaked.
+3. Monitoring tracked hallucination rate (target &lt;2%).
+4. When a vendor outage caused drift, alerts fired; on-call reverted to previous version within 8 minutes.
+
+Without Prompt Ops we would have let AI email customers inaccurate info.
+
+## Implementation Timeline
+
+- **Week 1**: create prompt repo, add schema + lint rules, migrate top 5 prompts.
+- **Week 2**: build eval harness, connect Datadog metrics, set up changelog + automation.
+- **Week 3**: onboard marketing to PR flow, run first red-team session, configure PagerDuty incidents.
+- **Week 4**: expand coverage to support + success prompts, run retro, iterate.
+
+## Tooling Cost
+
+- GitHub + Actions: existing plan.
+- Playwright + eval tokens: ~$60/mo.
+- Datadog dashboards: part of company contract.
+- PagerDuty + Slack: reused from other teams.
+
+Total incremental spend &lt;$100/mo; savings from fewer incidents far outweigh it.
+
+Prompt Ops also boosted morale—marketing trusts AI again because they can see exactly how outputs are tested and monitored.
+
+Next up: auto-generate pull requests when eval drift surpasses thresholds so the system proposes fixes before humans even look.
 
 ## What I'm building next
 
-I'm shipping a repo template with linting built in. Want early access? send me your GitHub.
+I'm shipping a repo template with linting built in plus a Datadog dashboard starter. Want early access? send me your GitHub.
 
 ---
 

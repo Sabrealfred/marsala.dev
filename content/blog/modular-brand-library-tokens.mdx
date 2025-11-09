@@ -27,37 +27,164 @@ image: "/blog/brand-library.jpg"
 
 ## Context
 
-Between marketing and product we had 12 logo versions. I built a library with releases and accessible metadata.
+Between marketing and product we had 12 logo versions floating in random Google Drive folders. Slides shipped with outdated colors, growth teams exported unoptimized SVGs, and designers spent hours policing. I rebuilt the brand system as code: tokens, releases, visual QA, and SLAs.
 
 ## Stack I leaned on
 
-- Figma libraries + variables
-- GitHub repo with optimized assets
-- Storybook for living documentation
-- Cloudinary for dynamic delivery
+- Figma libraries + variables feeding Style Dictionary.
+- GitHub repo storing tokens (`tokens/`), assets (`assets/`), and release notes.
+- Storybook site (with Chromatic) acting as living documentation.
+- Cloudinary for CDN + dynamic delivery (format, size, crop).
+- Notion portal for non-technical stakeholders with embedded previews.
 
 ## Playbook
 
-1. Inventoried assets and defined consistent naming.
-2. Created tokens for color, type and motion, then synced them with code.
-3. Automated optimized exports via scripts.
-4. Publish release notes and changelog every two weeks.
-5. Added request forms for new variants with SLAs.
+1. **Inventory & audit** existing assets; map duplicates, owner, usage.
+2. **Define taxonomy**: naming conventions (`brand.logo.primary`, `color.brand.moss.500`).
+3. **Tokenize** color, type, spacing, motion; convert to JSON via Figma Tokens plugin.
+4. **Sync to code** using Style Dictionary → publish `@marsala/brand-tokens` package weekly.
+5. **Automate exports**: GitHub Action pulls latest Figma components, optimizes via SVGO/Sharp, uploads to Cloudinary with version tags.
+6. **Document in Storybook**: each component example links to tokens, usage guidelines, and download buttons.
+7. **Release process**: every two weeks, cut a release (version semver), publish changelog, notify #brand-library.
+8. **Request workflow**: Typeform → Linear automation; SLA 3 days for minor variants, 2 weeks for new families.
 
-## Metrics & telemetry
+## Architecture at a Glance
 
-- Urgent asset requests: -70%
-- Multi-brand update time: 6h → 45 min
-- Logo misuse incidents: almost zero
+1. **Designers** update Figma components & variables.
+2. **Exporter** script pulls tokens + components via API.
+3. **GitHub** stores tokens/assets + runs CI for validation, optimization, release.
+4. **Delivery** via npm package (tokens) + Cloudinary CDN (assets).
+5. **Docs** served via Storybook + Notion with embedded previews.
 
-## What stuck with me
+## Release Pipeline
+
+- Merge to `main` triggers GitHub Action:
+  - Validate token schema/naming.
+  - Export optimized assets (SVG/PNG/WebP) with metadata.
+  - Upload to Cloudinary with semantic version tags.
+  - Publish npm package + post changelog to Slack/Notion.
+- Run Chromatic visual tests; deploy Storybook on success.
+- Releases happen every two weeks; hotfixes use same pipeline but bump patch version.
+
+```yaml
+name: brand-release
+on:
+  push:
+    branches: [main]
+jobs:
+  tokens:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm run tokens:build && npm run assets:export
+      - run: npm publish --access public
+```
+
+## Request Workflow
+
+- Typeform captures request (use case, deadline, formats).
+- n8n creates Linear task, applies SLA (3 days minor, 2 weeks new family).
+- Requester tracks status via Notion portal; approvals + delivery links live there.
+
+### SLA Table
+
+| Request Type | Examples | SLA |
+|--------------|----------|-----|
+| Minor tweak | Color swap, copy edit | 3 business days |
+| New variant | Co-brand lockup, localized typography | 10 business days |
+| Net-new family | Rebrand, campaign identity | Custom plan reviewed in council |
+
+SLAs are visible to stakeholders so priorities stay aligned.
+
+## Partner Access
+
+- Agencies get Cloudinary keys scoped to read-only directories with auto-expiring tokens.
+- Portal logs downloads so we can audit who used which logo variant.
+- Self-serve “kit generator” lets partners download combinations (e.g., horizontal + dark background) without pinging design.
+
+## Dashboards & Observability
+
+- Supabase + Metabase track request volume, SLA compliance, asset downloads, and brand debt backlog.
+- Grafana board monitors npm token package installs (so we know which repos need updates).
+- Slack alerts fire when someone uploads assets outside the pipeline (e.g., manual Cloudinary upload) so we catch rogue files.
+
+## Security & Compliance
+
+- All source files live in GitHub with required reviewers; no more random Dropbox links.
+- Cloudinary tokens rotate quarterly; revoked automatically when agencies churn.
+- Access logs exported monthly for audits—helpful when legal asks “who downloaded logo v1.4?”
+
+## Implementation Timeline
+
+- **Week 1**: inventory assets, define taxonomy, stand up Git repo.
+- **Week 2**: connect Figma Tokens → Style Dictionary → npm package.
+- **Week 3**: automate exports + Cloudinary uploads, add Storybook/Chromatic.
+- **Week 4**: launch Notion portal, train marketing/partners, set SLAs.
+
+## Governance Model
+
+- **Publishers** (Design Ops) approve merges/releases.
+- **Contributors** (designers/devs) submit PRs.
+- **Consumers** (marketing, growth, partners) consume via Notion + CDN.
+- Access roles stored in Supabase; Cloudinary tokens scoped to read-only for partners.
+- Monthly “brand council” reviews roadmap, retires outdated assets, and audits open requests. Minutes live alongside release notes so leadership always sees what changed.
+
+## SLA & Metrics
+
+- Urgent asset requests: -70%.
+- Multi-brand update time: 6h → 45 min.
+- Logo misuse incidents: almost zero.
+- Token adoption across squads: 100%.
+- Release cadence: every 14 days (tracked in Notion + GitHub).
+- SLA compliance for asset requests: 96%.
+- Partner satisfaction (quarterly survey): 9.2/10.
+
+## Case Study: Multi-Brand Refresh
+
+When we launched a partner program, we had to ship co-branded kits in four languages:
+
+1. Extended tokens with partner color slots (`color.partner.acme`).
+2. Automated export pipeline produced lockups + localized tagline graphics within 2 hours.
+3. Storybook showcased combinations and accessibility contrast results.
+4. Partners downloaded kits via Notion; audit logs captured who grabbed what.
+
+Time to deliver multi-brand updates dropped from days to under an hour.
+
+## Training & Adoption
+
+- Designers take a “token chef” workshop where they learn naming, merging, and rollback.
+- Engineers get a Storybook tour showing how tokens map to Tailwind/SCSS utilities.
+- Marketing + partners attend a quarterly office hour to learn portal updates and best practices.
+- Everyone signs off on the “brand release checklist” before big campaigns.
+
+## Cost of the Old Way
+
+Before this system we spent ~20 hours/week hunting files and fixing incorrect logos. A single misprinted brochure cost $3k. Investing in automation + governance paid for itself within a month.
+
+## Cost Snapshot
+
+- Figma Organization plan already budgeted.
+- Cloudinary: $50/mo for CDN + transformations.
+- Chromatic: $60/mo.
+- Net incremental spend &lt;$120/mo, saving dozens of designer hours.
+That’s cheaper than a single rushed reprint, so finance became our biggest advocate.
+
+## Lessons Learned
 
 - Governance matters: define who can publish and rollback.
 - Embedded previews in Notion built trust quickly.
+- Treat tokens like APIs: version, deprecate, communicate.
+- Train everyone—engineers, marketers, agencies—on the same workflows.
+- Automation > policing: scripts catch missing alt text, wrong formats, etc.
 
 ## What I'm building next
 
 I'm opening a best-practices guide for teams without dedicated design ops. Want to collaborate? let me know.
+
+Next up: add QA bots that compare live site screenshots vs. Storybook to catch rogue hex codes before they hit production.
+Also experimenting with a partner API so agencies can request pre-approved assets programmatically instead of digging through portals.
+The better the tooling, the fewer “can you send me the logo?” Slack pings we ever receive.
 
 ---
 

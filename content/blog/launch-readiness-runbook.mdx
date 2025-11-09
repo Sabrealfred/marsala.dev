@@ -27,37 +27,159 @@ image: "/blog/launch-readiness.jpg"
 
 ## Context
 
-Too many rushed launches broke our funnels. I documented the scorecard I use to approve or stop releases.
+Too many rushed launches broke our funnels. PMM would announce “we go live Friday,” engineering would scramble, and growth would discover broken forms and stale dashboards hours later. I documented a launch-readiness scorecard covering Brand, Web, Data, Automations, and Operations. If any pillar fails, we pause. The runbook turned launch week from frantic to calm—and yes, we’ve delayed launches twice because the scorecard said “no.” Worth it.
 
 ## Stack I leaned on
 
-- Linear board with gates per area
-- Notion template for the scorecard
-- Metabase dashboards for pre-launch KPIs
-- PagerDuty for launch guard duty
+- **Linear** project with stage gates and required checklist tasks.
+- **Notion scorecard template** auto-calculating readiness per pillar.
+- **Metabase dashboards** for pre-launch KPIs and burn-down charts.
+- **PagerDuty**/Slack for launch guard duty and incident escalation.
+- **n8n automations** to remind owners when deliverables slip.
+- **Statuspage clone** to communicate readiness to execs.
+
+## Readiness Dimensions
+
+1. **Brand & Messaging**
+   - Creative approved, legal reviewed, translations in place.
+   - Launch narrative documented (problem, proof, CTA).
+2. **Web & Product Surfaces**
+   - Pages built with Lighthouse ≥90.
+   - Feature flags staged, rollback plan documented.
+3. **Data & Analytics**
+   - Tracking plan PRs merged, QA screenshots attached.
+   - KPI dashboards seeded with test data, alerts tuned.
+4. **Automations & Enablement**
+   - Lifecycle emails/plays QA’d, CRM fields ready, CSM enablement done.
+5. **Operations & Support**
+   - Support macros published, billing/pricing toggles tested, runbooks ready.
+
+Each dimension owns a checklist and risk score (Green/Amber/Red). Red blocks launch; Amber requires exec sign-off.
+
+## Weekly Cadence
+
+- **T-28 days**: Kickoff, assign owners, populate scorecard baseline.
+- **T-21**: Mid-sprint review; update risks, ensure dependencies unblocked.
+- **T-14**: Dry run of product demo + content, finalize pricing/legal.
+- **T-7**: “Gate review” meeting—scorecard must be ≥80% green to proceed.
+- **T-2**: Fire drill + smoke tests; launch guard roster confirmed.
+- **T+1**: Post-launch standup, confirm metrics, release recap email.
+- **T+7**: Retro with action items + playbook updates.
 
 ## Playbook
 
-1. Evaluate five dimensions (brand, web, data, automation, ops).
-2. Assign owners and risk labels per checklist.
-3. Run smoke tests on APIs and front ends.
-4. Execute a fire drill 48 hours before go-live.
-5. Document a post-launch plan with responsible people.
+1. **Populate scorecard**: owners fill status, attach evidence (screenshots, links).
+2. **Risk scoring**: 1–5 scale for impact × likelihood; auto-calc risk heatmap.
+3. **Run smoke tests**: API, forms, payments, integrations; record Loom evidence.
+4. **Execute fire drill**: simulate major incident (e.g., lead form outage) 48h prior.
+5. **Staff launch guard**: assign IC, comms lead, resolver; share on-call doc.
+6. **Launch & monitor**: use live dashboards + Slack bot to publish updates hourly.
+7. **Post-launch plan**: backlog of follow-ups, adoption metrics, retro schedule.
+
+## Roles & Responsibilities
+
+- **Launch Captain (PMM)**: owns scorecard, facilitations, exec updates.
+- **Tech Lead**: ensures feature flags, rollback scripts, observability, and runbooks exist.
+- **Growth Lead**: verifies funnels, attribution, campaigns, and experiments are ready.
+- **Data Lead**: signs off on tracking plan, DBT tests, and KPI dashboards.
+- **Ops/Sales Enablement**: trains CSMs/AEs, updates pricing/billing, ensures support macros exist.
+
+Each role has a backup and stands in the go/no-go meeting prepared to defend status.
+
+## Tooling Automations
+
+- **Linear automation**: tickets cannot close until attached checklist tasks marked complete (via custom script).
+- **Slack bot**: `/launch status` returns readiness score, blockers, guard roster.
+- **PagerDuty schedule**: `launch-guard` service rotates IC/comms/resolver during launch window.
+- **Metabase**: auto-refresh dashboards pinned in #launch-control every hour.
+- **n8n**: sends D-7, D-3, D-1 reminders plus collects retro notes via form.
+
+Automation removes human follow-up.
+
+## Scorecard Snapshot (Notion)
+
+| Pillar | Owner | Readiness % | Top Risks | Evidence |
+|--------|-------|-------------|-----------|----------|
+| Brand | @sofia | 90% | Localization pending for DE | Figma link |
+| Web | @marina | 85% | Lighthouse 88 on /pricing | Chromatic run 142 |
+| Data | @leo | 70% | Tracking plan PR #812 open | dbt docs |
+| Automations | @mila | 100% | None | Resend test suite |
+| Ops | @carlos | 95% | Billing team on-call gap | PagerDuty schedule |
+
+Numbers roll up into an overall readiness score; anything &lt;85% triggers exec review.
+
+## Sample Checklist Items
+
+- Brand: “Final hero copy approved by legal,” “Media kit zipped + distributed.”
+- Web: “Forms pass QA on top 5 browsers,” “Feature flag rollback doc linked.”
+- Data: “Segment events merged,” “Metabase chart verifies sample data.”
+- Automations: “Playbooks tested in staging,” “CRM fields live with defaults.”
+- Ops: “Support macros published,” “Billing toggles simulated in sandbox.”
+
+Each checklist item requires a link or screenshot; empty fields fail the gate.
+
+## Risk Matrix
+
+| Risk | Likelihood | Impact | Mitigation | Owner |
+|------|------------|--------|------------|-------|
+| Tracking PR pending | Medium | High | Block launch, add reviewer mob | Data lead |
+| Support understaffed | Low | High | Pull SDRs for weekend coverage | Ops |
+| Billing toggle unknown | Medium | Medium | Simulate in sandbox + record Loom proof | Engineering |
+| Messaging legal approval | High | Medium | Daily check-ins with counsel | PMM |
+
+We update the matrix at every gate review. If impact × likelihood ≥9, the launch pauses until mitigation is in place.
+
+## Fire Drill Template
+
+1. **Trigger**: e.g., lead form 500 error.
+2. **Participants**: dev, ops, support, comms.
+3. **Timeline**: 30-minute simulation.
+4. **Objectives**: Validate detection, comms, rollback.
+5. **Output**: Notion doc with gaps (missing scripts, unclear on-call, etc.).
+
+Running drills forced us to write missing runbooks before launch day.
 
 ## Metrics & telemetry
 
-- Launches delayed due to readiness: +2 (worth it)
-- Critical incidents after launch: -80%
-- Internal satisfaction with the process: 9/10
+- Launches delayed due to readiness: +2 (worth it; prevented customer-impacting bugs).
+- Critical incidents after launch: -80%.
+- Post-launch adoption vs. forecast: +14% (we hit targets because everything worked).
+- Internal satisfaction with process: 9/10.
+- “Unknown owner” issues during launch: 0.
+- Average time to publish launch recap: 4 hours (down from 24).
 
-## What stuck with me
+We review metrics quarterly to keep leadership bought in.
+
+## Post-Launch Evaluation
+
+1. **Adoption review**: compare actual vs. forecast KPIs within 24 hours; annotate dashboards with context.
+2. **Incident recap**: even if none occurred, confirm guard roster logs and update runbooks with lessons learned.
+3. **Customer feedback**: compile support tickets, social mentions, NPS comments in a Notion database.
+4. **Debt backlog**: capture hacks or shortcuts, assign owners in Linear with due dates.
+5. **Retro**: start/stop/continue meeting with all owners. Publish notes + decisions; update templates immediately.
+
+This closes the loop so each launch makes the next easier.
+
+## Communication Plan
+
+- **Launch control Slack channel** pinned with runbook, guard roster, dashboards.
+- **Executive digest** auto-posted daily with readiness score and blockers.
+- **Statuspage clone** showing color-coded pillars for stakeholders outside Slack.
+- **Go/No-Go meeting** day before launch where each owner says “Ship” or “Block” with rationale.
+
+Transparency keeps surprises low.
+
+## Lessons Learned
 
 - The scorecard isn’t bureaucracy; it’s a structured conversation.
-- Celebrate when someone raises a red flag early.
+- Celebrate when someone raises a red flag early—it’s courage, not friction.
+- Evidence matters; no checklist item counts without proof.
+- Assign backups for every owner; vacations shouldn’t derail readiness.
+- Keep retros short but mandatory; feed improvements back into template.
 
 ## What I'm building next
 
-I’m sharing my Notion template soon. Want it? leave me your email.
+I’m sharing my Notion template (scorecard + fire-drill + on-call roster) and a Linear workflow that locks “Launch” tickets until all five pillars submit evidence. Want it? leave me your email.
 
 ---
 
