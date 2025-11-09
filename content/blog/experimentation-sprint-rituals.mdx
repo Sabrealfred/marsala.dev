@@ -2,62 +2,125 @@
 title: "Experimentation Rituals That Actually Scale"
 slug: "experimentation-sprint-rituals"
 type: "Playbook"
-summary: "My set of rituals to run experiments every sprint without chaos."
-description: "Playbook for experimentation squads: intake, prioritization, QA and retros that fit inside a sprint."
+summary: "Rituals, tooling, and accountability loops that let our teams ship four experiments every sprint without chaos."
+description: "Step-by-step guide to building an experimentation program with predictable intake, QA, telemetry, and retros."
 date: "2024-11-22"
-readingTime: "8 min read"
-author: "Marina Álvarez"
+readingTime: "12 min read"
+author: "Marsala Engineering Team"
 tags:
   - "Growth"
   - "Product"
+  - "Process"
 keywords:
   - "experimentation"
-  - "sprints"
-  - "growth"
-  - "process"
+  - "growth process"
+  - "sprint rituals"
+  - "feature flags"
 featured: false
 image: "/blog/experimentation.jpg"
 ---
 
-
 # Experimentation Rituals That Actually Scale
 
-> Experiments stopped being random bets—they became part of our heartbeat.
+## Background
 
-## Context
+Running experiments is easy; running **repeatable** experiments that teams trust is not. A year ago our squads were running one experiment per month, often without clean data or follow-up analysis. To double growth impact we overhauled the experimentation process—borrowing agile rituals, adding strong telemetry, and codifying ownership. We now average four experiments per sprint across web, messaging, and automation surfaces. This post shares how we did it.
 
-With multiple squads testing in parallel we needed order. I defined rituals that let us ship continuously with reliable data.
+## Operating Principles
 
-## Stack I leaned on
+1. **Hypotheses must be falsifiable and tied to a single metric.**
+2. **Every experiment has an explicit owner** from ideation through debrief.
+3. **Telemetry is non-negotiable.** No tracking plan, no launch.
+4. **Feature flags everywhere.** Rollouts happen in minutes, not weeks.
+5. **Document everything.** Wins, neutral results, and failures live in the same library.
 
-- Linear board dedicated to experiments
-- Notion playbooks with A/B templates
-- PostHog for tracking and analysis
-- #experiments Slack channel for updates
+## Tooling Overview
 
-## Playbook
+| Need | Tool | Notes |
+|------|------|-------|
+| Backlog & workflow | Linear | Dedicated “EX” team with templates for intake, QA, debrief |
+| Telemetry | PostHog + dbt | Shared metrics layer, guardrails for sample size |
+| Feature flags | PostHog flags + custom middleware | LaunchDarkly-level control without the price tag |
+| Design review | Figma + Storybook | Components synced with tokens so UI changes mirror product |
+| Communication | Resend summaries + #experiments Slack channel | Automated weekly recaps |
 
-1. Weekly intake using a template (hypothesis, metric, owner).
-2. Prioritize with ICE score plus real capacity.
-3. Cross-team QA before flipping any flag.
-4. Friday demo + retro capturing actionable learnings.
-5. Auto-archive experiments with documentation snapshots.
+## Rituals in Detail
 
-## Metrics & telemetry
+### Weekly Intake (Monday)
 
-- Velocity: 1 experiment/month → 4 per sprint
-- Completed analysis: 100%
-- Repeat mistakes: near zero
+Growth, product, and engineering meet for 30 minutes to review experiment proposals submitted via Linear. Each submission includes hypothesis, target metric, guardrail metrics, rollout plan, and expected engineering effort. We accept, defer, or reject proposals on the spot.
 
-## What stuck with me
+### Sprint Planning (Tuesday)
 
-- Transparency motivates—everyone sees what’s being tested and why.
-- Documenting failed tests prevents rerunning them two months later.
+Accepted experiments receive:
 
-## What I'm building next
+* Assigned engineer + analyst.
+* Design assets or copy requirements.
+* Tracking plan (Segment events + dbt model updates).
+* QA checklist covering browsers, devices, and accessibility.
 
-I'm integrating AI to propose hypotheses from insights. Want to co-create that layer? let's talk.
+We limit ourselves to four concurrent experiments per surface to avoid noise.
 
----
+### Daily Standups
 
-Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.
+Each experiment owner gives a 60-second update: implementation status, blockers, telemetry readiness. If a blocker requires cross-team help, we escalate immediately rather than waiting for retro.
+
+### Release + QA
+
+* Feature flag created with default OFF.
+* Playwright regression tests run automatically.
+* Analytics QA: we use a custom script that fires PageView + custom events, then verifies they landed in PostHog/dbt within five minutes.
+* Launch staged to 5% of traffic; health monitored for 30 minutes before scaling.
+
+### Friday Demo + Retro
+
+We demo results (even if still running) and log learnings into Notion. Each entry includes:
+
+* Link to code/flag.
+* Screenshots/videos.
+* Metric movement with confidence intervals.
+* Decision (ship, iterate, revert, archive).
+
+## Sample Timeline
+
+| Day | Activity |
+|-----|----------|
+| Monday | Intake + prioritization |
+| Tuesday | Planning + instrumentation reviews |
+| Wednesday | Build + QA |
+| Thursday | Launch + monitoring |
+| Friday | Demo + retro + backlog grooming |
+
+## Metrics We Track
+
+* **Experiments launched per sprint:** 4 (goal 3–5).
+* **Analysis completion rate:** 100% (no open loops).
+* **Average time to decision:** 6.2 days.
+* **Experiment win rate:** 27% (rest either neutral or instructive failures).
+* **Technical rollback rate:** &lt;2% thanks to feature flags and QA.
+
+## Templates and Documentation
+
+Our Linear template includes sections for hypothesis, design artifacts, tracking plan, QA checklist, flag configuration, and postmortem summary. Notion serves as an indexed knowledge base; we tag experiments by surface, metric, and outcome so future teams can learn quickly. Resend automates weekly digests summarizing what shipped, what’s mid-flight, and what we learned.
+
+## Lessons Learned
+
+* **Enforce guardrails.** Sample-size calculators and stopping rules are embedded into our dashboards. If an experiment tries to end early, the analyst gets paged.
+* **Tie experiments to north-star metrics.** Vanity tests are an easy trap; we require explicit links to OKRs.
+* **Share failures loudly.** The best ideas often reseed from what didn’t work. Transparency keeps the culture healthy.
+* **Make QA everyone’s job.** Designers review visuals, analysts verify events, engineers ensure performance, PMs sanity-check UX.
+
+## FAQ
+
+**How do you avoid experiment collisions?**  
+We maintain a shared calendar inside Notion showing which cohorts are exposed to which flags. PostHog cohorts are tagged with experiment IDs, and middleware blocks conflicting flags from activating simultaneously.
+
+**What about long-running experiments?**  
+Anything exceeding three sprints requires a special review where we revalidate assumptions and consider alternative designs (like staggered rollouts or synthetic control groups).
+
+**Do stakeholders outside engineering access results?**  
+Yes. Resend digests include executive summaries plus links to dashboards. We also host a monthly “growth show-and-tell” where product marketing, success, and sales learn from experiment outcomes.
+
+## What’s Next
+
+We’re piloting auto-generated hypotheses using telemetry + LLMs to help teams spot underexplored segments. We’re also adding automated debrief summaries so insights land in Slack minutes after an experiment wraps. If you want the Linear template, tracking plan checklist, or Resend digest snippet, [reach out](/contact) and we’ll send the package.

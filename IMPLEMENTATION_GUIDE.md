@@ -108,6 +108,7 @@ Actualmente hay **37 posts** curados (17 temáticos + 20 nuevos para SEO). Todos
 1. Edita/crea un objeto en `content/blog-data.mjs` (título, slug, resumen, keywords, bullets de stack/playbook/metrics).
 2. Corre `npm run blog:generate`. El script compone todos los `.mdx` con voz uniforme, CTA y metadatos SEO.
 3. Los archivos resultantes viven en `content/blog/*.mdx` y automáticamente aparecen en `/research` y `/blog/[slug]`.
+4. Si necesitas un artículo ultra personalizado, agrega `manual: true` al objeto dentro de `blog-data.mjs`; el generador lo omitirá y podrás editar el `.mdx` a mano.
 
 > El contenido legacy de `data/research.ts` sigue siendo soportado. Cada entrada se renderiza con el nuevo layout directamente desde la data estructurada.
 
@@ -149,7 +150,7 @@ Debajo del frontmatter encontrarás el layout uniforme:
 
 ## 🔄 Próximos Pasos para el Blog
 
-1. **Editar datos:** agrega/actualiza tu entrada en `content/blog-data.mjs`.
+1. **Editar datos:** agrega/actualiza tu entrada en `content/blog-data.mjs` (usa `manual: true` para posts fuera del generador).
 2. **Regenerar contenido:** `npm run blog:generate`.
 3. **Validar:** `npm run lint && npm run build`.
 4. **Deploy:** `netlify deploy --prod` (o pipeline preferido).

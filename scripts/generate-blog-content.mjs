@@ -5,13 +5,36 @@ import fs from "fs";
 import path from "path";
 import { blogEntries } from "../content/blog-data.mjs";
 
+/**
+ * @typedef {Object} BlogEntry
+ * @property {string} title
+ * @property {string} slug
+ * @property {"Guide"|"Playbook"|"Case Study"|"Insight"|"Tutorial"} type
+ * @property {string} date
+ * @property {string} readingTime
+ * @property {string} summary
+ * @property {string} description
+ * @property {string[]} keywords
+ * @property {string[]} tags
+ * @property {string} image
+ * @property {boolean} featured
+ * @property {string} signal
+ * @property {string} context
+ * @property {string[]} stack
+ * @property {string[]} playbook
+ * @property {string[]} metrics
+ * @property {string[]} lessons
+ * @property {string} next
+ * @property {boolean} [manual]
+ */
+
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 
 if (!fs.existsSync(BLOG_DIR)) {
   fs.mkdirSync(BLOG_DIR, { recursive: true });
 }
 
-const author = "Marina Álvarez";
+const author = "Marsala Engineering Team";
 
 const escapeQuotes = (str) => str.replace(/"/g, '\\"');
 const escapeInline = (value) =>
@@ -64,6 +87,10 @@ Want me to help you replicate this module? [Drop me a note](/contact) and we’l
 };
 
 blogEntries.forEach((entry) => {
+  if (entry.manual) {
+    console.log(`↷ Skipping manual post ${entry.slug}`);
+    return;
+  }
   const frontmatter = `---
 title: "${escapeQuotes(entry.title)}"
 slug: "${entry.slug}"

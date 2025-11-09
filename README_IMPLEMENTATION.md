@@ -119,6 +119,8 @@ to: ['sales@marsala.dev'],
 - Rutas creadas: `/research` (listado principal) y `/blog/[slug]` (detalle). `/blog` redirige a `/research`.
 - Utilidades: `lib/blog.ts` (lectura de MDX) + `components/MDXComponents.tsx` (tipografía)
 - Render con `next-mdx-remote` (RSC) y metadata para compartir
+- `npm run blog:generate` toma la data de `content/blog-data.mjs` y produce los `.mdx`
+- Si necesitas un post 100% personalizado, marca el entry con `manual: true` y edita el archivo manualmente (el generador lo omitirá).
 
 **Agregar un nuevo post**
 1. Duplica cualquiera de los archivos en `content/blog/`

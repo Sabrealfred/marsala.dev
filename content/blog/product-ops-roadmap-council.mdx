@@ -1,63 +1,147 @@
 ---
-title: "Product Ops Roadmap Council: Less Noise, More Focus"
+title: "Product Ops Roadmap Council: How We Keep GTM and Engineering Aligned"
 slug: "product-ops-roadmap-council"
 type: "Insight"
-summary: "I launched a roadmap council that keeps product, growth and ops rowing in the same direction."
-description: "How I structured a monthly roadmap council with data, templates and crisp decisions."
+summary: "Process blueprint for a monthly roadmap council that balances growth bets, engineering capacity, and operational readiness."
+description: "Explains the structure, data inputs, facilitation rituals, and tooling that make the Marsala roadmap council decisive instead of political."
 date: "2024-11-18"
-readingTime: "7 min read"
-author: "Marina Álvarez"
+readingTime: "12 min read"
+author: "Marsala Engineering Team"
 tags:
-  - "Product"
-  - "Ops"
+  - "Product Ops"
+  - "Process"
+  - "GTM"
 keywords:
+  - "roadmap governance"
+  - "cross-functional process"
   - "product ops"
-  - "roadmap"
-  - "council"
-  - "process"
+  - "growth prioritization"
 featured: false
 image: "/blog/product-ops.jpg"
 ---
 
+# Product Ops Roadmap Council: How We Keep GTM and Engineering Aligned
 
-# Product Ops Roadmap Council: Less Noise, More Focus
+## Why a Council?
 
-> The roadmap stopped living in a static PDF—it became a living process.
+In 2023 we hit a wall: every team had a roadmap, yet nothing lined up with actual capacity. Growth would sell bundles engineering hadn’t scoped, design shipped experiments nobody measured, and RevOps received “urgent” automations without context. We replaced ad-hoc debates with a monthly roadmap council—an operating rhythm that forces data-driven decisions and preserves focus. This article breaks down how the council works, the artifacts we lean on, and the lessons collected after a year of running it.
 
-## Context
+## Participants and Roles
 
-With multiple squads clashing for priorities I needed a neutral forum. The council happens once a month and decisions are grounded on data and real capacity.
+* **Chair (Product Ops).** Facilitates, enforces time boxes, and publishes outcomes.
+* **Engineering Lead.** Brings capacity forecasts, dependency maps, and technical risks.
+* **Growth Lead.** Presents funnel metrics, campaign requests, and expected impact.
+* **RevOps Representative.** Flags automation/CRM implications.
+* **Finance Partner.** Validates budget assumptions for larger bets.
+* **Observer Seats.** PMs, designers, and marketers attend as needed but only speak when called.
 
-## Stack I leaned on
+The council owns prioritization at the “initiative” level (projects taking more than a week). Day-to-day backlog grooming still happens inside squads.
 
-- Notion database powering the live roadmap
-- Metabase dashboards for impact metrics
-- Linear for status and dependencies
-- Resend for automated meeting notes
+## Inputs: The Data Pack
 
-## Playbook
+One week before the meeting, Product Ops distributes a “data pack” that contains:
 
-1. Collect proposals via a single template with owner + expected metric.
-2. Review metrics/risks in a short synchronous session.
-3. Vote using predefined criteria and log the decision in Notion.
-4. Send auto recaps via Resend and update Linear tickets immediately.
-5. Run bi-weekly check-ins with owners to keep initiatives on track.
+1. **Capacity snapshot.** Headcount, PTO, and team utilization for the next two sprints sourced from Linear analytics.
+2. **Impact dashboards.** Metabase slides covering pipeline health, experiment results, and active SLO breaches.
+3. **Initiative briefs.** One-page docs for each proposal (problem, success metric, dependencies, rough effort, owner).
+4. **Risk register.** Open incidents, tech debt spikes, or market pressures that may force work in.
 
-## Metrics & telemetry
+Without the data pack nobody is allowed to add agenda items; the council is not a brainstorming session.
 
-- Decision time for big bets: -50%
-- Projects without a clear owner: 0
-- Plan vs reality alignment: +35%
+## Meeting Structure
 
-## What stuck with me
+1. **Opening (5 min).** Chair reviews agenda, decision criteria, and changes to capacity since the last council.
+2. **Status rundown (10 min).** Engineering lead covers shipped/blocked initiatives; Growth highlights KPI movement.
+3. **Decision block (35 min).** Each initiative gets a maximum of five minutes: two for presenting, three for questions + vote.
+4. **Risk review (5 min).** Discuss any incidents that may preempt roadmap items.
+5. **Action review (5 min).** Chair reads back decisions, owners, and follow-up tasks.
 
-- Transparency kills hallway rumors—everyone sees why we said yes or no.
-- Current data is non-negotiable; otherwise the council becomes opinion wars.
+Votes are simple: green (approve), yellow (needs work), red (reject or defer). Ties are broken by the CTO or VP Growth depending on initiative domain.
 
-## What I'm building next
+## Decision Criteria
 
-I'm polishing the template with scoring matrix + agendas. Want it? drop me your email.
+We score each proposal on four axes using a 1–5 scale:
 
----
+| Axis | Definition | Example Signals |
+|------|------------|-----------------|
+| **Strategic Fit** | Alignment with annual OKRs | Tied to north-star metrics, required for major launch |
+| **Impact** | Expected KPI lift / cost savings | Modeled ARR impact, funnel conversion deltas |
+| **Confidence** | Strength of data backing the idea | Experiment evidence, customer demand, prototype usability |
+| **Effort/Risk** | Engineering cost + operational blast radius | Dependency chains, migration risk, ops overhead |
 
-Want me to help you replicate this module? [Drop me a note](/contact) and we’ll build it together.
+We normalize scores and visualize them in a radar chart that sits next to the briefing doc. Low-confidence ideas can still pass if we explicitly label them as “learning bets” with smaller time boxes.
+
+## Tooling Stack
+
+* **Linear.** Source of truth for epics, capacity, and dependency graphs.
+* **Notion.** Hosts initiative briefs, decision logs, and playbooks for the council.
+* **Metabase.** Supplies dashboards embedded directly into the briefs.
+* **Resend.** Sends the post-council summary to all stakeholders automatically.
+* **Slack Workflow.** Collects agenda submissions and pushes reminders 48 hours before the meeting.
+
+We keep everything linkable. If someone references data verbally that isn’t in the brief, the chair pauses the meeting until it’s posted—no hallway stats allowed.
+
+## Outputs and Follow-up
+
+Within 24 hours the chair publishes:
+
+* **Decision log.** Approvals, deferrals, rejections, with rationale and owner per item.
+* **Capacity plan.** Updated view of who’s working on what for the next two sprints.
+* **Action items.** Tasks such as “Growth to gather additional evidence” or “Engineering to spike data contract cost.”
+
+Resend delivers the summary, and Linear epics get tagged with the decision timestamp. Anything approved is expected to kick off within two sprints; otherwise it must return to the council for revalidation.
+
+## Lessons from a Year of Councils
+
+1. **Prep is everything.** Poor briefs waste everyone’s time. We instituted a template with mandatory fields (metric owner, rollback plan, design artifacts) and reject any submission that lacks them.
+2. **Decide who decides.** Councils become performative if nobody owns the call. Empowering the chair to end debates keeps momentum.
+3. **Publish math.** Whenever we discuss impact or cost we share spreadsheets or SQL queries in the doc. It builds trust and shortens arguments.
+4. **Track hit rate.** We review quarterly how many approved initiatives actually shipped and moved the KPI. That feedback loop sharpens future decisions.
+5. **Include ops early.** RevOps and finance need seats at the table—nothing slows growth like a brilliant idea that the billing or CRM stack can’t absorb.
+
+## Sample Agenda
+
+1. Opening + capacity snapshot
+2. KPI movement + SLO status
+3. Initiative votes:
+   - Paid attribution rebuild
+   - Partner portal v2
+   - AI scoring copilot
+   - Compliance logging improvements
+4. Risk register (DNS migration, legal review, or similar)
+5. Actions + adjourn
+
+This agenda rarely changes and people know exactly what to expect, which keeps the cadence efficient.
+
+## Metrics We Watch
+
+* **Average time to decision:** 42 minutes for a 5-item agenda.
+* **Initiatives shipped per quarter:** 11 (vs 6 before the council).
+* **Approval-to-launch lead time:** ~9 working days.
+* **Stakeholder satisfaction:** 9.3/10 average in anonymous surveys.
+* **Unplanned work:** down 37% because surprise requests are routed through the council.
+
+## Common Anti-Patterns (and Fixes)
+
+1. **Parking-lot proposals.** Teams tried to “sneak” ideas without briefs. We fixed it by enforcing a submission deadline and rejecting anything missing data.
+2. **Endless debates.** We adopted a “two rounds of questions” rule; after that the chair calls for a vote or pushes the topic to async follow-up.
+3. **Capacity optimism.** Growth occasionally over-promised launch dates. Now engineering updates utilization dashboards live during the meeting.
+4. **Decision amnesia.** People forgot why we said no. Publishing rationale immediately (and tagging Linear epics) removed most escalations.
+
+## Automation Highlights
+
+* Slack workflow collects agenda submissions and validates that briefs exist.
+* GitHub Action syncs Linear epics with the decision log so PMs always know status.
+* Resend emails go to a “roadmap digest” list plus a Confluence archive for auditors.
+* Chromatic-style visual diff for KPIs: Metabase snapshots before/after the council help us see if focus areas drift.
+
+## Implementing Your Own Council
+
+1. **Start small.** Pilot with a single squad or a specific domain (e.g., web + automation) before inviting the whole company.
+2. **Time-box relentlessly.** Use timers, cut rambling, and push follow-up threads to Slack.
+3. **Reward preparation.** Give shout-outs to teams with exemplary briefs. Peer pressure helps maintain quality.
+4. **Automate logistics.** The less time you spend coordinating attendees, the more energy you have for the decisions themselves.
+
+## Final Thoughts
+
+The Marsala roadmap council replaced chaos with clarity. It didn’t slow us down—it forced us to pick the bets that matter, defend them with data, and stay honest about capacity. If you’re scaling a cross-functional growth team and feel decisions slipping into politics, borrow this cadence. We’re happy to share templates, scripts, and facilitation notes—just [reach out](/contact) and we’ll compare playbooks.
