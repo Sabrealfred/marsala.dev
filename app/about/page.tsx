@@ -188,7 +188,7 @@ export default function AboutPage() {
             <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-moss-gradient text-3xl shadow-lg">
               👋
             </div>
-            <h2 className="text-3xl font-bold text-moss-950">We're Hiring</h2>
+            <h2 className="text-3xl font-bold text-moss-950">We&rsquo;re Hiring</h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-sage-700">
               Always looking for builders: Frontend, Product Designers, Growth Engineers, Data/AI specialists. Portfolios and repos are a plus.
             </p>

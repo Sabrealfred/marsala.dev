@@ -45,7 +45,7 @@ export default function ModulesPage() {
             Need help choosing?
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-sage-300">
-            Schedule a call and we'll design the perfect modular rollout for your needs
+            Schedule a call and we&rsquo;ll design the perfect modular rollout for your needs
           </p>
           <div className="mt-8">
             <MagneticButton href="/contact" strength={0.5}>

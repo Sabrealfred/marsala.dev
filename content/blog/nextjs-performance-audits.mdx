@@ -95,7 +95,7 @@ If LHCI fails, a bot comments with before/after metrics and blocking resources.
 - [ ] Primary routes Lighthouse ≥ budget (desktop + mobile).
 - [ ] JS delta vs. main &lt;= 20KB.
 - [ ] Fonts served via `next/font` with subsets.
-- [ ] Images use `<Image>` with defined sizes + priority flags.
+- [ ] Images use `&lt;Image&gt;` with defined sizes + priority flags.
 - [ ] Third-party scripts behind `next/script` with `strategy="lazyOnload"`.
 - [ ] API calls cached or SSR/ISR tuned; no blocking >400ms.
 - [ ] RUM dashboard updated with new baseline screenshot.
@@ -135,7 +135,7 @@ We also run quarterly “perf drills” where new engineers walk through diagnos
 - Calibre Pro: $180/mo for multi-route monitoring.
 - WebPageTest API credits: ~$40/mo.
 - Chromatic: $60/mo.
-- Total performance tooling: <$300/mo—worth it compared to lost conversions when LCP spikes.
+- Total performance tooling: &lt;$300/mo—worth it compared to lost conversions when LCP spikes.
 
 ## Case Study: Pricing Revamp
 
@@ -191,3 +191,8 @@ Keeping it iterative avoided a monolithic “perf project” that never ships.
 I’m sharing a GitHub Actions workflow with configurable budgets, WebPageTest hooks, and Slack digests. Want it? let me know.
 
 Next on my list: adopt Next.js Flight Recorder + profiling via `react-devtools-profile` in CI so we catch slow renders even before Lighthouse notices.
+
+## FAQ
+
+- **Do marketing experiments still move fast?** Yes—if an experiment needs extra JS, they budget for it and commit to cleanup. Budgets are negotiation tools, not handcuffs.
+- **What about pages outside Next.js?** We wrap legacy pages with Calibre monitoring so they follow the same guardrails until migrated.
