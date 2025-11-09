@@ -42,7 +42,7 @@ I borrowed Site Reliability Engineering (SRE) practices from product engineering
 Implementing SRE practices for RevOps automations followed a structured playbook to ensure reliability and maintainability.
 
 1.  **Inventory workflows**: Categorize all RevOps automations as P0 (revenue critical), P1 (important), or P2 (nice-to-have). Only P0/P1 workflows receive 24/7 coverage and rigorous SLOs.
-2.  **Define SLOs**: For each critical workflow, define clear Service Level Objectives (SLOs). For example, "Lead Router availability 99.5%," or "Lifecycle Nurture latency <3 minutes." Publish these SLOs in Notion with clear mathematical definitions.
+2.  **Define SLOs**: For each critical workflow, define clear Service Level Objectives (SLOs). For example, "Lead Router availability 99.5%," or "Lifecycle Nurture latency &lt;3 minutes." Publish these SLOs in Notion with clear mathematical definitions.
 3.  **Instrument telemetry**: Add structured logging (request ID, payload size, outcome) and metrics exported to Prometheus/Loki. This provides the raw data needed for monitoring and debugging.
 4.  **Build dashboards**: Create Grafana panels for key metrics like latency, success rate, queue depth, and error types. Share these dashboards with sales and marketing teams to foster transparency and build trust.
 5.  **Create error budgets**: Track minutes of downtime per quarter for each critical workflow. When the error budget is exceeded, freeze feature work and invest in reliability improvements, ensuring a focus on stability.
@@ -93,7 +93,7 @@ Our error budget policy is a critical mechanism for balancing innovation with re
 
 -   If burn rate >2x for three days → freeze new automations, focus on reliability.
 -   If burn rate >4x in a week → leadership review + dedicated “stability sprint.”
--   If burn rate stays healthy (<1x) for 6 weeks → we allow more experimental workflows (future capacity planning).
+-   If burn rate stays healthy (&lt;1x) for 6 weeks → we allow more experimental workflows (future capacity planning).
 
 Publishing this policy removed debates about “is this outage serious?”—the math decides, fostering objective decision-making.
 ## Architecture Blueprint

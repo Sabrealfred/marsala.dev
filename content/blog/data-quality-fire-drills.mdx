@@ -125,7 +125,7 @@ This scenario highlights how a drill can address a specific, common data quality
 1.  **Injection**: Inject duplicate contacts into a Supabase clone via a dbt seed.
 2.  **Impact**: A fake HubSpot workflow sends two welcome emails to the same "lead"; marketing sees a spike in unsubscribes and a skewed CAC.
 3.  **Objective**: Detect the duplication, identify the root cause (e.g., a misconfigured enrichment job), and patch the workflow.
-4.  **Success criteria**: Incident opened <45 min, fix <90 min, follow-up PR to add a uniqueness test + monitoring.
+4.  **Success criteria**: Incident opened &lt;45 min, fix &lt;90 min, follow-up PR to add a uniqueness test + monitoring.
 
 This scenario helped marketing, data, and RevOps practice collaborating instead of pointing fingers, fostering a culture of shared responsibility.
 ## Retrospective Template

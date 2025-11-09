@@ -147,7 +147,7 @@ Results persist in Supabase so we can graph drift over time.
 
 If a prompt misbehaves (e.g., hallucinated pricing):
 
-1. PagerDuty alert triggered from Datadog metric (success rate < threshold).
+1. PagerDuty alert triggered from Datadog metric (success rate &lt; threshold).
 2. On-call flips feature flag to fallback prompt (stored in Supabase).
 3. Incident doc auto-creates with offending inputs/outputs.
 4. Root cause analysis, fix/new version, release notes, and communication to stakeholders.

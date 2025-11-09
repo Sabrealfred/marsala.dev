@@ -51,7 +51,7 @@ This architecture ensures that data flows seamlessly from raw sources to actiona
 
 The AI Ops War Room is composed of several interconnected components, each playing a vital role in centralizing information and enabling rapid response:
 
-1.  **Mission KPIs**: We identified three critical Key Performance Indicators (KPIs) for each operational track (e.g., MRR growth for finance, lead velocity for growth, support backlog for customer service). Each KPI is displayed with clear budgets (e.g., churn must stay <1.5% monthly) and trendlines, providing an immediate pulse on operational health. Escalation policies are documented alongside each budget.
+1.  **Mission KPIs**: We identified three critical Key Performance Indicators (KPIs) for each operational track (e.g., MRR growth for finance, lead velocity for growth, support backlog for customer service). Each KPI is displayed with clear budgets (e.g., churn must stay &lt;1.5% monthly) and trendlines, providing an immediate pulse on operational health. Escalation policies are documented alongside each budget.
 2.  **Anomaly Feed**: This component is the early warning system. **Metaplane** and **PostHog webhooks** continuously monitor our data streams for unusual patterns or deviations. Detected anomalies are pushed into a **Supabase** database, where the AI copilot summarizes their potential impact and suggests relevant playbooks from the library.
 3.  **Playbook Library**: A comprehensive collection of pre-defined operational procedures, stored as a **Notion database** and versioned in Git (exported as YAML files). Each playbook details the trigger conditions, step-by-step actions, responsible owners, and associated automation hooks (e.g., n8n workflow IDs, PagerDuty service IDs).
 4.  **Action Log**: A **Supabase table** that meticulously records every action taken within the war room. This includes who triggered what, the outcome of the action, and any follow-up tasks. This log provides a complete audit trail, crucial for post-incident reviews and accountability.
@@ -61,7 +61,7 @@ Building the AI Ops War Room was a structured, iterative process, focusing on in
 
 ### 1. Define Signals & Budgets
 -   **Collaborate with executives**: Work closely with executive leadership to identify and prioritize 3-5 critical KPIs for each major domain (Growth, Product, Support, Finance). These should be the metrics that truly move the needle for the business.
--   **Document budgets and escalation policies**: For each defined KPI, establish clear operational budgets (e.g., "churn must stay <1.5% monthly," "lead velocity must not drop below 100 leads/day"). Crucially, document the escalation policies: what happens when a budget is breached, who is notified, and what are the immediate next steps. This sets clear expectations and triggers for action.
+-   **Document budgets and escalation policies**: For each defined KPI, establish clear operational budgets (e.g., "churn must stay &lt;1.5% monthly," "lead velocity must not drop below 100 leads/day"). Crucially, document the escalation policies: what happens when a budget is breached, who is notified, and what are the immediate next steps. This sets clear expectations and triggers for action.
 
 ### 2. Build the Data Backbone
 -   **Consolidate metrics in Snowflake**: Centralize all relevant operational metrics within Snowflake. Utilize dbt models to transform raw data into clean, aggregated tables, specifically `fct_kpi_daily` for daily performance tracking and `fct_anomaly_events` for capturing unusual data patterns.

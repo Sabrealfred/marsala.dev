@@ -86,7 +86,7 @@ Each content ID flows through these stages with timestamps stored in Supabase so
 
 ## Glossary & Prompt Operations
 
-- **Versioned glossaries** live in Git (`/localization/glossaries/<region>.json`). Each entry includes term, translation, usage notes, and banned synonyms.
+- **Versioned glossaries** live in Git (`/localization/glossaries/&lt;region&gt;.json`). Each entry includes term, translation, usage notes, and banned synonyms.
 - **Prompt modules**: we compose prompts from reusable blocks (tone, legal, CTA style). Editors toggle modules before kicking off AI drafts.
 - **Change control**: glossary updates require regional marketing + legal approval. Merged changes fire a webhook that regenerates AI few-shot examples and notifies reviewers.
 
