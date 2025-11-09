@@ -11,6 +11,38 @@
     @apply text-foreground;
     min-height: 100vh;
   }
+
+  /* Space Grotesk for all headings */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  h1 {
+    font-weight: 700;
+  }
+
+  h2, h3 {
+    font-weight: 600;
+  }
+
+  /* IBM Plex Mono for code elements */
+  code, kbd, samp, pre {
+    @apply font-mono;
+  }
+
+  code {
+    font-size: 0.95em;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    background-color: rgba(106, 138, 108, 0.1);
+  }
+
+  pre code {
+    padding: 0;
+    background-color: transparent;
+  }
 }
 
 @layer utilities {
