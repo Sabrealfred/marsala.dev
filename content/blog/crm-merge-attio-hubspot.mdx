@@ -5,7 +5,7 @@ type: "Case Study"
 summary: "How I unified two CRMs and rebuilt the pipeline in a single trustworthy view."
 description: "Practical case for merging HubSpot and Attio: ID reconciliation, owners and automations."
 date: "2024-12-30"
-readingTime: "9 min read"
+readingTime: "12 min read"
 author: "Marina Álvarez"
 tags:
   - "RevOps"
@@ -20,44 +20,160 @@ featured: false
 image: "/blog/crm-merge.jpg"
 ---
 
-
 # Merging CRMs: HubSpot + Attio Without Losing History
 
 > I had to clean the mess of parallel CRMs—and lived to tell the tale.
 
 ## Context
 
-After an acquisition we ended up with two CRMs fighting each other. I designed a controlled merge with staging, QA and clear comms.
+An acquisition left us with two living sources of truth: HubSpot powering legacy nurture programs and Attio recently adopted by sales. Duplicate contacts, conflicting lifecycle stages, and two sets of automations meant revenue reporting was useless. Rather than pick a system and hope for the best, I designed a 30‑day merge program with staging environments, data contracts, and daily comms so nobody lost history.
 
-## Stack I leaned on
+## Architecture & Stack
 
-- Airbyte + dbt for extraction and mapping
-- Supabase staging with RLS rules
-- Attio API to create final records
-- Notion playbooks + Slack updates
+- **Airbyte → dbt**: extracted HubSpot + Attio objects into Snowflake staging, applied dbt transformations for mapping and dedupe.
+- **Supabase merge sandbox**: RLS enforced who could touch what; we stored golden IDs, match scores, and rollback snapshots.
+- **Attio API**: final destination; we rebuilt pipelines, tasks, and automations programmatically.
+- **Notion + Status dashboard**: published daily readiness score, blockers, and migration wave status to every stakeholder.
+- **Slack + PagerDuty**: alerts fired if sync lag exceeded 15 minutes or match confidence dipped below thresholds.
+
+## Data Contracts
+
+Before touching records we cataloged every property with owner, description, data type, downstream consumers, and retention policy. Data contracts lived in `data/catalog/crm.yml` and drove:
+
+- Field mapping tables (HubSpot → Attio + transformation logic).
+- Validation tests (acceptance criteria per field, e.g., `lifecycle_stage` allowed values only MQL/SQL/Customer).
+- Access controls (Restricted vs Public fields) so legal signed off once, not daily.
 
 ## Playbook
 
-1. Cataloged properties and flagged equivalences/conflicts.
-2. Designed dedupe rules with fuzzy + deterministic matches.
-3. Migrated in waves by account segments to reduce risk.
-4. Rebuilt critical automations in Attio with unit tests.
-5. Delivered training and health dashboards post-merge.
+### 1. Discovery & Inventory (Week 1)
+- Exported metadata from both CRMs; compared 620 properties using dbt exposures.
+- Interviewed teams to tag “critical” fields (used in automations, dashboards, compensation).
+- Defined match strategy: deterministic (email + domain) first, then fuzzy (company name, phone) with confidence scores.
 
-## Metrics & telemetry
+### 2. Build the Merge Sandbox (Week 2)
+- Spun up Supabase with `accounts`, `contacts`, `activities`, `match_runs` tables.
+- Loaded both datasets nightly via Airbyte; dbt models produced `candidate_matches` with confidence 0‑100.
+- Built QA dashboards (Metabase) showing duplicates, battles (conflicting field values), and completeness per segment.
 
-- Records migrated successfully: 118k (98.7%)
-- Automations re-enabled: 15 in two weeks
-- Support tickets post-migration: &lt;10
+### 3. Governance & Comms
+- Created a Launch Readiness‑style scorecard: Data Quality, Automations, Enablement, Reporting, Support.
+- Daily Slack digest posted open issues, records processed, time to resolve.
+- Each GTM leader had to sign off on their segment before we moved to production.
 
-## What stuck with me
+### 4. Wave Migration (Week 3)
+- **Wave 0**: internal sandbox accounts—prove automations fire, tasks recreate, dashboards update.
+- **Wave 1**: Strategic accounts (top 50). Manual validation by CSM + AE before and after.
+- **Wave 2**: Remaining customers grouped by region/time zone. We paused marketing automation 30 minutes per wave to avoid collisions.
+- For each wave: snapshot HubSpot record → write to Attio via API → mark status in Supabase → trigger Slack alert to owner.
 
-- Merges fail due to poor communication; send daily status and public dashboards.
-- Owners must validate their own data before anything gets deleted.
+### 5. Automations & Reporting (Week 4)
+- Rebuilt 15 workflows (lead routing, NPS pings, expansion plays) using Attio automations + n8n. Each had unit tests verifying triggers + payloads.
+- Reconnected analytics: dbt models consumed Attio tables, Looker dashboards flipped to new source, RevOps confirmed ARR waterfall.
+
+## QA & Validation Framework
+
+- **Match Confidence**: anything <85 required human review. We created a Notion queue + keyboard shortcuts for bulk approval.
+- **Field Battle Resolution**: precedence rules (e.g., Attio wins for `owner`, HubSpot wins for `utm_source`). Exceptions logged in Supabase.
+- **Audit Trail**: every record stored `pre_merge_payload`, `post_merge_payload`, `operator`, `timestamp`. Rollback scripts referenced these logs.
+- **Spot Checks**: each wave included 25 random accounts. A script compared CRM timelines, open deals, and owner fields before/after. If more than two accounts failed, the wave paused automatically.
+- **Unit Tests**: dbt tests asserted uniqueness, referential integrity, and required fields in staging before data flowed downstream. GitHub Actions blocked merges if tests failed.
+
+### Sample Validation Query
+
+```sql
+select account_id,
+       hubspot_owner,
+       attio_owner,
+       case
+         when hubspot_owner <> attio_owner then 'owner_mismatch'
+         when hubspot_lifecycle not in ('lead','customer','churned') then 'bad_stage'
+       end as issue
+from sandbox.account_comparison
+where issue is not null;
+```
+
+We ran reports like this after every wave and attached CSVs to the Slack digest so owners could fix issues immediately.
+
+## Migration Timeline
+
+| Day | Milestone |
+|-----|-----------|
+| 1‑5 | Inventory properties, define contracts, set success metrics |
+| 6‑10 | Build sandbox, load data, create dashboards |
+| 11‑15 | Governance sign-off, train reviewers, finalize dedupe logic |
+| 16‑20 | Run Wave 0 + Wave 1, fix automations |
+| 21‑26 | Run remaining waves, monitor incidents, retrain teams |
+| 27-30 | Decommission HubSpot automation, archive old data, retro |
+
+## Metrics & Telemetry
+
+- **High merge success rate:** 118,000 records were merged with a 98.7% success rate, with the rest flagged for manual review.
+- **High match confidence:** The match confidence was 92 at the 95th percentile.
+- **Fast automation re-enablement:** 15 automation flows were re-enabled within two weeks.
+- **Quick support ticket resolution:** Support tickets related to the merge were resolved in under 12 hours, with fewer than 10 tickets in total.
+- **Improved reporting accuracy:** The variance between forecast and actuals dropped from 15% to 3%.
+- **Low data lag:** The delta feed lag between HubSpot and Attio was an average of 6 minutes.
+- **High user adoption:** 94% of sales representatives logged into Attio in the first week.
+- **Faster automation runtime:** The average automation runtime was reduced from 32 seconds in HubSpot to 18 seconds.
+- **Improved data quality:** The composite data quality score (completeness, accuracy, timeliness) improved from 71 to 93 in Metaplane.
+
+## Risk Register
+
+| Risk | Mitigation |
+|------|------------|
+| Duplicate owners assigned | Rule: Attio owner wins; Slack alert to RevOps when conflict detected |
+| Automations firing twice | Paused HubSpot workflows wave-by-wave; Attio workflow activation script runs only after verification |
+| Lost activity history | Exported HubSpot engagements → appended to Attio via bulk API with references |
+| Stakeholder surprise | Daily status digest + office hours + single source of truth dashboard |
+
+## Enablement & Change Management
+
+- Ran “train-the-trainer” sessions for SDRs, AEs, CS to practice new fields and workflows.
+- Updated playbooks in Notion with screenshots, new field definitions, and “how to escalate merge issues” section.
+- Added in-product banners linking to FAQs + quick feedback form (connected to Supabase) so users could report mismatches.
+- Held daily “office hours” during the migration window so stakeholders could ask questions live.
+- Recorded 10-minute Loom updates twice a week summarizing progress for executives and sales leaders.
+- Established “red phone” Slack channel (#merge-sos) where any teammate could escalate issues; staffed 7am‑10pm across time zones.
+- Delivered quick-reference cards (PDF + Notion) summarizing new field names, automation ownership, and how to request changes.
+
+## Post-Migration Monitoring
+
+- **Delta Guard**: Snowflake task compared Attio vs. HubSpot nightly for 30 days to ensure no late-arriving records fell through.
+- **Automation Watcher**: n8n workflow monitored Attio automation run status; failures paged RevOps guard.
+- **Dashboard Health**: Looker dashboards included “data freshness” badges referencing dbt sources, so stakeholders saw when numbers were safe to use.
+- **Feedback Queue**: Supabase form categorized issues (data mismatch, automation bug, training need) and enforced 24h SLA for replies.
+
+## Lessons Learned
+
+- Communication is half the merge; dashboards + daily digests prevented rumor mills.
+- Owners must validate their own data before anything gets deleted; we blocked waves until sign-offs were in Notion.
+- Dedupe rules need human override—confidence scores avoid perfection paralysis.
+- Automations deserve unit tests; workflows are code.
+
+## FAQ
+
+**How did you handle ongoing data entry during the merge?**
+We froze net-new record creation for 30 minutes per wave and used a delta sync to reapply changes created during the window.
+
+**What about integrations that still pointed to HubSpot?**
+We mapped each integration in a runbook, created Attio equivalents, and used feature flags to redirect traffic once tests passed.
+
+**How long did we keep HubSpot running?**
+Read-only for 60 days (for legal retention) then exported and archived to S3; access limited via IAM.
+
+**Did we migrate email/activity history?**
+Yes—HubSpot engagements were exported, normalized, and re-ingested via Attio’s bulk API. Large attachments moved to S3 with secure links.
+
+**How was security handled?**
+All scripts used least-privilege keys, Supabase enforced RLS, and legal received daily audit summaries covering who accessed PII.
+
+**What about reporting downtime?**
+Finance and RevOps agreed to a 48-hour “merge mode” window. Looker dashboards displayed badges (Green = safe, Yellow = delayed) so execs knew when numbers were trustworthy. We also provided CSV exports for any board-critical metrics during the blackout.
 
 ## What I'm building next
 
-I'm building reusable merge scripts; need one? reach out and we’ll adapt it.
+Reusable merge scripts + dbt packages (field mapping templates, match scoring macros) to speed up future consolidations. Need them? Reach out and we’ll adapt the toolkit.
 
 ---
 

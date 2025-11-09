@@ -5,7 +5,7 @@ type: "Case Study"
 summary: "I detect PQLs inside the product and hand them to sales in under 30 minutes."
 description: "Case study on building a PQL pipeline using product events, Snowflake models and Hightouch activation."
 date: "2025-01-08"
-readingTime: "10 min read"
+readingTime: "12 min read"
 author: "Marina Álvarez"
 tags:
   - "PLG"
@@ -21,44 +21,177 @@ featured: false
 image: "/blog/pql-system.jpg"
 ---
 
-
 # Product Qualified Leads System with Snowflake + Hightouch
 
 > The best leads were already inside the product; they just needed a spotlight.
 
 ## Context
 
-I own PLG and hated seeing hot accounts ignored. So I built a pipeline that listens to product activity, predicts intent and pings the right owner.
+Our PLG motion produced thousands of signups each month, yet reps kept asking for “better leads”. Usage data sat in Snowflake, CRM lived in Attio, and marketing automation fired generic nurtures. I built a Product Qualified Lead (PQL) system that scores accounts based on real usage, syncs context to every tool, and lets sales respond within 30 minutes.
 
-## Stack I leaned on
+## Architecture Stack
 
-- Snowflake + Snowpark for models
-- Hightouch for syncing to Attio/HubSpot
-- PostHog for feature flags and traits
-- Slack bots for instant alerts
+1. **Event ingestion**: PostHog streams product events into Snowflake via Kafka.
+2. **Modeling layer**: dbt builds feature tables (`fct_usage_daily`, `fct_collaboration`, `dim_account_health`).
+3. **Scoring**: Snowpark notebook trains logistic regression + heuristic overlays; outputs live in `mart_pql_scores`.
+4. **Activation**: Hightouch syncs scores + context to Attio, HubSpot, Slack, and PostHog feature flags.
+5. **Feedback loop**: Supabase form collects AE feedback; nightly job retrains coefficients.
+6. **Observability**: Metabase dashboards track coverage, precision/recall, and AE engagement.
+
+### Data Schema Snapshot
+
+| Table | Purpose | Key Columns |
+|-------|---------|-------------|
+| `fct_usage_daily` | Raw usage per account/workspace | account_id, seats_active, automations_created, api_calls |
+| `dim_account_health` | Enriched metadata | arr, lifecycle_stage, industry, owner_id |
+| `mart_pql_scores` | Final scores + tiers | account_id, pql_score, tier, top_signals (JSON) |
+| `pql_feedback` | AE dispositions | account_id, disposition, comments, ae_id, timestamp |
 
 ## Playbook
 
-1. Defined usage signals (workspaces, automations, seats) and built dbt views.
-2. Trained a logistic regression and exposed it as a consumable view.
-3. Synced scores to CRM, Slack and product via Hightouch.
-4. Added a weekly survey so AEs tag whether the PQL was legit.
-5. Retrained the model quarterly with real outcomes.
+### 1. Define Signals (Week 1)
+- Interviews with Sales, CS, Product to list “aha” moments (automations built, teammates invited, data sources connected, support tickets filed).
+- Chose 12 core signals per account + 6 per workspace. Weighted by impact on historical wins.
+- Documented signals in `data/catalog/pql.yml` (owner, description, refresh cadence, GDPR classification).
 
-## Metrics & telemetry
+### 2. Build Feature Store (Week 2)
+- dbt models aggregated usage by day/week/month, appended ARR, lifecycle, persona tags.
+- Feature store exposed consistent schema so modeling + BI consumed the same columns.
+- Added data quality tests (freshness, uniqueness, valid ranges) to avoid scoring stale accounts.
 
-- Pipeline generated internally: +44%
-- Win rate on hot PQLs: +18 points
-- Reaction time: &lt;30 minutes
+```sql
+select account_id,
+       sum(case when event_name = 'automation_created' then 1 else 0 end) as automations_week,
+       max(seats_active) as seats_active,
+       count(distinct invited_user_id) as collaborators_added
+from raw.posthog_events
+where event_date >= current_date - 7
+group by 1;
+```
 
-## What stuck with me
+Simple aggregations like this became dbt models feeding the feature store.
 
-- Human feedback matters; without AE notes the model gets arrogant.
-- Document the logic behind each signal to avoid myths.
+### 3. Train Intent Model (Week 3)
+- Started with logistic regression (easy to explain). Features: weekly active members, automations built, seats invited, usage of premium modules, support sentiment.
+- Output: score 0-100, tier (Hot/Warm/Cool), and top contributing signals (SHAP values).
+- Stored coefficients in Supabase so API clients can explain why a score changed.
+
+### 4. Sync & Alert (Week 4)
+- Hightouch job runs every 15 minutes; pushes scores + context to Attio (fields + timeline), Slack DM to owner, Notion briefing.
+- PostHog feature flag uses tier to show in-app nudges or beta invites only to high intent accounts.
+- Marketing nurtures update automatically (e.g., Warm accounts get educational drip, Hot accounts trigger “Book Time with CSM”).
+
+### 5. Feedback Loop (Ongoing)
+- AE clicks “Legit / Not Ready / Already Working” buttons in Slack message; responses log to Supabase.
+- Nightly job joins feedback with features to adjust weights. False positives drop weekly.
+- Quarterly “signals council” reviews performance, retires noisy signals, and adds new ones.
+
+## Implementation Timeline
+
+| Week | Milestone |
+|------|-----------|
+| 1 | Signal workshops, catalog documentation, define success metrics |
+| 2 | Build feature store + tests |
+| 3 | Train model, publish API, embed scorecards in Metabase |
+| 4 | Wire Hightouch + Slack automations, run pilot with one AE pod |
+| 5 | Gather feedback, retrain, roll out globally |
+
+## Score Delivery Experience
+
+When a score updates, the AE sees:
+
+- Slack card with account name, ARR, top signals (“Built 3 automations”, “Invited Legal team”), next best action button (book call, send template, assign CSM).
+- CRM fields update instantly so opp scoring, routing, and forecasting stay aligned.
+- Notion “PQL dossier” auto-populates with screenshots, product usage charts, and recommended playbook.
+- In-app guidance toggles PostHog feature flags so Hot accounts see upgrade CTAs while Warm accounts see educational tours.
+
+## Metrics & Telemetry
+
+- **Increased internal pipeline:** The pipeline sourced internally increased by 44% quarter-over-quarter.
+- **Higher win rate:** The win rate on "Hot" PQLs increased by 18 percentage points.
+- **Faster reaction time:** The time from a usage event to an Account Executive notification was less than 30 minutes.
+- **Reduced false positives:** The false positive rate dropped from 27% to 9% after two retraining cycles.
+- **High coverage:** 82% of paying accounts were scored weekly, with the rest flagged for missing data.
+- **Strong AE adoption:** 87% of Slack notifications received an action within 4 hours.
+
+## Operational Rulebook
+
+- **Score thresholds**: Hot ≥70, Warm 40–69, Cool <40. Only Hot triggers Slack; Warm feeds nurtures.
+- **Quota**: Each AE must disposition at least 15 PQLs/week; metrics visible in Metabase.
+- **Guardrails**: Alerts throttle to 5 per hour per AE; extras roll into digest.
+- **Review**: Weekly standup covers top wins, false positives, and new signal proposals.
+- **Data contracts**: Each signal documented with owner + deprecation path. No hidden spreadsheets allowed.
+
+## Case Study: Automated Workflow Surge
+
+- Product shipped “AI workflow builder”; engaged accounts created workflows rapidly.
+- PQL model picked up spike (feature usage + collaboration signals) and flagged 42 accounts as Hot.
+- AE pod focused on those accounts, resulting in $420k expansion pipeline within three weeks.
+- Feedback indicated some small customers weren’t ready; we introduced ARR floor into features and false positives disappeared.
+
+## Risk & Mitigation
+
+| Risk | Mitigation |
+|------|------------|
+| Bad data inflates scores | Strict dbt tests + Metaplane alerts before Hightouch syncs run |
+| AE ignores alerts | Weekly adoption report, gamified leaderboard, and manager coaching |
+| Model drifts | Monthly retrain job + signal council review |
+| Privacy concerns | Only hashed IDs leave Snowflake; Slack payloads scrub PII |
+
+## Troubleshooting Runbook
+
+1. **Score missing**? Check dbt freshness dashboard → rerun feature job if stale.
+2. **AE reports bad lead**? Capture feedback form → mark disposition, open Linear ticket if signal missing.
+3. **Notification spam**? Verify throttle settings in Slack workflow + digest aggregator.
+4. **Model failed to train**? Snowpark notebook posts error + fallback to previous coefficients (stored versioned in Supabase).
+
+Keeping this runbook inside Notion ensures on-call rotations know exactly how to respond.
+
+## Communication Plan
+
+- Daily Slack digest summarizing counts of Hot/Warm accounts per segment.
+- Weekly email to execs highlighting wins attributable to PQLs.
+- Quarterly readout with funnel impact, ARR influenced, and roadmap for new signals.
+
+## Cost Snapshot
+
+- Snowflake warehouse credits already budgeted (marginal cost negligible).
+- Hightouch Team plan: ~$300/mo for multi-destination syncs.
+- OpenAI usage minimal (only for summarizing Slack messages, ~$20/mo).
+- Supabase + Fly.io hosting feedback forms: $15/mo.
+- Total incremental spend < $350/mo; pipeline generated paid for itself within two deals.
+One enterprise upsell triggered by PQLs more than covers the yearly tooling cost.
+
+## Lessons Learned
+
+- Human feedback is non-negotiable; require AE disposition or the model becomes a black box.
+- Explainability builds trust. SHAP-based “why this score changed” notes turned skeptics into champions.
+- Fast syncs beat complex models; accuracy + speed > fancy algorithms that update daily.
+- Tie PQLs to concrete playbooks (email templates, call scripts, in-app flags) so reps know what to do instantly.
+
+## FAQ
+
+**Why logistic regression instead of deep learning?**
+Because onboarding wanted clarity. We can explain to an AE in one sentence why an account is hot.
+
+**How do you handle multi-workspace customers?**
+Scores roll up to parent accounts with weighted averages; Slack messages include workspace-level context so reps know where to focus.
+
+**What if marketing wants to target PQLs?**
+Warm and Hot accounts sync to HubSpot lists automatically. They receive personalized nurtures, and PostHog feature flags ensure in-app prompts match the same messaging.
+
+**How do you prevent spam?**
+Throttle notifications, require AE acknowledgment, and pause alerts during maintenance windows.
+
+**What about data privacy?**
+We hash user identifiers before leaving Snowflake and mask sensitive fields in Slack payloads. Legal reviewed the data catalog and approved the pipeline because every destination has a documented purpose + retention window.
+
+**Can CS teams see the same scores?**
+Yes—Metabase dashboard exposes read-only views and we embed the scorecard directly inside the customer record in Notion so CSMs and AEs share identical context.
 
 ## What I'm building next
 
-I'm releasing dbt templates for teams that want to launch PQLs fast. Want them? let me know.
+Open-sourcing the dbt feature store + Snowpark notebook, plus shipping a “PQL console” inside the product so PMMs can simulate new signals without engineering chores.
 
 ---
 

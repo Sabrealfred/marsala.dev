@@ -5,7 +5,7 @@ type: "Insight"
 summary: "I built a war room that blends metrics, alerts and AI assistants to react in minutes."
 description: "Insight on centralizing critical metrics, alerts and actionable playbooks with AI."
 date: "2025-01-06"
-readingTime: "8 min read"
+readingTime: "10 min read"
 author: "Marina Álvarez"
 tags:
   - "Operations"
@@ -21,44 +21,193 @@ featured: false
 image: "/blog/ai-ops-war-room.jpg"
 ---
 
-
 # AI Ops War Room: Live Control Board for Operations
 
 > The war room lives in a dark dashboard where AI summarizes and suggests actions.
 
 ## Context
 
-As we grew every team brought its own dashboard. I designed a digital war room with unified metrics and copilots that propose plans.
+Ops meetings were a mix of spreadsheets, stale dashboards, and ping-pong in Slack. I created a digital “war room” that unifies metrics, alerts, and AI copilots so the team makes decisions in minutes. The war room is a Notion + Metabase hub, backed by Snowflake and PostHog, with OpenAI function calls that summarize and trigger playbooks.
 
-## Stack I leaned on
+## Architecture Overview
 
-- Metabase + Notion for timeline and metrics
-- PostHog + Snowflake for fresh data
-- OpenAI function calling for playbooks
-- PagerDuty/Slack for incidents
+- **Data sources**: Snowflake (finance + ops), PostHog (product), Zendesk (support), Stripe (billing).
+- **Processing**: dbt + Metaplane for tests; metrics published to Metabase.
+- **War room UI**: Notion page embedded with Metabase dashboards + custom React widgets (Next.js microfrontends served via Vercel embeds).
+- **AI Copilot**: OpenAI function calling with guardrails; uses metrics + playbook metadata to draft actions.
+- **Automation hooks**: n8n workflows and PagerDuty incidents triggered via buttons.
 
-## Playbook
+```
+Snowflake/dbt ---> Metabase ---> Notion embeds
+      |                          |
+PostHog ---> Supabase (anomalies) ---> OpenAI Copilot ---> n8n playbooks
+```
 
-1. Pick three critical metrics per front (MRR, leads, support) and set budgets.
-2. Automate daily summaries with AI to highlight relevant changes.
-3. Add buttons to execute playbooks (activate nurture, pause campaign).
-4. Version every playbook in Git and surface it in the dashboard.
-5. Log actions and owners for historical accountability.
+## Core Components
 
-## Metrics & telemetry
+1. **Mission KPIs**: three metrics per track (MRR growth, lead velocity, support backlog) with budgets + trendlines.
+2. **Anomaly Feed**: Metaplane + PostHog webhooks push anomalies into Supabase; AI summarizes impact + suggested playbooks.
+3. **Playbook Library**: Notion database versioned in Git (YAML exported). Each playbook has trigger, steps, owners, automation hooks.
+4. **Action Log**: Supabase table storing who triggered what, outcome, follow-up tasks.
 
-- Daily stand-up: 45 min → 18 min
-- Alerts handled in &lt;10 minutes
-- Actions with documented owners: 100%
+## Playbook for Building the War Room
 
-## What stuck with me
+### 1. Define Signals & Budgets
+- Work with execs to pick 3 KPIs per domain (Growth, Product, Support, Finance).
+- Document budgets (e.g., churn must stay &lt;1.5% monthly) and escalation policies.
 
-- The war room doesn’t replace human decisions—it accelerates them.
-- Playbooks must be editable from the dashboard, not buried in a doc.
+### 2. Build the Data Backbone
+- Consolidate metrics in Snowflake; dbt models output `fct_kpi_daily` and `fct_anomaly_events`.
+- Tests ensure freshness + accuracy; failures page the ops guard.
+
+### 3. Layer the UI
+- Metabase dashboards for charts, embedded via secure tokens in Notion.
+- Custom Next.js widgets (CTA buttons, chat-like action log) using Notion’s embed block.
+
+### 4. Wire AI Copilot
+- Prompt template summarizing KPIs, anomalies, and recommended playbooks.
+- Function calling available actions (`trigger_playbook`, `open_incident`, `summarize_status`).
+- Guardrails so AI can’t trigger actions above severity level without human confirmation.
+
+### 5. Automate Playbooks
+- Each playbook stored as YAML: trigger → inputs → n8n workflow ID.
+- Buttons in the war room call API to launch n8n run; status fed back into Action Log.
+
+```yaml
+id: support_surge_plan
+severity: 2
+triggers:
+  - metric: support_backlog
+    condition: "> 150"
+steps:
+  - type: n8n
+    workflow_id: support-surge
+  - type: slack
+    channel: "#support-war-room"
+    template: surge_notice.md
+approvals:
+  required_roles: ["IC","Support Lead"]
+```
+
+Every button references a definition like this so we can audit what changed between versions.
+
+### 6. Rollout & Training
+- Weekly ops sync inside the war room; every discussion references dashboards + AI summaries.
+- Guard rotation (see below) ensures someone owns alerts 24/7.
+- Publish a Loom walkthrough + mini quiz so every new operator knows how to read budgets, trigger playbooks, and log actions.
+
+### 7. Implementation Timeline
+
+| Week | Milestone |
+|------|-----------|
+| 1 | Define KPIs/budgets, design dashboard layout, list playbooks |
+| 2 | Build Snowflake/dbt layers, connect Metabase, set up anomaly feed |
+| 3 | Prototype AI Copilot + action log in Supabase |
+| 4 | Integrate n8n playbooks, run drills, onboard guard rotation |
+| 5 | Roll out to broader org, create read-only views for marketing/finance |
+
+## Guard Rotation
+
+| Role | Responsibility |
+|------|----------------|
+| IC | Triage anomalies, drive decisions, log actions |
+| Comms | Post updates in #ops-war-room, escalate to execs |
+| Automation lead | Launch playbooks, monitor workflows |
+
+PagerDuty schedule rotates weekly. Drills run monthly to keep muscles sharp.
+
+### Guard Checklist
+
+- Check anomaly feed every hour.
+- Verify Copilot summaries (accuracy + recommended playbooks).
+- Ensure Action Log entries have owners and follow-up dates.
+- Host a 10-minute end-of-shift handoff Loom for the next guard.
+
+## Metrics & Impact
+
+- **Reduced meeting time:** Daily stand-up time dropped from 45 minutes to 18 minutes because decisions were already prepared.
+- **Faster alert handling:** Alerts were handled in under 10 minutes (p90).
+- **Full accountability:** 100% of actions were logged with owners, creating an auditable trail.
+- **Increased efficiency:** AI suggestions were adopted 62% of the time, saving approximately 4 hours per week.
+- **Improved budget adherence:** Budget breaches were reduced from 6 per quarter to only 1.
+
+## Sample Workflow
+
+1. Metaplane detects spike in support backlog.
+2. Alert hits Supabase; AI summary posts in war room with suggested playbook (“Activate support surge plan”).
+3. IC reviews, clicks “Run surge plan” button.
+4. n8n opens PagerDuty incident, notifies on-call CS, spins up Slack channel, adjusts Zendesk priorities.
+5. Action log records everything; Notion page updates automatically.
+
+## Action Log Schema
+
+| Column | Description |
+|--------|-------------|
+| `action_id` | UUID for traceability |
+| `triggered_by` | Slack handle of human who approved/ran the action |
+| `playbook_id` | References YAML definition |
+| `inputs` | JSON payload sent to n8n |
+| `status` | Pending / Running / Completed / Rolled back |
+| `postmortem_link` | Optional link if action escalated to incident |
+
+We expose this table directly in Notion so execs can audit decisions without pinging ops leads.
+
+## Case Study: Q4 Infrastructure Incident
+
+- Snowflake warehouse stalled during peak renewal week.
+- Anomaly hit the war room; Copilot summarized impact (“MRR forecast at risk, ingestion lag 45 min”) and suggested playbook “Switch to backup warehouse + pause heavy jobs”.
+- IC launched the playbook: n8n invoked Terraform to scale the standby warehouse, triggered PagerDuty for data engineering, and posted status updates with countdown timers.
+- Within 14 minutes the backlog cleared, and finance received a single Slack thread documenting the fix. No frantic DMs, no conflicting dashboards.
+
+## Communication Rhythm
+
+- **Morning brief**: Copilot posts KPI summary + anomalies at 8am local time.
+- **Midday update**: guard shares decisions taken + blockers in #ops-war-room.
+- **EOD digest**: automated summary of actions, incidents, outstanding items; execs read it asynchronously.
+- **Weekly exec note**: condensed version emailed to leadership, linking to action log + upcoming risks.
+
+## Lessons Learned
+
+- The war room doesn’t replace human judgment—it accelerates it.
+- Playbooks must be editable from the dashboard; buried docs kill adoption.
+- Copilot needs context + guardrails; otherwise it hallucinates action plans.
+- Logging is non-negotiable; exec trust comes from audits.
+- Communication cadence is as important as tooling—quiet war rooms get ignored.
+- Document playbooks like code; YAML + Git reviews prevented people from running stale instructions.
+- Run postmortems even for “successful” actions—the guard rotation reviews action logs weekly and files small retro notes when something felt clunky. Those micro-retros keep the war room evolving instead of calcifying.
+
+## FAQ
+
+**How do you keep AI summaries accurate?**
+We feed the model only curated metrics + context (budgets, deltas) and cap temperature at 0.2. Humans confirm before execution.
+
+**What if someone triggers the wrong playbook?**
+Each action requires confirmation + reason. The guard can roll back via n8n or trigger “undo” playbook.
+
+**Can teams outside ops use the war room?**
+Yes—marketing has a read-only view, and AI can draft weekly exec briefs automatically.
+
+**What about security?**
+Every action is authenticated via Supabase, and OpenAI requests run through a proxy that strips sensitive fields. Only the IC can press automation buttons; others can comment.
+
+**Do you version playbooks?**
+Yes—GitHub hosts YAML definitions; pull requests include reviewers from ops, eng, and compliance before a button becomes available in the UI.
 
 ## What I'm building next
 
-Next step: use small local models for early anomaly detection. Want to try it with me? let me know.
+Using smaller local models (OpenAI GPT‑4o mini + Llama Guard) for anomaly detection at the edge, plus integrating budget burn-down charts directly into Slack.
+- Building an “Ops API” so other teams can query the same action log, subscribe to anomaly events, and embed mini-war-room widgets in their own dashboards.
+
+## Cost Snapshot
+
+- Metabase Pro + embedding: $150/mo.
+- OpenAI GPT‑4o mini usage: ~$120/mo (summaries + copilot).
+- n8n on Fly.io: $25/mo.
+- PagerDuty: part of global plan (allocated ~$80/mo to ops).
+- Total spend &lt;$400/mo to keep ops decisions centralized and fast.
+One avoided outage easily covers that bill—the Q4 incident saved a six-figure renewal.
+The tooling cost is trivial compared to the clarity and speed we gained.
+- Compare that to a single incident causing hours of downtime; the ROI justified itself after the first quarter.
 
 ---
 

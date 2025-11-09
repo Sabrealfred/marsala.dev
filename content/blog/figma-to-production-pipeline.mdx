@@ -5,7 +5,7 @@ type: "Guide"
 summary: "How I connect Figma, Storybook and Next.js to ship UI with zero surprises."
 description: "Guide for syncing design and code: tokens, visual linters and joint releases."
 date: "2025-01-02"
-readingTime: "8 min read"
+readingTime: "10 min read"
 author: "Marina Álvarez"
 tags:
   - "Design"
@@ -20,44 +20,178 @@ featured: false
 image: "/blog/figma-pipeline.jpg"
 ---
 
-
 # Figma to Production Without Friction
 
 > I made peace with Figma when the handoff literally became a PR.
 
 ## Context
 
-I'm a developer who loves visual craft. I built a pipeline where every Figma change mirrors Storybook and lands as a tagged release.
+When design and engineering ship on different cadences, production drifts from the Figma file within days. Tokens get copied manually, Storybook lags behind, and marketing exports the wrong hero. I built an end-to-end pipeline where every Figma variable flows into tokens, Storybook, and Next.js automatically, complete with release notes and visual QA.
 
-## Stack I leaned on
+## System Architecture
 
-- Figma variables + tokens
-- Style Dictionary for exports
-- Storybook 8 with Chromatic
-- Next.js + Tailwind token utilities
+1. **Figma variables + libraries** hold the source of truth for color, typography, spacing, motion, and components.
+2. **Style Dictionary build** converts variables → JSON tokens → multiple formats (CSS, TS, Tailwind config).
+3. **Brand tokens package** (`@marsala/brand-tokens`) publishes weekly via GitHub Actions.
+4. **Component repo** (Next.js + Storybook 8) consumes tokens, runs Chromatic + Percy snapshots, and deploys Storybook.
+5. **App repo** pulls latest tokens + components, runs Lighthouse + RUM budgets before releasing.
+6. **Notion portal** publishes changelog + download links for non-technical partners.
 
 ## Playbook
 
-1. Sync color/type variables weekly into a private npm package.
-2. Create design PRs just like code, with assigned reviewers.
-3. Run visual tests in Chromatic and publish release notes for product.
-4. Coach marketing on how to play inside the playground before go-live.
-5. Version assets and mission-critical copy alongside the code release.
+### 1. Inventory & Align
+- Audit existing components/tokens, document gaps, and agree on naming (`color.brand.moss.500`).
+- Map dependencies: marketing site, product app, emails, partner kits.
 
-## Metrics & telemetry
+### 2. Automate Token Export
+- Configure Figma Tokens plugin to push variables to GitHub.
+- Style Dictionary transforms tokens into TS/JSON, Tailwind, CSS variables, and email-friendly formats.
+- GitHub Action validates schema, runs lint, publishes npm package.
 
-- Visual bugs in production: -70%
-- Handoff time: 4 days → 1.5 days
-- Token adoption across squads: 100%
+### 3. Convert Figma changes into PRs
+- Designers submit “design PRs” via Figma branching; when ready, trigger GitHub Action that opens a PR with token diff + screenshots.
+- Engineering reviews the PR like any code change (tests, lint, visual diffs) before merging.
 
-## What stuck with me
+### 4. Keep Storybook Synced
+- Storybook stories include linked Figma frames (`design` panel) and usage notes.
+- Chromatic checks run on every PR; failures block merge.
+- Release notes auto-published to Notion + Slack via GitHub Actions.
 
-- Variables need owners; design ops without guardrails is chaos.
-- Storybook becomes the single source of truth only if everything gets reviewed there.
+### 5. Release Cadence
+- Biweekly release: tag tokens + component package, update downstream apps, publish “Design Ship Log” summarizing changes, impacted surfaces, and migration instructions.
+- Emergency hotfixes follow same pipeline to avoid bypassing automation.
+
+### 6. Performance Safeguards
+- Every design PR runs Lighthouse CI on related routes; budgets fail if LCP/CLS regress.
+- Calibre monitors real-user metrics post-release; guard rotation gets paged if variance exceeds thresholds.
+- Third-party scripts (analytics, chat) are wrapped in `next/script` with lazy loading; tokens include performance metadata so designers know when a component is “expensive”.
+- Bundle analyzer runs on every release; if shared chunks exceed budgets, the platform team blocks the release until lazy loading or code splitting fixes it.
+- RUM alerts include route, device, and region context so designers see the impact on real users—not just lab scores.
+
+## Tooling
+
+- **Figma Variables + Tokens Plugin** for source data.
+- **Style Dictionary** for multi-format token builds.
+- **Storybook 8 + Chromatic + Percy** for visual QA.
+- **Next.js 15 + Tailwind** for apps.
+- **Lighthouse CI** and **Calibre** for performance budgets.
+- **n8n** automations for notifications and release chores.
+- **SVGO + Sharp** for optimizing SVG/PNG exports before Cloudinary upload.
+- **Notion API + Slack bots** for automated release notes and request SLAs.
+- **Calibre RUM + Grafana** for monitoring Web Vitals per release.
+
+## Token Build Pipeline
+
+## Governance & Roles
+
+- **Design Ops**: manages libraries, approves token changes, owns release cadence.
+- **Frontend Platform**: maintains Style Dictionary + component repo.
+- **Product squads**: consume tokens/components; cannot override without PR.
+- **Marketing/Partners**: access Notion portal for latest kits; requests go through form with SLA.
+
+## Metrics & Telemetry
+
+- **Reduced visual regressions:** Visual regressions in production were reduced by 70%, tracked via Percy and Real User Monitoring (RUM).
+- **Faster handoff time:** The time required for design handoffs was reduced from 4 days to 1.5 days.
+- **Full token adoption:** 100% of applications are now referencing the `@marsala/brand-tokens` package.
+- **High SLA compliance:** Service Level Agreement (SLA) compliance for asset requests is at 96%.
+- **Increased Storybook usage:** Traffic to Storybook has increased by 180%, indicating that teams are now actively using it.
+
+## Request Workflow
+
+| Request Type | Examples | SLA |
+|--------------|----------|-----|
+| Minor tweak  | Copy, small color shift | 3 business days |
+| New variant  | Co-brand lockup, localized icon | 10 business days |
+| Net-new family | Entire campaign identity | custom plan + council review |
+
+Typeform → n8n → Linear board → Slack updates. Requesters see status in Notion.
+
+### SLA Enforcement
+
+- If a request nears SLA breach, bot pings design ops lead + requester with updated ETA.
+- “Fast lane” exists for legal/compliance emergencies but still runs through the same GitHub pipeline to avoid bypassing QA.
+
+## Governance Council
+- Biweekly meeting with design, frontend, marketing to review upcoming releases, request backlog, and token debt.
+- Council approves/denies fast-lane requests and confirms who owns cross-brand initiatives.
+
+## Training & Adoption
+
+- Onboarding includes a “token chef” workshop where designers practice branching, merging, and opening PRs.
+- Engineers get a Storybook tour and learn how to consume tokens via Tailwind, CSS, or JS modules.
+- Marketing and partners attend quarterly live sessions showing the portal, co-brand kits, and how to request assets.
+- Partner agencies have sandbox logins with read-only Storybook access plus API keys for Cloudinary collections so they never rely on outdated email attachments.
+
+## Partner Enablement Kits
+
+- **Co-brand templates** with lockable areas so partners can insert their logos without breaking ratios.
+- **Localized packs** grouped by language/region with pre-approved typography and legal copy.
+- **Usage guidelines** embedded in Storybook (videos + dos/don’ts) so external teams follow the same rules.
+- **Download audit log** tracked in Supabase, handy when we revoke partner access or need compliance evidence.
+
+## Implementation Timeline
+
+| Week | Milestone |
+|------|-----------|
+| 1 | Inventory assets, align taxonomy, set budgets |
+| 2 | Wire token export + Style Dictionary + npm package |
+| 3 | Integrate Storybook, set up Chromatic/Percy, automate releases |
+| 4 | Launch request portal, train teams, sunset manual exports |
+| 5+ | Biweekly releases, quarterly retros, expand to partners |
+
+## Case Study: Global Pricing Refresh
+
+- 6 locales, new hero, updated CTA styles.
+- Designers branched components, exported tokens, opened PR with diffs.
+- Chromatic caught an unintended hover change on mobile; fixed before release.
+- Marketing downloaded localized kits from Notion portal moments after release.
+- Deployment took 45 minutes vs. previous multi-day scramble.
+
+## Risk Controls
+
+- **Visual Budget**: any PR increasing CSS/JS weight triggers perf review.
+- **Fallback tokens**: apps use default values if package missing; prevents blank pages.
+- **Audit log**: every token change logged with owner + Jira ticket for compliance.
+- **RUM alerts**: if CLS or LCP degrade post-release, guard rotation triages immediately.
+
+## Lessons Learned
+
+- Design handoffs must mimic engineering workflows—branches, PRs, reviews.
+- Visual QA is non-negotiable; automation beats “eye tests”.
+- Communication matters: release notes + Notion portal keep marketing and partners synced.
+- Governance without automation fails; scripts enforce rules even when humans rush.
+- Hire someone to own the pipeline; when design ops is everyone’s job it becomes nobody’s job.
+- Performance budgets matter; new visuals mean nothing if Core Web Vitals crater.
+
+## FAQ
+
+**Does this slow down designers?** No—branches let them experiment, and automation removes manual exports.
+
+**How do partners get assets?** Notion portal + Cloudinary links; no more Slack attachments.
+
+**What if a squad needs a custom variation?** They submit a request and it becomes part of the release; no ad-hoc overrides.
+
+**How do you handle dark mode or multi-brand tokens?** Token files include brand + theme namespaces (e.g., `color.brand.moss.dark.500`). Apps consume tokens via CSS variables so switching themes/brands is a runtime concern, not a redesign.
+
+**What about accessibility?** Chromatic + axe tests run on Storybook stories, and token definitions include contrast metadata. PR template asks for contrast proof for any new color combos.
+
+**Do partners get version notifications?** Yes—Notion automation emails external contacts when a new kit ships and includes a changelog + download links so they always use latest assets.
 
 ## What I'm building next
 
-I'm adding linters that compare frames vs components and raise PRs. Want in? I'll loop you when it's ready.
+Linters that compare live production screenshots against Storybook stories and open PRs when drift appears. Also piloting AI-assisted patch suggestions for token changes.
+
+Next iteration: an SDK that allows other repos (mobile, desktop) to consume the same tokens without manual wiring, plus AI helpers to draft visual QA summaries for execs.
+
+## Cost Snapshot
+
+- Figma Organization plan (existing budget).
+- Chromatic + Percy: ~$110/mo combined.
+- Cloudinary: $50/mo for CDN + transformations.
+- n8n + automation infra: ~$20/mo on Fly.io.
+- Total incremental cost &lt;$200/mo, replacing dozens of hours of manual exports and bug triage.
+- One design reviewer now spends time coaching rather than chasing files, which more than covers the subscription fees.
 
 ---
 
