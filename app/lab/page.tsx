@@ -46,19 +46,19 @@ const openSource = [
     title: "Next.js Starter Kit",
     description: "Production-ready Next.js 15 template with TypeScript, Tailwind, and Supabase",
     stars: "247",
-    link: "https://github.com/Sabrealfred",
+    link: "https://github.com/Marsala-dev",
   },
   {
     title: "Modular UI Components",
     description: "Reusable React components built with framer-motion and Tailwind",
     stars: "189",
-    link: "https://github.com/Sabrealfred",
+    link: "https://github.com/Marsala-dev",
   },
   {
     title: "Growth Analytics Schema",
     description: "Standardized dbt models for marketing, product, and RevOps analytics",
     stars: "156",
-    link: "https://github.com/Sabrealfred",
+    link: "https://github.com/Marsala-dev",
   },
 ];
 
@@ -198,7 +198,7 @@ export default function LabPage() {
 
           <div className="mt-8 text-center">
             <a
-              href="https://github.com/Sabrealfred"
+              href="https://github.com/Marsala-dev"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-base font-semibold text-moss-700 transition-colors hover:text-moss-900"
