@@ -141,6 +141,7 @@ Todos los posts del sitio (tab Research incluido) se generan desde un mismo data
 2. **Generar MDX**: corre `npm run blog:generate`. El script compone los 37+ artículos uniformes con voz humana y se publican en `/research` y `/blog/[slug]`.
 3. **Legacy research library**: si prefieres seguir escribiendo en `/data/research.ts`, esos artículos seguirán renderizándose automáticamente en el listado (la función `renderResearchMarkdown` los transforma al vuelo).
 4. **Posts manuales**: si necesitas un artículo extremadamente personalizado, agrega `manual: true` al objeto en `blog-data.mjs`. El generador omitirá ese slug para que puedas editar el `.mdx` a mano sin sobrescribirlo.
+5. **Checklist detallado**: sigue `BLOG_WORKFLOW.md` para el flujo completo (estructura mínima, 1,500+ palabras, QA y despliegue). Ese documento permite que cualquier agente (humano o AI) ejecute el proceso sin contexto adicional.
 
 ### Adding Modules
 
