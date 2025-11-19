@@ -12,6 +12,9 @@ type BlogPostParams = {
   };
 };
 
+// Revalidate every 1 hour in production
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   const slugs = getBlogSlugs();
   return slugs.map((slug) => ({ slug }));

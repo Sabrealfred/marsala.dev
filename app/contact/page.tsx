@@ -3,12 +3,25 @@
 import { useState, useEffect, FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import {
+  ChatBubbleLeftRightIcon,
+  WrenchScrewdriverIcon,
+  UserGroupIcon,
+  QuestionMarkCircleIcon,
+  CalendarDaysIcon,
+  EnvelopeIcon,
+  MapPinIcon,
+  BoltIcon,
+  PaperAirplaneIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+} from "@heroicons/react/24/outline";
 
 const contactReasons = [
-  { id: "modules", label: "Explore Modules", icon: "🎯", color: "from-blue-500 to-indigo-600" },
-  { id: "support", label: "Technical Support", icon: "🛠️", color: "from-purple-500 to-fuchsia-600" },
-  { id: "partnership", label: "Partnership", icon: "🤝", color: "from-green-500 to-emerald-600" },
-  { id: "other", label: "Other Inquiry", icon: "💬", color: "from-orange-500 to-amber-600" },
+  { id: "modules", label: "Explore Modules", icon: ChatBubbleLeftRightIcon, color: "from-blue-500 to-indigo-600" },
+  { id: "support", label: "Technical Support", icon: WrenchScrewdriverIcon, color: "from-purple-500 to-fuchsia-600" },
+  { id: "partnership", label: "Partnership", icon: UserGroupIcon, color: "from-green-500 to-emerald-600" },
+  { id: "other", label: "Other Inquiry", icon: QuestionMarkCircleIcon, color: "from-orange-500 to-amber-600" },
 ];
 
 export default function ContactPage() {
@@ -146,7 +159,7 @@ export default function ContactPage() {
   const maxMessageLength = 1000;
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-cream-50 via-white to-moss-50">
+    <main className="min-h-screen bg-gradient-to-b from-cream-50 via-white to-moss-50 dark:from-moss-950 dark:via-moss-900 dark:to-moss-950">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-moss-950 via-moss-900 to-moss-950 py-16 lg:py-24">
         <div className="absolute inset-0 opacity-10">
@@ -185,9 +198,7 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-moss-gradient px-6 py-3 text-sm font-semibold text-white shadow-glow transition-all duration-300 hover:scale-105"
             >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
+              <CalendarDaysIcon className="h-5 w-5" />
               Schedule a Call
             </a>
             <Link
@@ -208,7 +219,7 @@ export default function ContactPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <h2 className="mb-6 text-center text-2xl font-bold text-moss-950">
+            <h2 className="mb-6 text-center text-2xl font-bold text-moss-950 dark:text-moss-50">
               What can we help you with?
             </h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -220,14 +231,14 @@ export default function ContactPage() {
                   whileTap={{ scale: 0.95 }}
                   className={`group relative overflow-hidden rounded-2xl border-2 p-6 text-left transition-all duration-300 ${
                     formState.reason === reason.id
-                      ? "border-moss-500 bg-moss-50 shadow-lg"
-                      : "border-moss-200 bg-white hover:border-moss-400 hover:shadow-md"
+                      ? "border-moss-500 bg-moss-50 shadow-lg dark:border-moss-600 dark:bg-moss-800"
+                      : "border-moss-200 bg-white hover:border-moss-400 hover:shadow-md dark:border-moss-700 dark:bg-moss-900 dark:hover:border-moss-500"
                   }`}
                 >
                   <div className={`mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${reason.color} text-2xl shadow-md`}>
-                    {reason.icon}
+                    <reason.icon className="h-6 w-6 text-white" />
                   </div>
-                  <h3 className="font-semibold text-moss-950">{reason.label}</h3>
+                  <h3 className="font-semibold text-moss-950 dark:text-moss-50">{reason.label}</h3>
                   {formState.reason === reason.id && (
                     <motion.div
                       layoutId="selected-reason"
@@ -235,9 +246,7 @@ export default function ContactPage() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                     >
-                      <svg className="h-6 w-6 text-moss-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
+                      <CheckCircleIcon className="h-6 w-6 text-moss-600 dark:text-moss-400" />
                     </motion.div>
                   )}
                 </motion.button>
@@ -254,52 +263,47 @@ export default function ContactPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="rounded-3xl border-2 border-moss-200 bg-white p-8 shadow-card lg:p-12"
+            className="rounded-3xl border-2 border-moss-200 bg-white p-8 shadow-card lg:p-12 dark:border-moss-700 dark:bg-moss-900"
           >
             <div className="mb-8 grid gap-6 lg:grid-cols-[1fr,1.5fr]">
               {/* Contact Info */}
               <div className="space-y-6">
                 <div>
-                  <h3 className="mb-4 text-lg font-bold text-moss-950">Direct Contact</h3>
-                  <div className="space-y-3 text-sm text-sage-700">
+                  <h3 className="mb-4 text-lg font-bold text-moss-950 dark:text-moss-50">Direct Contact</h3>
+                  <div className="space-y-3 text-sm text-sage-700 dark:text-sage-300">
                     <a
                       href="mailto:sales@marsala.dev"
-                      className="flex items-center gap-3 rounded-xl border border-moss-200 bg-moss-50/50 p-3 transition-colors hover:border-moss-400 hover:bg-moss-50"
+                      className="flex items-center gap-3 rounded-xl border border-moss-200 bg-moss-50/50 p-3 transition-colors hover:border-moss-400 hover:bg-moss-50 dark:border-moss-700 dark:bg-moss-800/50 dark:hover:border-moss-500 dark:hover:bg-moss-800"
                     >
-                      <svg className="h-5 w-5 text-moss-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
+                      <EnvelopeIcon className="h-5 w-5 text-moss-600 dark:text-moss-400" />
                       <span className="font-semibold">sales@marsala.dev</span>
                     </a>
-                    <div className="rounded-xl border border-moss-200 bg-gradient-to-br from-white to-moss-50/30 p-3">
+                    <div className="rounded-xl border border-moss-200 bg-gradient-to-br from-white to-moss-50/30 p-3 dark:border-moss-700 dark:from-moss-900 dark:to-moss-800/30">
                       <div className="flex items-start gap-3">
-                        <svg className="mt-0.5 h-5 w-5 flex-shrink-0 text-moss-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
+                        <MapPinIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-moss-600 dark:text-moss-400" />
                         <div className="text-xs">
-                          <p className="font-semibold text-moss-900">221 River St., 9th Floor</p>
-                          <p className="text-sage-600">Hoboken, NJ 07030, USA</p>
-                          <p className="mt-1 text-sage-600">NYC · London · Remote</p>
+                          <p className="font-semibold text-moss-900 dark:text-moss-100">221 River St., 9th Floor</p>
+                          <p className="text-sage-600 dark:text-sage-300">Hoboken, NJ 07030, USA</p>
+                          <p className="mt-1 text-sage-600 dark:text-sage-300">NYC · London · Remote</p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="rounded-xl bg-gradient-to-br from-moss-50 to-sage-50 p-4">
+                <div className="rounded-xl bg-gradient-to-br from-moss-50 to-sage-50 p-4 dark:from-moss-800 dark:to-sage-800">
                   <div className="mb-2 flex items-center gap-2">
-                    <span className="text-lg">⚡</span>
-                    <span className="text-xs font-bold uppercase tracking-wider text-moss-700">Quick Stats</span>
+                    <BoltIcon className="h-5 w-5 text-moss-700 dark:text-moss-200" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-moss-700 dark:text-moss-200">Quick Stats</span>
                   </div>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-sage-700">Avg. Response Time</span>
-                      <span className="font-bold text-moss-900">1.2 hrs</span>
+                      <span className="text-sage-700 dark:text-sage-300">Avg. Response Time</span>
+                      <span className="font-bold text-moss-900 dark:text-moss-100">1.2 hrs</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sage-700">Support Availability</span>
-                      <span className="font-bold text-moss-900">24/7</span>
+                      <span className="text-sage-700 dark:text-sage-300">Support Availability</span>
+                      <span className="font-bold text-moss-900 dark:text-moss-100">24/7</span>
                     </div>
                   </div>
                 </div>
@@ -309,7 +313,7 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Name */}
                 <div>
-                  <label htmlFor="name" className="mb-2 block text-xs font-bold uppercase tracking-wider text-moss-700">
+                  <label htmlFor="name" className="mb-2 block text-xs font-bold uppercase tracking-wider text-moss-700 dark:text-moss-300">
                     Name *
                   </label>
                   <input
@@ -322,8 +326,8 @@ export default function ContactPage() {
                     required
                     className={`w-full rounded-xl border-2 px-4 py-3 transition-all focus:outline-none focus:ring-2 focus:ring-moss-500/20 ${
                       errors.name && touched.name
-                        ? "border-red-300 bg-red-50"
-                        : "border-moss-200 bg-white focus:border-moss-500"
+                        ? "border-red-300 bg-red-50 dark:bg-red-900/20"
+                        : "border-moss-200 bg-white focus:border-moss-500 dark:border-moss-700 dark:bg-moss-900 dark:focus:border-moss-500"
                     }`}
                     placeholder="Your name"
                   />
@@ -333,7 +337,7 @@ export default function ContactPage() {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="mt-1 text-xs text-red-600"
+                        className="mt-1 text-xs text-red-600 dark:text-red-400"
                       >
                         {errors.name}
                       </motion.p>
@@ -343,7 +347,7 @@ export default function ContactPage() {
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="mb-2 block text-xs font-bold uppercase tracking-wider text-moss-700">
+                  <label htmlFor="email" className="mb-2 block text-xs font-bold uppercase tracking-wider text-moss-700 dark:text-moss-300">
                     Email *
                   </label>
                   <input
@@ -356,8 +360,8 @@ export default function ContactPage() {
                     required
                     className={`w-full rounded-xl border-2 px-4 py-3 transition-all focus:outline-none focus:ring-2 focus:ring-moss-500/20 ${
                       errors.email && touched.email
-                        ? "border-red-300 bg-red-50"
-                        : "border-moss-200 bg-white focus:border-moss-500"
+                        ? "border-red-300 bg-red-50 dark:bg-red-900/20"
+                        : "border-moss-200 bg-white focus:border-moss-500 dark:border-moss-700 dark:bg-moss-900 dark:focus:border-moss-500"
                     }`}
                     placeholder="you@company.com"
                   />
@@ -367,7 +371,7 @@ export default function ContactPage() {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="mt-1 text-xs text-red-600"
+                        className="mt-1 text-xs text-red-600 dark:text-red-400"
                       >
                         {errors.email}
                       </motion.p>
@@ -377,7 +381,7 @@ export default function ContactPage() {
 
                 {/* Company */}
                 <div>
-                  <label htmlFor="company" className="mb-2 block text-xs font-bold uppercase tracking-wider text-moss-700">
+                  <label htmlFor="company" className="mb-2 block text-xs font-bold uppercase tracking-wider text-moss-700 dark:text-moss-300">
                     Company
                   </label>
                   <input
@@ -386,7 +390,7 @@ export default function ContactPage() {
                     type="text"
                     value={formState.company}
                     onChange={handleChange}
-                    className="w-full rounded-xl border-2 border-moss-200 bg-white px-4 py-3 transition-all focus:border-moss-500 focus:outline-none focus:ring-2 focus:ring-moss-500/20"
+                    className="w-full rounded-xl border-2 border-moss-200 bg-white px-4 py-3 transition-all focus:border-moss-500 focus:outline-none focus:ring-2 focus:ring-moss-500/20 dark:border-moss-700 dark:bg-moss-900 dark:focus:border-moss-500"
                     placeholder="Your company (optional)"
                   />
                 </div>
@@ -394,10 +398,10 @@ export default function ContactPage() {
                 {/* Message */}
                 <div>
                   <div className="mb-2 flex items-center justify-between">
-                    <label htmlFor="message" className="text-xs font-bold uppercase tracking-wider text-moss-700">
+                    <label htmlFor="message" className="text-xs font-bold uppercase tracking-wider text-moss-700 dark:text-moss-300">
                       Message *
                     </label>
-                    <span className={`text-xs ${messageLength > maxMessageLength ? "text-red-600" : "text-sage-500"}`}>
+                    <span className={`text-xs ${messageLength > maxMessageLength ? "text-red-600 dark:text-red-400" : "text-sage-500 dark:text-sage-400"}`}>
                       {messageLength}/{maxMessageLength}
                     </span>
                   </div>
@@ -412,8 +416,8 @@ export default function ContactPage() {
                     maxLength={maxMessageLength}
                     className={`w-full rounded-xl border-2 px-4 py-3 transition-all focus:outline-none focus:ring-2 focus:ring-moss-500/20 ${
                       errors.message && touched.message
-                        ? "border-red-300 bg-red-50"
-                        : "border-moss-200 bg-white focus:border-moss-500"
+                        ? "border-red-300 bg-red-50 dark:bg-red-900/20"
+                        : "border-moss-200 bg-white focus:border-moss-500 dark:border-moss-700 dark:bg-moss-900 dark:focus:border-moss-500"
                     }`}
                     placeholder="Tell us about your project, goals, and how we can help..."
                   />
@@ -423,7 +427,7 @@ export default function ContactPage() {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="mt-1 text-xs text-red-600"
+                        className="mt-1 text-xs text-red-600 dark:text-red-400"
                       >
                         {errors.message}
                       </motion.p>
@@ -440,21 +444,17 @@ export default function ContactPage() {
                       exit={{ opacity: 0, scale: 0.95 }}
                       className={`rounded-xl border-2 p-4 ${
                         submitStatus.type === "success"
-                          ? "border-green-200 bg-green-50"
-                          : "border-red-200 bg-red-50"
+                          ? "border-green-200 bg-green-50 dark:border-green-700 dark:bg-green-900/20"
+                          : "border-red-200 bg-red-50 dark:border-red-700 dark:bg-red-900/20"
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         {submitStatus.type === "success" ? (
-                          <svg className="h-5 w-5 flex-shrink-0 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                          </svg>
+                          <CheckCircleIcon className="h-5 w-5 flex-shrink-0 text-green-600 dark:text-green-400" />
                         ) : (
-                          <svg className="h-5 w-5 flex-shrink-0 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                          </svg>
+                          <XCircleIcon className="h-5 w-5 flex-shrink-0 text-red-600 dark:text-red-400" />
                         )}
-                        <p className={`text-sm ${submitStatus.type === "success" ? "text-green-800" : "text-red-800"}`}>
+                        <p className={`text-sm ${submitStatus.type === "success" ? "text-green-800 dark:text-green-200" : "text-red-800 dark:text-red-200"}`}>
                           {submitStatus.message}
                         </p>
                       </div>
@@ -463,9 +463,9 @@ export default function ContactPage() {
                 </AnimatePresence>
 
                 {/* Privacy Notice */}
-                <p className="text-xs text-sage-600">
+                <p className="text-xs text-sage-600 dark:text-sage-400">
                   We process your data to respond to you. We do not share it with third parties without consent.
-                  See our <Link href="/legal/privacy" className="font-semibold text-moss-700 hover:underline">Privacy Policy</Link>.
+                  See our <Link href="/legal/privacy" className="font-semibold text-moss-700 hover:underline dark:text-moss-300">Privacy Policy</Link>.
                 </p>
 
                 {/* Submit Button */}
@@ -486,9 +486,7 @@ export default function ContactPage() {
                     ) : (
                       <>
                         Send Message
-                        <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
+                        <PaperAirplaneIcon className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                       </>
                     )}
                   </span>

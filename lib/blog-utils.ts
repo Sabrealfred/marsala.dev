@@ -5,7 +5,7 @@ export type BlogCategory = {
   name: string;
   description: string;
   color: string;
-  icon: string;
+  iconName: string; // Changed from icon: React.ElementType to iconName: string
 };
 
 export const BLOG_CATEGORIES: Record<string, BlogCategory> = {
@@ -14,42 +14,42 @@ export const BLOG_CATEGORIES: Record<string, BlogCategory> = {
     name: "Growth & Marketing",
     description: "Estrategias de growth, marketing automation y data activation",
     color: "moss",
-    icon: "📈"
+    iconName: "ArrowTrendingUpIcon"
   },
   "tech-architecture": {
     id: "tech-architecture",
     name: "Tech & Architecture",
     description: "Arquitecturas modernas, headless, y stacks tecnológicos",
     color: "sage",
-    icon: "⚙️"
+    iconName: "WrenchScrewdriverIcon"
   },
   "data-analytics": {
     id: "data-analytics",
     name: "Data & Analytics",
     description: "Analytics, dashboards, y business intelligence",
     color: "moss",
-    icon: "📊"
+    iconName: "ChartBarIcon"
   },
   "ai-automation": {
     id: "ai-automation",
     name: "AI & Automation",
     description: "Inteligencia artificial, copilots y automatización",
     color: "sage",
-    icon: "🤖"
+    iconName: "CpuChipIcon"
   },
   "crm-sales": {
     id: "crm-sales",
     name: "CRM & Sales",
     description: "CRM, sales ops, y lead management",
     color: "moss",
-    icon: "💼"
+    iconName: "BriefcaseIcon"
   },
   "frameworks-playbooks": {
     id: "frameworks-playbooks",
     name: "Frameworks & Playbooks",
     description: "Guías prácticas y frameworks de implementación",
     color: "sage",
-    icon: "📚"
+    iconName: "BookOpenIcon"
   }
 };
 

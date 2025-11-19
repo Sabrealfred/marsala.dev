@@ -3,6 +3,18 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  CpuChipIcon,
+  ArrowTrendingUpIcon,
+  ChartBarIcon,
+  BriefcaseIcon,
+  WrenchScrewdriverIcon,
+  BookOpenIcon,
+  MagnifyingGlassIcon,
+  XMarkIcon,
+  FunnelIcon,
+  TagIcon,
+} from "@heroicons/react/24/outline";
 
 // Types locales para evitar dependencias de servidor
 type BlogPost = {
@@ -19,9 +31,24 @@ type BlogPost = {
 type BlogCategory = {
   id: string;
   name: string;
-  icon: string;
+  iconName: string;
   description?: string;
+  color?: string;
 };
+
+// Icon mapping
+const ICON_MAP: Record<string, React.ElementType> = {
+  ArrowTrendingUpIcon,
+  WrenchScrewdriverIcon,
+  ChartBarIcon,
+  CpuChipIcon,
+  BriefcaseIcon,
+  BookOpenIcon,
+};
+
+function getIconComponent(iconName: string): React.ElementType {
+  return ICON_MAP[iconName] || BookOpenIcon;
+}
 
 function formatBlogDate(date: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -31,16 +58,16 @@ function formatBlogDate(date: string) {
   }).format(new Date(date));
 }
 
-function getCategoryIcon(tags: string[] = []): string {
+function getCategoryIcon(tags: string[] = []): React.ElementType {
   const tagsLower = tags.map(t => t.toLowerCase());
 
-  if (tagsLower.some(t => t.includes("ai") || t.includes("automation"))) return "🤖";
-  if (tagsLower.some(t => t.includes("growth") || t.includes("marketing"))) return "📈";
-  if (tagsLower.some(t => t.includes("data") || t.includes("analytics"))) return "📊";
-  if (tagsLower.some(t => t.includes("crm") || t.includes("sales"))) return "💼";
-  if (tagsLower.some(t => t.includes("architecture") || t.includes("stack"))) return "⚙️";
+  if (tagsLower.some(t => t.includes("ai") || t.includes("automation"))) return CpuChipIcon;
+  if (tagsLower.some(t => t.includes("growth") || t.includes("marketing"))) return ArrowTrendingUpIcon;
+  if (tagsLower.some(t => t.includes("data") || t.includes("analytics"))) return ChartBarIcon;
+  if (tagsLower.some(t => t.includes("crm") || t.includes("sales"))) return BriefcaseIcon;
+  if (tagsLower.some(t => t.includes("architecture") || t.includes("stack"))) return WrenchScrewdriverIcon;
 
-  return "📚";
+  return BookOpenIcon;
 }
 
 function getCategoryName(tags: string[] = []): string {
@@ -97,31 +124,27 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
   return (
     <>
       {/* Search and Filters */}
-      <section className="sticky top-0 z-20 bg-gradient-to-b from-white to-white/95 backdrop-blur-xl border-b-2 border-moss-200/50 py-6 shadow-sm">
+      <section className="sticky top-0 z-20 bg-gradient-to-b from-white to-white/95 backdrop-blur-xl border-b-2 border-moss-200/50 py-6 shadow-sm dark:from-moss-950 dark:to-moss-950/95 dark:border-moss-800">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           {/* Search Bar */}
           <div className="mb-6">
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                <svg className="h-5 w-5 text-moss-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <MagnifyingGlassIcon className="h-5 w-5 text-moss-600 dark:text-moss-400" />
               </div>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search articles by title, content, or tags..."
-                className="w-full rounded-2xl border-2 border-moss-200 bg-white py-3 pl-12 pr-4 text-sm text-moss-950 placeholder-sage-500 transition-all focus:border-moss-500 focus:outline-none focus:ring-2 focus:ring-moss-500/20"
+                className="w-full rounded-2xl border-2 border-moss-200 bg-white py-3 pl-12 pr-4 text-sm text-moss-950 placeholder-sage-500 transition-all focus:border-moss-500 focus:outline-none focus:ring-2 focus:ring-moss-500/20 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-50 dark:placeholder-sage-400 dark:focus:border-moss-500"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute inset-y-0 right-0 flex items-center pr-4 text-sage-500 hover:text-moss-700"
+                  className="absolute inset-y-0 right-0 flex items-center pr-4 text-sage-500 hover:text-moss-700 dark:text-sage-400 dark:hover:text-moss-200"
                 >
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <XMarkIcon className="h-5 w-5" />
                 </button>
               )}
             </div>
@@ -129,10 +152,8 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
 
           {/* Category Filter Label */}
           <div className="mb-4 flex items-center gap-2">
-            <svg className="h-5 w-5 text-moss-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-            </svg>
-            <span className="text-sm font-bold uppercase tracking-widest text-moss-700">Filter by Category</span>
+            <FunnelIcon className="h-5 w-5 text-moss-600 dark:text-moss-400" />
+            <span className="text-sm font-bold uppercase tracking-widest text-moss-700 dark:text-moss-300">Filter by Category</span>
           </div>
 
           {/* Category Buttons */}
@@ -141,13 +162,13 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
               onClick={() => setSelectedCategory(null)}
               className={`group flex-shrink-0 rounded-2xl px-6 py-3 text-sm font-bold transition-all duration-300 ${
                 selectedCategory === null
-                  ? "bg-moss-gradient text-white shadow-xl scale-105"
-                  : "border-2 border-moss-200 bg-white text-moss-700 hover:border-moss-500 hover:shadow-lg hover:scale-105"
+                  ? "bg-moss-gradient text-white shadow-xl scale-105 dark:bg-moss-gradient-dark"
+                  : "border-2 border-moss-200 bg-white text-moss-700 hover:border-moss-500 hover:shadow-lg hover:scale-105 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-300 dark:hover:border-moss-500"
               }`}
             >
               <div className="flex items-center gap-2.5">
                 <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/20 text-lg">
-                  📋
+                  <BookOpenIcon className="h-5 w-5" />
                 </div>
                 <div className="flex flex-col items-start">
                   <span className="text-xs uppercase tracking-wider opacity-80">All</span>
@@ -161,6 +182,7 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
               if (count === 0) return null;
 
               const isActive = selectedCategory === category.id;
+              const CategoryIcon = getIconComponent(category.iconName);
 
               return (
                 <button
@@ -168,15 +190,15 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
                   onClick={() => setSelectedCategory(category.id)}
                   className={`group flex-shrink-0 rounded-2xl px-6 py-3 text-sm font-bold transition-all duration-300 ${
                     isActive
-                      ? "bg-moss-gradient text-white shadow-xl scale-105"
-                      : "border-2 border-moss-200 bg-white text-moss-700 hover:border-moss-500 hover:shadow-lg hover:scale-105"
+                      ? "bg-moss-gradient text-white shadow-xl scale-105 dark:bg-moss-gradient-dark"
+                      : "border-2 border-moss-200 bg-white text-moss-700 hover:border-moss-500 hover:shadow-lg hover:scale-105 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-300 dark:hover:border-moss-500"
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
                     <div className={`flex h-8 w-8 items-center justify-center rounded-xl text-lg transition-all ${
-                      isActive ? "bg-white/20" : "bg-moss-50 group-hover:bg-moss-100"
+                      isActive ? "bg-white/20" : "bg-moss-50 group-hover:bg-moss-100 dark:bg-moss-800 dark:group-hover:bg-moss-700"
                     }`}>
-                      {category.icon}
+                      <CategoryIcon className="h-5 w-5" />
                     </div>
                     <div className="flex flex-col items-start">
                       <span className={`text-xs uppercase tracking-wider ${isActive ? "opacity-90" : "opacity-70"}`}>
@@ -193,17 +215,18 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
           {/* Active Category Description */}
           {selectedCategory && (() => {
             const activeCategory = categories.find(c => c.id === selectedCategory);
-            return activeCategory?.description && (
-              <div className="mt-4 rounded-2xl border border-moss-200 bg-moss-50/30 px-6 py-4 backdrop-blur-sm">
+            const CategoryIcon = activeCategory ? getIconComponent(activeCategory.iconName) : null;
+            return activeCategory?.description && CategoryIcon && (
+              <div className="mt-4 rounded-2xl border border-moss-200 bg-moss-50/30 px-6 py-4 backdrop-blur-sm dark:border-moss-800 dark:bg-moss-900/30">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-moss-gradient text-lg shadow-lg">
-                    {activeCategory.icon}
+                    <CategoryIcon className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-moss-800">
+                    <p className="text-xs font-bold uppercase tracking-widest text-moss-800 dark:text-moss-200">
                       {activeCategory.name}
                     </p>
-                    <p className="mt-1 text-sm leading-relaxed text-sage-700">
+                    <p className="mt-1 text-sm leading-relaxed text-sage-700 dark:text-sage-300">
                       {activeCategory.description}
                     </p>
                   </div>
@@ -216,18 +239,16 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
           {allTags.length > 0 && (
             <div className="mt-6">
               <div className="mb-3 flex items-center gap-2">
-                <svg className="h-4 w-4 text-moss-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
-                <span className="text-xs font-bold uppercase tracking-widest text-moss-700">Filter by Tag</span>
+                <TagIcon className="h-4 w-4 text-moss-600 dark:text-moss-400" />
+                <span className="text-xs font-bold uppercase tracking-widest text-moss-700 dark:text-moss-300">Filter by Tag</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setSelectedTag(null)}
                   className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
                     selectedTag === null
-                      ? "bg-moss-gradient text-white shadow-md"
-                      : "border border-moss-200 bg-white text-moss-700 hover:border-moss-400 hover:bg-moss-50"
+                      ? "bg-moss-gradient text-white shadow-md dark:bg-moss-gradient-dark"
+                      : "border border-moss-200 bg-white text-moss-700 hover:border-moss-400 hover:bg-moss-50 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-300 dark:hover:border-moss-500 dark:hover:bg-moss-800"
                   }`}
                 >
                   All Tags
@@ -238,8 +259,8 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
                     onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
                     className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
                       selectedTag === tag
-                        ? "bg-moss-gradient text-white shadow-md"
-                        : "border border-moss-200 bg-white text-moss-700 hover:border-moss-400 hover:bg-moss-50"
+                        ? "bg-moss-gradient text-white shadow-md dark:bg-moss-gradient-dark"
+                        : "border border-moss-200 bg-white text-moss-700 hover:border-moss-400 hover:bg-moss-50 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-300 dark:hover:border-moss-500 dark:hover:bg-moss-800"
                     }`}
                   >
                     #{tag}
@@ -252,18 +273,16 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
       </section>
 
       {/* Posts Grid */}
-      <section className="bg-gradient-to-b from-white via-cream-50 to-white py-16 lg:py-24">
+      <section className="bg-gradient-to-b from-white via-cream-50 to-white py-16 lg:py-24 dark:from-moss-950 dark:via-moss-900 dark:to-moss-950">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           {displayPosts.length === 0 && (
-            <div className="rounded-4xl border-2 border-dashed border-moss-200 bg-white/70 p-12 text-center">
+            <div className="rounded-4xl border-2 border-dashed border-moss-200 bg-white/70 p-12 text-center dark:border-moss-700 dark:bg-moss-900/70">
               <div className="mx-auto max-w-md">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-moss-100">
-                  <svg className="h-8 w-8 text-moss-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-moss-100 dark:bg-moss-800">
+                  <BookOpenIcon className="h-8 w-8 text-moss-600 dark:text-moss-400" />
                 </div>
-                <h3 className="text-lg font-bold text-moss-950">No articles found</h3>
-                <p className="mt-2 text-sm text-sage-600">
+                <h3 className="text-lg font-bold text-moss-950 dark:text-moss-50">No articles found</h3>
+                <p className="mt-2 text-sm text-sage-600 dark:text-sage-300">
                   {searchQuery || selectedTag || selectedCategory
                     ? "Try adjusting your search or filter criteria to find what you're looking for."
                     : "Check back soon for new content!"}
@@ -275,7 +294,7 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
                       setSelectedTag(null);
                       setSelectedCategory(null);
                     }}
-                    className="mt-4 inline-flex items-center gap-2 rounded-full border-2 border-moss-200 bg-white px-6 py-2 text-sm font-semibold text-moss-700 transition-all hover:border-moss-500 hover:bg-moss-50"
+                    className="mt-4 inline-flex items-center gap-2 rounded-full border-2 border-moss-200 bg-white px-6 py-2 text-sm font-semibold text-moss-700 transition-all hover:border-moss-500 hover:bg-moss-50 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-300 dark:hover:border-moss-500 dark:hover:bg-moss-800"
                   >
                     Clear all filters
                   </button>
@@ -286,20 +305,20 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
             {displayPosts.map((post) => {
-              const categoryIcon = getCategoryIcon(post.tags);
+              const CategoryIcon = getCategoryIcon(post.tags);
               const categoryName = getCategoryName(post.tags);
 
               // Determinar gradiente por categoría
               const categoryGradients: Record<string, string> = {
-                "🤖": "from-blue-500/10 via-indigo-500/10 to-purple-500/10",
-                "📈": "from-green-500/10 via-emerald-500/10 to-teal-500/10",
-                "📊": "from-orange-500/10 via-amber-500/10 to-yellow-500/10",
-                "💼": "from-purple-500/10 via-fuchsia-500/10 to-pink-500/10",
-                "⚙️": "from-slate-500/10 via-gray-500/10 to-zinc-500/10",
-                "📚": "from-moss-500/10 via-sage-500/10 to-moss-400/10",
+                "AI & Automation": "from-blue-500/10 via-indigo-500/10 to-purple-500/10",
+                "Growth & Marketing": "from-green-500/10 via-emerald-500/10 to-teal-500/10",
+                "Data & Analytics": "from-orange-500/10 via-amber-500/10 to-yellow-500/10",
+                "CRM & Sales": "from-purple-500/10 via-fuchsia-500/10 to-pink-500/10",
+                "Tech & Architecture": "from-slate-500/10 via-gray-500/10 to-zinc-500/10",
+                "General": "from-moss-500/10 via-sage-500/10 to-moss-400/10",
               };
 
-              const gradient = categoryGradients[categoryIcon] || "from-moss-500/10 via-sage-500/10 to-moss-400/10";
+              const gradient = categoryGradients[categoryName] || "from-moss-500/10 via-sage-500/10 to-moss-400/10";
 
               return (
                 <Link
@@ -308,7 +327,7 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
                   className="group relative"
                 >
                   {/* Card */}
-                  <div className="relative h-full overflow-hidden rounded-3xl border-2 border-moss-200 bg-white transition-all duration-500 hover:border-moss-400 hover:shadow-2xl hover:-translate-y-2">
+                  <div className="relative h-full overflow-hidden rounded-3xl border-2 border-moss-200 bg-white transition-all duration-500 hover:border-moss-400 hover:shadow-2xl hover:-translate-y-2 dark:border-moss-800 dark:bg-moss-900 dark:hover:border-moss-600">
                     {/* Gradient Background */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 transition-opacity duration-500 group-hover:opacity-100`} />
 
@@ -320,34 +339,34 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
                       {/* Category Badge - Larger & Prominent */}
                       <div className="flex items-center gap-3">
                         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-moss-gradient text-2xl shadow-lg">
-                          {categoryIcon}
+                          <CategoryIcon className="h-8 w-8 text-white" />
                         </div>
                         <div>
-                          <p className="text-xs font-bold uppercase tracking-widest text-moss-700">
+                          <p className="text-xs font-bold uppercase tracking-widest text-moss-700 dark:text-moss-300">
                             {categoryName}
                           </p>
-                          <p className="text-xs text-sage-600">{formatBlogDate(post.date)}</p>
+                          <p className="text-xs text-sage-600 dark:text-sage-400">{formatBlogDate(post.date)}</p>
                         </div>
                       </div>
 
                       {/* Title */}
-                      <h2 className="text-xl font-bold leading-tight text-moss-950 transition-colors duration-300 group-hover:text-moss-700 lg:text-2xl min-h-[3.5rem]">
+                      <h2 className="text-xl font-bold leading-tight text-moss-950 transition-colors duration-300 group-hover:text-moss-700 lg:text-2xl min-h-[3.5rem] dark:text-moss-50 dark:group-hover:text-moss-200">
                         {post.title}
                       </h2>
 
                       {/* Summary */}
-                      <p className="text-sm leading-relaxed text-sage-700 line-clamp-3 min-h-[4rem]">
+                      <p className="text-sm leading-relaxed text-sage-700 line-clamp-3 min-h-[4rem] dark:text-sage-300">
                         {post.summary}
                       </p>
 
                       {/* Meta Info */}
-                      <div className="flex items-center gap-3 text-xs text-sage-600 pt-2 border-t border-moss-100">
-                        <span className="rounded-full bg-moss-100 px-3 py-1.5 font-semibold text-moss-800">
+                      <div className="flex items-center gap-3 text-xs text-sage-600 pt-2 border-t border-moss-100 dark:border-moss-800 dark:text-sage-400">
+                        <span className="rounded-full bg-moss-100 px-3 py-1.5 font-semibold text-moss-800 dark:bg-moss-800 dark:text-moss-200">
                           {post.type}
                         </span>
                         {post.readingTime && (
                           <>
-                            <span className="text-sage-400">•</span>
+                            <span className="text-sage-400 dark:text-sage-500">•</span>
                             <span className="flex items-center gap-1">
                               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -364,7 +383,7 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
                           {post.tags.slice(0, 3).map((tag) => (
                             <span
                               key={tag}
-                              className="rounded-lg border border-moss-200 bg-white/60 px-2.5 py-1 text-xs font-medium text-moss-700 backdrop-blur-sm"
+                              className="rounded-lg border border-moss-200 bg-white/60 px-2.5 py-1 text-xs font-medium text-moss-700 backdrop-blur-sm dark:border-moss-700 dark:bg-moss-900/60 dark:text-moss-300"
                             >
                               {tag}
                             </span>
@@ -373,7 +392,7 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
                       )}
 
                       {/* Read More Arrow */}
-                      <div className="flex items-center gap-2 pt-4 text-sm font-bold text-moss-700 transition-all duration-300 group-hover:gap-4">
+                      <div className="flex items-center gap-2 pt-4 text-sm font-bold text-moss-700 transition-all duration-300 group-hover:gap-4 dark:text-moss-200">
                         <span>Read Article</span>
                         <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />

@@ -69,6 +69,7 @@ const config: Config = {
       },
       backgroundImage: {
         'moss-gradient': 'linear-gradient(135deg, #6a8a6c 0%, #435a45 100%)',
+        'moss-gradient-dark': 'linear-gradient(135deg, #2d3d2f 0%, #1a241b 100%)', // Added dark variant
         'sage-gradient': 'linear-gradient(135deg, #a3b1a5 0%, #627465 100%)',
       },
       spacing: {

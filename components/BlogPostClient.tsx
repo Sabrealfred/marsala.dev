@@ -18,8 +18,9 @@ type BlogPost = {
 type BlogCategory = {
   id: string;
   name: string;
-  icon: string;
+  iconName: string;
   description: string;
+  color?: string;
 };
 
 type BlogPostClientProps = {
@@ -96,7 +97,7 @@ export function BlogRelatedPosts({ relatedPosts, category }: { relatedPosts: Blo
             {t("blog.alsoInterested")}
           </h2>
           <p className="mt-2 text-sage-700">
-            {t("blog.moreContent")} <span className="font-semibold">{category.icon} {category.name}</span>
+            {t("blog.moreContent")} <span className="font-semibold">{category.name}</span>
           </p>
         </div>
 
@@ -111,7 +112,7 @@ export function BlogRelatedPosts({ relatedPosts, category }: { relatedPosts: Blo
               >
                 <div className="mb-3 flex items-center gap-2 text-xs font-semibold">
                   <span className="rounded-full bg-moss-gradient px-3 py-1 text-white">
-                    {relatedCategory.icon} {relatedPost.type}
+                    {relatedPost.type}
                   </span>
                 </div>
 

@@ -32,6 +32,7 @@ Este roadmap consolida `README.md`, `README_IMPLEMENTATION.md`, `IMPLEMENTATION_
 6. **Experiencia visual y responsive**
    - Multi-idioma (ES + 5 idiomas clave) con switcher/detección.
    - Dark mode respetando `prefers-color-scheme` + toggle manual.
+   - Depurar iconografía que parezca “AI dev” (reemplazar sets genéricos por ilustraciones propias) y ajustar tipografías/detalles UI para un tono más editorial.
    - Ajustar layout responsive y márgenes/gutters para evitar aspecto compactado.
    - Expandir homepage con nuevas secciones (tutoriales, comparativas, highlights).
    - Microinteracción del “pingüino” que siga al cursor en toda la página.
@@ -55,6 +56,7 @@ Este roadmap consolida `README.md`, `README_IMPLEMENTATION.md`, `IMPLEMENTATION_
 - [ ] Actualizar filtros/búsquedas para usar categorías/tags/tipos.
 - [ ] Mantener `content/blog-backlog.json` como fuente única de ideas (status `todo/draft/published`).
 - [ ] Escalar producción editorial hasta 2,000 posts combinando tutoriales, comparativas, herramientas open source y explicaciones largas.
+- [ ] Añadir tutoriales detallados sobre las herramientas core del stack (Resend, Netlify, CLIs internas) dentro de la serie principal.
 - [ ] Implementar contenido sugerido por tags, carouseles rotativos y navegación `Next/Prev`.
 
 > Actualiza este documento cada vez que avances una iniciativa (DNS, seguridad, blog, UX) para que todo el equipo tenga visibilidad del estado del sitio.

@@ -29,29 +29,29 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="mt-16 border-t border-moss-200 bg-gradient-to-b from-cream-50 to-white">
+    <footer className="mt-16 border-t border-moss-200 bg-gradient-to-b from-cream-50 to-white dark:border-moss-800 dark:from-moss-950 dark:to-moss-900">
       {/* Status Dashboard */}
-      <div className="border-b border-moss-200 bg-white">
+      <div className="border-b border-moss-200 bg-white dark:border-moss-800 dark:bg-moss-900">
         <div className="mx-auto w-full max-w-6xl px-6 py-6 md:px-10">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50">
                 <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-moss-950">{t("footer.status")}</p>
-                <p className="text-xs text-sage-600">99.97% {t("footer.uptime")}</p>
+                <p className="text-sm font-semibold text-moss-950 dark:text-moss-50">{t("footer.status")}</p>
+                <p className="text-xs text-sage-600 dark:text-sage-300">99.97% {t("footer.uptime")}</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 text-center sm:flex sm:gap-6">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-sage-600">{t("footer.response")}</p>
-                <p className="mt-1 text-lg font-bold text-moss-700">1.2hrs</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-sage-600 dark:text-sage-400">{t("footer.response")}</p>
+                <p className="mt-1 text-lg font-bold text-moss-700 dark:text-moss-200">1.2hrs</p>
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-sage-600">{t("footer.deployments")} {currentQuarter}</p>
-                <p className="mt-1 text-lg font-bold text-moss-700">12</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-sage-600 dark:text-sage-400">{t("footer.deployments")} {currentQuarter}</p>
+                <p className="mt-1 text-lg font-bold text-moss-700 dark:text-moss-200">12</p>
               </div>
             </div>
           </div>
@@ -59,37 +59,37 @@ export function Footer() {
       </div>
 
       {/* Main Footer */}
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-10 text-sm text-sage-700 md:px-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-10 text-sm text-sage-700 md:px-10 dark:text-sage-300">
         <div className="flex flex-col gap-8 md:flex-row md:justify-between">
           <div className="space-y-3">
-            <p className="font-display text-xl font-bold text-moss-950">Marsala</p>
-            <p className="text-sage-600">
-              <a href="mailto:sales@marsala.dev" className="hover:text-moss-700 transition-colors">
+            <p className="font-display text-xl font-bold text-moss-950 dark:text-moss-50">Marsala</p>
+            <p className="text-sage-600 dark:text-sage-300">
+              <a href="mailto:sales@marsala.dev" className="hover:text-moss-700 transition-colors dark:hover:text-moss-200">
                 sales@marsala.dev
               </a>
             </p>
-            <p className="text-xs uppercase tracking-wider text-sage-500">
+            <p className="text-xs uppercase tracking-wider text-sage-500 dark:text-sage-400">
               Intelligent Growth Studio
             </p>
-            <div className="flex items-center gap-3 pt-2 text-xs text-sage-500">
+            <div className="flex items-center gap-3 pt-2 text-xs text-sage-500 dark:text-sage-400">
               <span className="flex items-center gap-1">
-                <span className="text-moss-600">📍</span> {t("footer.remote")}
+                <span className="text-moss-600 dark:text-moss-400">📍</span> {t("footer.remote")}
               </span>
               <span>•</span>
               <span className="flex items-center gap-1">
-                <span className="text-moss-600">🔒</span> {t("footer.certified")}
+                <span className="text-moss-600 dark:text-moss-400">🔒</span> {t("footer.certified")}
               </span>
             </div>
           </div>
 
           <div className="flex flex-col gap-6 sm:flex-row sm:gap-12">
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-moss-700">{t("footer.explore")}</p>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-moss-700 dark:text-moss-200">{t("footer.explore")}</p>
               <ul className="grid gap-2">
                 {footerLinks.map((link) => (
                   <li key={link.href}>
                     <Link
-                      className="text-sage-600 transition-colors duration-200 hover:text-moss-700"
+                      className="text-sage-600 transition-colors duration-200 hover:text-moss-700 dark:text-sage-300 dark:hover:text-moss-200"
                       href={link.href}
                     >
                       {link.label}
@@ -99,12 +99,12 @@ export function Footer() {
               </ul>
             </div>
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-moss-700">{t("footer.legal")}</p>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-moss-700 dark:text-moss-200">{t("footer.legal")}</p>
               <ul className="grid gap-2">
                 {legalLinks.map((link) => (
                   <li key={link.href}>
                     <Link
-                      className="text-sage-600 transition-colors duration-200 hover:text-moss-700"
+                      className="text-sage-600 transition-colors duration-200 hover:text-moss-700 dark:text-sage-300 dark:hover:text-moss-200"
                       href={link.href}
                     >
                       {link.label}
@@ -114,14 +114,14 @@ export function Footer() {
               </ul>
             </div>
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-moss-700">{t("footer.connect")}</p>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-moss-700 dark:text-moss-200">{t("footer.connect")}</p>
               <ul className="grid gap-2">
                 <li>
                   <a
                     href="https://github.com/Sabrealfred"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sage-600 transition-colors duration-200 hover:text-moss-700"
+                    className="text-sage-600 transition-colors duration-200 hover:text-moss-700 dark:text-sage-300 dark:hover:text-moss-200"
                   >
                     GitHub
                   </a>
@@ -129,7 +129,7 @@ export function Footer() {
                 <li>
                   <Link
                     href="/contact"
-                    className="text-sage-600 transition-colors duration-200 hover:text-moss-700"
+                    className="text-sage-600 transition-colors duration-200 hover:text-moss-700 dark:text-sage-300 dark:hover:text-moss-200"
                   >
                     {t("nav.contact")}
                   </Link>

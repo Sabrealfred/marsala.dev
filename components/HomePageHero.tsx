@@ -7,12 +7,13 @@ import { AnimatedGradientMesh } from "./AnimatedGradientMesh";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { TiltCard } from "./TiltCard";
 import { MagneticButton } from "./MagneticButton";
+import { RocketLaunchIcon, BoltIcon, ArrowTrendingUpIcon } from "@heroicons/react/24/outline";
 
 export function HomePageHero() {
   const { t } = useLanguage();
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-cream-50 via-moss-50 to-sage-50 py-20 lg:py-32">
+    <section className="relative overflow-hidden bg-gradient-to-br from-cream-50 via-moss-50 to-sage-50 py-20 lg:py-32 dark:bg-moss-950">
       <AnimatedGradientMesh />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
@@ -55,37 +56,37 @@ export function HomePageHero() {
 
           {/* Right: Metrics */}
           <div className="grid gap-6">
-            <TiltCard className="group relative overflow-hidden rounded-3xl border-2 border-moss-200 bg-white p-8 backdrop-blur-sm transition-all duration-300">
+            <TiltCard className="group relative overflow-hidden rounded-3xl border-2 border-moss-200 bg-white p-8 backdrop-blur-sm transition-all duration-300 dark:border-moss-700 dark:bg-moss-900">
               <div className="text-center">
-                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-moss-50">
-                  <Image src="/icon-arc.svg" alt="" width={48} height={48} className="h-12 w-12" />
+                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-moss-50 dark:bg-moss-800">
+                  <RocketLaunchIcon className="h-12 w-12 text-moss-600 dark:text-moss-300" />
                 </div>
-                <p className="text-5xl font-bold text-moss-700">
+                <p className="text-5xl font-bold text-moss-700 dark:text-moss-200">
                   <AnimatedCounter value={10} suffix="×" duration={2.5} />
                 </p>
-                <p className="mt-2 text-sm font-semibold uppercase tracking-wider text-sage-600">Faster Launch</p>
+                <p className="mt-2 text-sm font-semibold uppercase tracking-wider text-sage-600 dark:text-sage-400">Faster Launch</p>
               </div>
             </TiltCard>
-            <TiltCard className="group relative overflow-hidden rounded-3xl border-2 border-moss-200 bg-white p-8 backdrop-blur-sm transition-all duration-300">
+            <TiltCard className="group relative overflow-hidden rounded-3xl border-2 border-moss-200 bg-white p-8 backdrop-blur-sm transition-all duration-300 dark:border-moss-700 dark:bg-moss-900">
               <div className="text-center">
-                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-sage-50">
-                  <Image src="/icon-path.svg" alt="" width={48} height={48} className="h-12 w-12" />
+                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-sage-50 dark:bg-sage-800">
+                  <BoltIcon className="h-12 w-12 text-moss-600 dark:text-moss-300" />
                 </div>
-                <p className="text-5xl font-bold text-moss-700">
+                <p className="text-5xl font-bold text-moss-700 dark:text-moss-200">
                   +<AnimatedCounter value={47} suffix="%" duration={2.5} />
                 </p>
-                <p className="mt-2 text-sm font-semibold uppercase tracking-wider text-sage-600">Efficiency</p>
+                <p className="mt-2 text-sm font-semibold uppercase tracking-wider text-sage-600 dark:text-sage-400">Efficiency</p>
               </div>
             </TiltCard>
-            <TiltCard className="group relative overflow-hidden rounded-3xl border-2 border-moss-200 bg-white p-8 backdrop-blur-sm transition-all duration-300">
+            <TiltCard className="group relative overflow-hidden rounded-3xl border-2 border-moss-200 bg-white p-8 backdrop-blur-sm transition-all duration-300 dark:border-moss-700 dark:bg-moss-900">
               <div className="text-center">
-                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-moss-50">
-                  <Image src="/icon-arc.svg" alt="" width={48} height={48} className="h-12 w-12" />
+                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-moss-50 dark:bg-moss-800">
+                  <ArrowTrendingUpIcon className="h-12 w-12 text-moss-600 dark:text-moss-300" />
                 </div>
-                <p className="text-5xl font-bold text-moss-700">
+                <p className="text-5xl font-bold text-moss-700 dark:text-moss-200">
                   <AnimatedCounter value={3} suffix="×" duration={2.5} />
                 </p>
-                <p className="mt-2 text-sm font-semibold uppercase tracking-wider text-sage-600">Engagement</p>
+                <p className="mt-2 text-sm font-semibold uppercase tracking-wider text-sage-600 dark:text-sage-400">Engagement</p>
               </div>
             </TiltCard>
           </div>
