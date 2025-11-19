@@ -3,6 +3,7 @@ import { HomePageClient } from "@/components/HomePageClient";
 import { HomePageHero } from "@/components/HomePageHero";
 import { HomePageSections } from "@/components/HomePageSections";
 import { ImpactCalculator } from "@/components/ImpactCalculator";
+import { FeaturesSectionWithHoverEffects } from "@/components/FeaturesSectionWithHoverEffects";
 
 // Revalidate every 1 hour in production
 export const revalidate = 3600;
@@ -13,6 +14,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-cream-50">
       <HomePageHero />
+      <FeaturesSectionWithHoverEffects />
       <HomePageClient />
       <HomePageSections blogPosts={blogPosts} />
       <ImpactCalculator />

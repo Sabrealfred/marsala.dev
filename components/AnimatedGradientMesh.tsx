@@ -25,38 +25,70 @@ export function AnimatedGradientMesh() {
   }, [mouseX, mouseY]);
 
   return (
-    <div ref={meshRef} className="absolute inset-0 overflow-hidden opacity-40">
-      {/* Animated gradient blobs */}
+    <div ref={meshRef} className="absolute inset-0 overflow-hidden opacity-50">
+      {/* Animated gradient blobs with autonomous motion */}
       <motion.div
-        className="absolute h-[600px] w-[600px] rounded-full bg-gradient-to-br from-moss-400 via-moss-300 to-transparent blur-3xl dark:from-moss-700 dark:via-moss-600 dark:to-transparent"
+        className="absolute h-[700px] w-[700px] rounded-full bg-gradient-to-br from-moss-400 via-moss-300 to-transparent blur-3xl dark:from-moss-700 dark:via-moss-600 dark:to-transparent"
         style={{
-          left: "20%",
-          top: "20%",
+          left: "15%",
+          top: "15%",
           x: useSpring(mouseX, { ...springConfig, stiffness: 100 }),
           y: useSpring(mouseY, { ...springConfig, stiffness: 100 }),
           rotate: useSpring(mouseX, { ...springConfig, stiffness: 50 }),
         }}
+        animate={{
+          x: [0, 50, -30, 0],
+          y: [0, -40, 30, 0],
+          scale: [1, 1.1, 0.95, 1],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
       />
-      
+
       <motion.div
-        className="absolute h-[500px] w-[500px] rounded-full bg-gradient-to-br from-sage-400 via-sage-300 to-transparent blur-3xl dark:from-sage-700 dark:via-sage-600 dark:to-transparent"
+        className="absolute h-[550px] w-[550px] rounded-full bg-gradient-to-br from-sage-400 via-sage-300 to-transparent blur-3xl dark:from-sage-700 dark:via-sage-600 dark:to-transparent"
         style={{
-          right: "20%",
-          top: "40%",
+          right: "15%",
+          top: "35%",
           x: useSpring(mouseX, { ...springConfig, stiffness: 80 }),
           y: useSpring(mouseY, { ...springConfig, stiffness: 80 }),
           rotate: useSpring(mouseY, { ...springConfig, stiffness: 40 }),
         }}
+        animate={{
+          x: [0, -40, 35, 0],
+          y: [0, 50, -25, 0],
+          scale: [1, 1.15, 0.9, 1],
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2,
+        }}
       />
-      
+
       <motion.div
-        className="absolute h-[450px] w-[450px] rounded-full bg-gradient-to-br from-moss-500 via-moss-200 to-transparent blur-3xl dark:from-moss-800 dark:via-moss-500 dark:to-transparent"
+        className="absolute h-[500px] w-[500px] rounded-full bg-gradient-to-br from-moss-500 via-moss-200 to-transparent blur-3xl dark:from-moss-800 dark:via-moss-500 dark:to-transparent"
         style={{
-          left: "50%",
-          bottom: "20%",
+          left: "45%",
+          bottom: "15%",
           x: useSpring(mouseX, { ...springConfig, stiffness: 120 }),
           y: useSpring(mouseY, { ...springConfig, stiffness: 120 }),
           rotate: useSpring(mouseX, { ...springConfig, stiffness: 60 }),
+        }}
+        animate={{
+          x: [0, 45, -20, 0],
+          y: [0, -35, 40, 0],
+          scale: [1, 0.95, 1.12, 1],
+        }}
+        transition={{
+          duration: 22,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 4,
         }}
       />
 

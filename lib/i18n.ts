@@ -39,6 +39,22 @@ export const translations = {
     "hero.cta.modules": "Explorar Módulos",
     "hero.cta.start": "Comenzar",
 
+    // Features Section
+    "features.title": "Capacidades de la Plataforma",
+    "features.subtitle": "Todas las herramientas que necesitas para escalar tu negocio con inteligencia modular",
+    "features.ai.title": "IA Empresarial",
+    "features.ai.description": "Automatización inteligente y análisis con modelos de IA de última generación adaptados a tu negocio",
+    "features.crm.title": "CRM Inteligente",
+    "features.crm.description": "Gestión de relaciones y herramientas de ventas con insights potenciados por IA",
+    "features.data.title": "Análisis de Datos",
+    "features.data.description": "Dashboards, visualizaciones e infraestructura de datos para tomar decisiones informadas",
+    "features.automation.title": "Flujos de Trabajo",
+    "features.automation.description": "Sistemas de automatización y integración de flujos de trabajo para optimizar operaciones",
+    "features.analytics.title": "Métricas de Rendimiento",
+    "features.analytics.description": "Seguimiento completo de métricas y análisis de rendimiento en tiempo real",
+    "features.security.title": "Seguridad Empresarial",
+    "features.security.description": "Infraestructura segura de nivel empresarial y cumplimiento de normativas",
+
     // Homepage Sections
     "home.blog.title": "Aprende de Casos Reales",
     "home.blog.subtitle": "Casos de estudio, frameworks y playbooks operativos de sistemas de crecimiento modular",
@@ -100,6 +116,22 @@ export const translations = {
     "hero.description": "Build your digital ecosystem with plug-and-play modules for brand, web, AI, and automation",
     "hero.cta.modules": "Explore Modules",
     "hero.cta.start": "Get Started",
+
+    // Features Section
+    "features.title": "Platform Capabilities",
+    "features.subtitle": "All the tools you need to scale your business with modular intelligence",
+    "features.ai.title": "Enterprise AI",
+    "features.ai.description": "Intelligent automation and analytics with state-of-the-art AI models tailored to your business",
+    "features.crm.title": "Smart CRM",
+    "features.crm.description": "Relationship management and sales tools with AI-powered insights",
+    "features.data.title": "Data Analytics",
+    "features.data.description": "Dashboards, visualizations, and data infrastructure for informed decision making",
+    "features.automation.title": "Workflow Automation",
+    "features.automation.description": "Automation systems and workflow integration to streamline operations",
+    "features.analytics.title": "Performance Metrics",
+    "features.analytics.description": "Comprehensive metric tracking and real-time performance analytics",
+    "features.security.title": "Enterprise Security",
+    "features.security.description": "Enterprise-grade secure infrastructure and regulatory compliance",
 
     // Homepage Sections
     "home.blog.title": "Learn from Real Engagements",
@@ -163,6 +195,22 @@ export const translations = {
     "hero.cta.modules": "Explorar Módulos",
     "hero.cta.start": "Começar",
 
+    // Features Section
+    "features.title": "Capacidades da Plataforma",
+    "features.subtitle": "Todas as ferramentas que você precisa para escalar seu negócio com inteligência modular",
+    "features.ai.title": "IA Empresarial",
+    "features.ai.description": "Automação inteligente e análise com modelos de IA de última geração adaptados ao seu negócio",
+    "features.crm.title": "CRM Inteligente",
+    "features.crm.description": "Gestão de relacionamentos e ferramentas de vendas com insights potencializados por IA",
+    "features.data.title": "Análise de Dados",
+    "features.data.description": "Dashboards, visualizações e infraestrutura de dados para tomada de decisões informadas",
+    "features.automation.title": "Automação de Fluxos",
+    "features.automation.description": "Sistemas de automação e integração de fluxos de trabalho para otimizar operações",
+    "features.analytics.title": "Métricas de Desempenho",
+    "features.analytics.description": "Rastreamento completo de métricas e análise de desempenho em tempo real",
+    "features.security.title": "Segurança Empresarial",
+    "features.security.description": "Infraestrutura segura de nível empresarial e conformidade regulatória",
+
     // Homepage Sections
     "home.blog.title": "Aprenda com Casos Reais",
     "home.blog.subtitle": "Estudos de caso, frameworks e playbooks operacionais de sistemas de crescimento modular",
@@ -224,6 +272,22 @@ export const translations = {
     "hero.description": "Construisez votre écosystème numérique avec des modules plug-and-play pour la marque, le web, l'IA et l'automatisation",
     "hero.cta.modules": "Explorer les Modules",
     "hero.cta.start": "Commencer",
+
+    // Features Section
+    "features.title": "Capacités de la Plateforme",
+    "features.subtitle": "Tous les outils dont vous avez besoin pour développer votre entreprise avec l'intelligence modulaire",
+    "features.ai.title": "IA d'Entreprise",
+    "features.ai.description": "Automatisation intelligente et analyses avec des modèles d'IA de pointe adaptés à votre entreprise",
+    "features.crm.title": "CRM Intelligent",
+    "features.crm.description": "Gestion des relations et outils de vente avec des insights alimentés par l'IA",
+    "features.data.title": "Analyse de Données",
+    "features.data.description": "Tableaux de bord, visualisations et infrastructure de données pour une prise de décision éclairée",
+    "features.automation.title": "Automatisation des Flux",
+    "features.automation.description": "Systèmes d'automatisation et intégration des flux de travail pour rationaliser les opérations",
+    "features.analytics.title": "Métriques de Performance",
+    "features.analytics.description": "Suivi complet des métriques et analyses de performance en temps réel",
+    "features.security.title": "Sécurité d'Entreprise",
+    "features.security.description": "Infrastructure sécurisée de niveau entreprise et conformité réglementaire",
 
     // Homepage Sections
     "home.blog.title": "Apprenez de Cas Réels",
@@ -287,6 +351,22 @@ export const translations = {
     "hero.cta.modules": "Module Erkunden",
     "hero.cta.start": "Loslegen",
 
+    // Features Section
+    "features.title": "Plattform-Funktionen",
+    "features.subtitle": "Alle Tools, die Sie brauchen, um Ihr Unternehmen mit modularer Intelligenz zu skalieren",
+    "features.ai.title": "Unternehmens-KI",
+    "features.ai.description": "Intelligente Automatisierung und Analysen mit hochmodernen KI-Modellen, angepasst an Ihr Unternehmen",
+    "features.crm.title": "Intelligentes CRM",
+    "features.crm.description": "Beziehungsmanagement und Vertriebstools mit KI-gestützten Erkenntnissen",
+    "features.data.title": "Datenanalyse",
+    "features.data.description": "Dashboards, Visualisierungen und Dateninfrastruktur für fundierte Entscheidungen",
+    "features.automation.title": "Workflow-Automatisierung",
+    "features.automation.description": "Automatisierungssysteme und Workflow-Integration zur Optimierung von Abläufen",
+    "features.analytics.title": "Leistungsmetriken",
+    "features.analytics.description": "Umfassendes Metrik-Tracking und Echtzeit-Leistungsanalyse",
+    "features.security.title": "Unternehmenssicherheit",
+    "features.security.description": "Sichere Infrastruktur auf Unternehmensniveau und regulatorische Compliance",
+
     // Homepage Sections
     "home.blog.title": "Lernen Sie von realen Fällen",
     "home.blog.subtitle": "Fallstudien, Frameworks und operative Playbooks von modularen Wachstumssystemen",
@@ -348,6 +428,22 @@ export const translations = {
     "hero.description": "Costruisci il tuo ecosistema digitale con moduli plug-and-play per brand, web, IA e automazione",
     "hero.cta.modules": "Esplora i Moduli",
     "hero.cta.start": "Inizia",
+
+    // Features Section
+    "features.title": "Capacità della Piattaforma",
+    "features.subtitle": "Tutti gli strumenti di cui hai bisogno per scalare il tuo business con intelligenza modulare",
+    "features.ai.title": "IA Aziendale",
+    "features.ai.description": "Automazione intelligente e analisi con modelli di IA all'avanguardia adattati al tuo business",
+    "features.crm.title": "CRM Intelligente",
+    "features.crm.description": "Gestione delle relazioni e strumenti di vendita con insight potenziati dall'IA",
+    "features.data.title": "Analisi Dati",
+    "features.data.description": "Dashboard, visualizzazioni e infrastruttura dati per decisioni informate",
+    "features.automation.title": "Automazione Flussi",
+    "features.automation.description": "Sistemi di automazione e integrazione dei flussi di lavoro per ottimizzare le operazioni",
+    "features.analytics.title": "Metriche di Performance",
+    "features.analytics.description": "Tracciamento completo delle metriche e analisi delle performance in tempo reale",
+    "features.security.title": "Sicurezza Aziendale",
+    "features.security.description": "Infrastruttura sicura di livello aziendale e conformità normativa",
 
     // Homepage Sections
     "home.blog.title": "Impara da Casi Reali",

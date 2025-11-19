@@ -161,7 +161,7 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-cream-50 via-white to-moss-50 dark:from-moss-950 dark:via-moss-900 dark:to-moss-950">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-moss-950 via-moss-900 to-moss-950 py-16 lg:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-moss-950 via-moss-900 to-moss-950 py-24 lg:py-32">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute left-1/4 top-0 h-96 w-96 rounded-full bg-moss-300 blur-3xl" />
           <div className="absolute right-1/4 bottom-0 h-96 w-96 rounded-full bg-sage-300 blur-3xl" />

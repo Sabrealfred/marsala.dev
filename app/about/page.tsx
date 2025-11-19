@@ -78,7 +78,7 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen bg-cream-50 dark:bg-moss-950">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-moss-50 via-sage-50 to-cream-50 py-20 dark:from-moss-950 dark:via-moss-900 dark:to-moss-950">
+      <section className="relative overflow-hidden bg-gradient-to-br from-moss-50 via-sage-50 to-cream-50 py-24 lg:py-32 dark:from-moss-950 dark:via-moss-900 dark:to-moss-950">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute left-1/3 top-1/3 h-96 w-96 rounded-full bg-moss-300 blur-3xl dark:bg-moss-700" />
         </div>
