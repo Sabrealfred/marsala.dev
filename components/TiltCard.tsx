@@ -68,7 +68,7 @@ export function TiltCard({ children, className = "" }: TiltCardProps) {
       {/* Shadow effect */}
       {isHovered && (
         <motion.div
-          className="absolute inset-0 rounded-3xl bg-moss-gradient opacity-20 blur-xl"
+          className="absolute inset-0 rounded-sm bg-moss-gradient opacity-20 blur-xl"
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.2 }}
           exit={{ opacity: 0 }}

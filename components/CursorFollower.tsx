@@ -104,7 +104,7 @@ export function CursorFollower() {
         <div className="relative">
           {/* Dynamic shadow - larger when running */}
           <motion.div
-            className="absolute -bottom-1 left-1/2 -translate-x-1/2 rounded-full bg-black/20 blur-sm"
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 rounded-sm bg-black/20 blur-sm"
             animate={{
               width: isRunning ? 40 : 32,
               height: isRunning ? 8 : 6,
@@ -137,7 +137,7 @@ export function CursorFollower() {
 
           {/* Trail Effect - more intense when running */}
           <motion.div
-            className="absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-moss-400/30 blur-xl"
+            className="absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 rounded-sm bg-moss-400/30 blur-xl"
             animate={{
               width: isRunning ? 60 : 48,
               height: isRunning ? 60 : 48,

@@ -117,7 +117,7 @@ export function HomePageClient() {
                 <button
                   key={module.id}
                   onClick={() => toggleModule(module.id)}
-                  className={`group relative overflow-hidden rounded-3xl border-2 p-6 text-left transition-all duration-300 ${
+                  className={`group relative overflow-hidden rounded-sm border-2 p-6 text-left transition-all duration-300 ${
                     isSelected
                       ? "border-moss-500 bg-gradient-to-br from-white to-moss-50 shadow-2xl dark:border-moss-700 dark:from-moss-900 dark:to-moss-800"
                       : "border-moss-200 bg-white hover:border-moss-400 hover:shadow-lg dark:border-moss-700 dark:bg-moss-900 dark:hover:border-moss-500"
@@ -131,13 +131,13 @@ export function HomePageClient() {
                         rotate: isSelected ? 0 : -180,
                       }}
                       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                      className="flex h-8 w-8 items-center justify-center rounded-full bg-moss-gradient text-white shadow-lg"
+                      className="flex h-8 w-8 items-center justify-center rounded-sm bg-moss-gradient text-white shadow-lg"
                     >
                       ✓
                     </motion.div>
                   </div>
 
-                  <div className={`mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${module.color} ${module.darkColor} p-3 shadow-lg`}>
+                  <div className={`mb-4 flex h-16 w-16 items-center justify-center rounded-sm bg-gradient-to-br ${module.color} ${module.darkColor} p-3 shadow-lg`}>
                     <module.icon className="h-12 w-12 text-white" />
                   </div>
 
@@ -149,7 +149,7 @@ export function HomePageClient() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="mt-4 inline-flex items-center gap-2 rounded-full border border-moss-300 bg-white px-3 py-1.5 text-xs font-semibold text-moss-800 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-200"
+                      className="mt-4 inline-flex items-center gap-2 rounded-sm border border-moss-300 bg-white px-3 py-1.5 text-xs font-semibold text-moss-800 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-200"
                     >
                       <span className="text-green-600 dark:text-green-400">↗</span>
                       {module.impact.metric}: {module.impact.value}
@@ -172,10 +172,10 @@ export function HomePageClient() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                  className="overflow-hidden rounded-4xl border-2 border-moss-300 bg-gradient-to-br from-white to-moss-50 p-8 shadow-2xl dark:border-moss-700 dark:from-moss-900 dark:to-moss-800"
+                  className="overflow-hidden rounded-sm border-2 border-moss-300 bg-gradient-to-br from-white to-moss-50 p-8 shadow-2xl dark:border-moss-700 dark:from-moss-900 dark:to-moss-800"
                 >
                   <div className="mb-6 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-moss-gradient text-2xl shadow-lg">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-sm bg-moss-gradient text-2xl shadow-lg">
                       📊
                     </div>
                     <div>
@@ -191,7 +191,7 @@ export function HomePageClient() {
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}
-                        className={`flex items-center gap-2 rounded-full bg-gradient-to-r ${module.color} ${module.darkColor} px-3 py-1.5 text-xs font-bold text-white shadow-lg`}
+                        className={`flex items-center gap-2 rounded-sm bg-gradient-to-r ${module.color} ${module.darkColor} px-3 py-1.5 text-xs font-bold text-white shadow-lg`}
                       >
                         <span>{module.name}</span>
                       </motion.div>
@@ -199,7 +199,7 @@ export function HomePageClient() {
                   </div>
 
                   <div className="space-y-4">
-                    <div className="rounded-2xl border border-moss-200 bg-white p-6 dark:border-moss-700 dark:bg-moss-900">
+                    <div className="rounded-sm border border-moss-200 bg-white p-6 dark:border-moss-700 dark:bg-moss-900">
                       <p className="text-xs font-semibold uppercase tracking-wider text-sage-600 dark:text-sage-300">Estimated Impact</p>
                       <motion.p
                         key={totalImpact}
@@ -212,7 +212,7 @@ export function HomePageClient() {
                       <p className="mt-1 text-xs text-sage-600 dark:text-sage-300">Efficiency Gain</p>
                     </div>
 
-                    <div className="rounded-2xl border border-moss-200 bg-white p-6 dark:border-moss-700 dark:bg-moss-900">
+                    <div className="rounded-sm border border-moss-200 bg-white p-6 dark:border-moss-700 dark:bg-moss-900">
                       <p className="text-xs font-semibold uppercase tracking-wider text-sage-600 dark:text-sage-300">Time to Launch</p>
                       <motion.p
                         key={estimatedWeeks}
@@ -225,7 +225,7 @@ export function HomePageClient() {
                       <p className="mt-1 text-xs text-sage-600 dark:text-sage-300">Estimated Delivery</p>
                     </div>
 
-                    <div className="rounded-2xl border border-moss-200 bg-white p-6 dark:border-moss-700 dark:bg-moss-900">
+                    <div className="rounded-sm border border-moss-200 bg-white p-6 dark:border-moss-700 dark:bg-moss-900">
                       <p className="text-xs font-semibold uppercase tracking-wider text-sage-600 dark:text-sage-300">Modules</p>
                       <motion.p
                         key={selected.length}
@@ -244,7 +244,7 @@ export function HomePageClient() {
                       href="/contact"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="flex w-full items-center justify-center gap-2 rounded-full bg-moss-gradient px-8 py-4 text-base font-semibold text-white shadow-glow transition-all duration-300"
+                      className="flex w-full items-center justify-center gap-2 rounded-sm bg-moss-gradient px-8 py-4 text-base font-semibold text-white shadow-glow transition-all duration-300"
                     >
                       Get Your Custom Proposal
                       <span>→</span>
@@ -257,9 +257,9 @@ export function HomePageClient() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className="overflow-hidden rounded-4xl border-2 border-dashed border-moss-300 bg-white p-8 text-center dark:border-moss-700 dark:bg-moss-900"
+                  className="overflow-hidden rounded-sm border-2 border-dashed border-moss-300 bg-white p-8 text-center dark:border-moss-700 dark:bg-moss-900"
                 >
-                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-moss-50 dark:bg-moss-800">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-sm bg-moss-50 dark:bg-moss-800">
                     <span className="text-3xl">👆</span>
                   </div>
                   <h3 className="text-xl font-bold text-moss-950 dark:text-moss-50">Build Your Stack</h3>

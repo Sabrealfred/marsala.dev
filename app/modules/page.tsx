@@ -10,25 +10,20 @@ export const metadata: Metadata = {
 
 export default function ModulesPage() {
   return (
-    <main className="min-h-screen bg-cream-50 dark:bg-moss-950">
-      <section className="relative overflow-hidden bg-gradient-to-br from-moss-50 via-sage-50 to-cream-50 py-24 lg:py-32 dark:from-moss-950 dark:via-moss-900 dark:to-moss-950">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-moss-300 blur-3xl dark:bg-moss-700" />
-          <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-sage-300 blur-3xl dark:bg-sage-700" />
-        </div>
-
+    <main className="min-h-screen bg-white dark:bg-navy-950">
+      <section className="relative overflow-hidden bg-white dark:bg-navy-950 py-24 lg:py-32">
         <div className="relative z-10 mx-auto w-full max-w-6xl px-6 md:px-10">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-moss-300 bg-white/80 px-4 py-2 shadow-sm backdrop-blur-sm dark:border-moss-700 dark:bg-moss-900/80">
-            <div className="h-2 w-2 rounded-full bg-moss-500" />
-            <span className="text-xs font-medium uppercase tracking-wider text-moss-700 dark:text-moss-300">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-sm border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-2">
+            <div className="h-2 w-2 rounded-sm bg-[#051c2c] dark:bg-slate-100" />
+            <span className="text-xs font-medium uppercase tracking-[0.2em] text-slate-600 dark:text-slate-400">
               10 Modular Services
             </span>
           </div>
 
-          <h1 className="text-4xl font-bold text-moss-950 sm:text-5xl dark:text-moss-50">
+          <h1 className="font-heading text-4xl font-bold tracking-tight text-[#051c2c] dark:text-slate-100 sm:text-5xl">
             Your modular growth stack
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-sage-700 dark:text-sage-300">
+          <p className="mt-4 max-w-2xl text-lg tracking-wide text-slate-600 dark:text-slate-300">
             Choose the modules you need to build your digital ecosystem and scale with operational intelligence
           </p>
         </div>
@@ -36,20 +31,20 @@ export default function ModulesPage() {
 
       <ModulesPageClient modules={modules} />
 
-      <section className="bg-moss-950 py-20">
+      <section className="bg-slate-50 dark:bg-slate-900 py-20">
         <div className="mx-auto max-w-4xl px-6 text-center">
-          <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-2xl bg-moss-700 shadow-xl">
+          <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-sm bg-[#051c2c] dark:bg-slate-100">
             <span className="text-4xl">💡</span>
           </div>
-          <h2 className="text-3xl font-bold text-white">
+          <h2 className="font-heading text-3xl font-bold tracking-tight text-[#051c2c] dark:text-slate-100">
             Need help choosing?
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-sage-300">
+          <p className="mx-auto mt-4 max-w-2xl text-lg tracking-wide text-slate-600 dark:text-slate-300">
             Schedule a call and we&rsquo;ll design the perfect modular rollout for your needs
           </p>
           <div className="mt-8">
             <MagneticButton href="/contact" strength={0.5}>
-              <span className="inline-flex items-center gap-2 rounded-full bg-moss-gradient px-8 py-4 text-base font-semibold text-white shadow-glow transition-all duration-300">
+              <span className="inline-flex items-center gap-2 rounded-sm bg-[#051c2c] dark:bg-slate-100 px-8 py-4 text-base font-semibold tracking-wide text-white dark:text-[#051c2c] shadow-sm transition-all duration-300 hover:bg-[#062433] dark:hover:bg-slate-200">
                 Get Started
                 <span>→</span>
               </span>

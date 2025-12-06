@@ -12,7 +12,7 @@ export default function CasesPage() {
     <main className="mx-auto w-full max-w-5xl px-6 pb-24 pt-24 md:px-10">
       <header className="space-y-4">
         <p className="text-xs uppercase tracking-[0.35em] text-foreground/60">Case Studies</p>
-        <h1 className="font-display text-4xl font-semibold text-foreground">Accelerated results</h1>
+        <h1 className="font-heading text-4xl font-semibold text-foreground">Accelerated results</h1>
         <p className="max-w-2xl text-base text-foreground-muted">
           Real cases distilled into decisions, metrics, and timelines.
         </p>

@@ -29,7 +29,7 @@ export default function SLAPage() {
       <h1 className="font-display text-4xl font-semibold text-foreground">Support SLA · SLA de soporte</h1>
       <div className="mt-8 grid gap-6">
         {tiers.map((tier) => (
-          <section key={tier.name} className="rounded-3xl border border-border bg-white/80 p-6 shadow-card">
+          <section key={tier.name} className="rounded-sm border border-border bg-white/80 p-6 shadow-card">
             <h2 className="text-base font-semibold text-foreground">{tier.name}</h2>
             <p className="mt-3 text-sm text-foreground">{tier.en}</p>
             <p className="mt-2 text-xs text-foreground-muted">{tier.es}</p>

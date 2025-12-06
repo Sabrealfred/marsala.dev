@@ -24,13 +24,34 @@ const contactReasons = [
   { id: "other", label: "Other Inquiry", icon: QuestionMarkCircleIcon, color: "from-orange-500 to-amber-600" },
 ];
 
+const servicesOptions = [
+  "Custom AI Development",
+  "System Integration",
+  "Technical Consulting",
+  "Training & Support",
+  "Managed Services",
+  "Other",
+];
+
+const budgetRanges = [
+  "Under $25k",
+  "$25k - $50k",
+  "$50k - $100k",
+  "$100k - $250k",
+  "$250k+",
+  "Not sure yet",
+];
+
 export default function ContactPage() {
   const [formState, setFormState] = useState({
     name: "",
     email: "",
     company: "",
+    phone: "",
     message: "",
     reason: "",
+    budget_range: "",
+    services_interested: [] as string[],
   });
   const [entryPoint, setEntryPoint] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -74,7 +95,8 @@ export default function ContactPage() {
 
   const handleBlur = (field: string) => {
     setTouched((prev) => ({ ...prev, [field]: true }));
-    const error = validateField(field, formState[field as keyof typeof formState]);
+    const value = formState[field as keyof typeof formState];
+    const error = validateField(field, typeof value === 'string' ? value : '');
     setErrors((prev) => ({ ...prev, [field]: error }));
   };
 
@@ -86,7 +108,8 @@ export default function ContactPage() {
     // Validate all fields
     const newErrors: Record<string, string> = {};
     Object.keys(formState).forEach((field) => {
-      const error = validateField(field, formState[field as keyof typeof formState]);
+      const value = formState[field as keyof typeof formState];
+      const error = validateField(field, typeof value === 'string' ? value : '');
       if (error) newErrors[field] = error;
     });
 
@@ -119,8 +142,11 @@ export default function ContactPage() {
           name: "",
           email: "",
           company: "",
+          phone: "",
           message: "",
           reason: "",
+          budget_range: "",
+          services_interested: [],
         });
         setTouched({});
         setErrors({});
@@ -141,7 +167,7 @@ export default function ContactPage() {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormState((prev) => ({
@@ -155,31 +181,35 @@ export default function ContactPage() {
     }
   };
 
+  const handleCheckboxChange = (service: string) => {
+    setFormState((prev) => ({
+      ...prev,
+      services_interested: prev.services_interested.includes(service)
+        ? prev.services_interested.filter((s) => s !== service)
+        : [...prev.services_interested, service],
+    }));
+  };
+
   const messageLength = formState.message.length;
   const maxMessageLength = 1000;
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-cream-50 via-white to-moss-50 dark:from-moss-950 dark:via-moss-900 dark:to-moss-950">
+    <main className="min-h-screen bg-white dark:bg-navy-950">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-moss-950 via-moss-900 to-moss-950 py-24 lg:py-32">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute left-1/4 top-0 h-96 w-96 rounded-full bg-moss-300 blur-3xl" />
-          <div className="absolute right-1/4 bottom-0 h-96 w-96 rounded-full bg-sage-300 blur-3xl" />
-        </div>
-
+      <section className="relative overflow-hidden bg-white dark:bg-navy-950 py-24 lg:py-32">
         <div className="relative z-10 mx-auto max-w-4xl px-6 text-center lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-sage-400">
+            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-600 dark:text-slate-400">
               Get in Touch
             </p>
-            <h1 className="mt-4 text-4xl font-bold tracking-tight text-white lg:text-6xl">
+            <h1 className="font-heading mt-4 text-4xl font-bold tracking-tight text-[#051c2c] dark:text-slate-100 lg:text-6xl">
               Build Your Marsala OS
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-sage-300">
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-300">
               Share context about your project, objectives, current stack, and timing
               so we can design the right modular rollout.
             </p>
@@ -196,14 +226,14 @@ export default function ContactPage() {
               href="https://cal.com/marsala/os"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-moss-gradient px-6 py-3 text-sm font-semibold text-white shadow-glow transition-all duration-300 hover:scale-105"
+              className="inline-flex items-center gap-2 rounded-sm bg-[#051c2c] dark:bg-slate-100 px-6 py-3 text-sm font-semibold text-white dark:text-[#051c2c] shadow-sm transition-all duration-300 hover:bg-[#062433] dark:hover:bg-slate-200"
             >
               <CalendarDaysIcon className="h-5 w-5" />
               Schedule a Call
             </a>
             <Link
               href="/waitlist"
-              className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-white/50 hover:bg-white/20"
+              className="inline-flex items-center gap-2 rounded-sm border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-950 px-6 py-3 text-sm font-semibold text-[#051c2c] dark:text-slate-100 transition-all duration-300 hover:border-[#051c2c] dark:hover:border-slate-100"
             >
               Join Waitlist
             </Link>
@@ -212,14 +242,14 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Reasons */}
-      <section className="py-12">
+      <section className="py-12 bg-slate-50 dark:bg-slate-900">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <h2 className="mb-6 text-center text-2xl font-bold text-moss-950 dark:text-moss-50">
+            <h2 className="font-heading mb-6 text-center text-2xl font-bold text-[#051c2c] dark:text-slate-100">
               What can we help you with?
             </h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -229,16 +259,16 @@ export default function ContactPage() {
                   onClick={() => setFormState((prev) => ({ ...prev, reason: reason.id }))}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`group relative overflow-hidden rounded-2xl border-2 p-6 text-left transition-all duration-300 ${
+                  className={`group relative overflow-hidden rounded-sm border-2 p-6 text-left transition-all duration-300 ${
                     formState.reason === reason.id
-                      ? "border-moss-500 bg-moss-50 shadow-lg dark:border-moss-600 dark:bg-moss-800"
-                      : "border-moss-200 bg-white hover:border-moss-400 hover:shadow-md dark:border-moss-700 dark:bg-moss-900 dark:hover:border-moss-500"
+                      ? "border-[#051c2c] dark:border-slate-100 bg-white dark:bg-navy-950 shadow-sm"
+                      : "border-slate-200 dark:border-slate-700 bg-white dark:bg-navy-950 hover:border-[#051c2c] dark:hover:border-slate-100 hover:shadow-sm"
                   }`}
                 >
-                  <div className={`mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${reason.color} text-2xl shadow-md`}>
-                    <reason.icon className="h-6 w-6 text-white" />
+                  <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-sm bg-[#051c2c] dark:bg-slate-100 text-2xl">
+                    <reason.icon className="h-6 w-6 text-white dark:text-[#051c2c]" />
                   </div>
-                  <h3 className="font-semibold text-moss-950 dark:text-moss-50">{reason.label}</h3>
+                  <h3 className="font-semibold text-[#051c2c] dark:text-slate-100">{reason.label}</h3>
                   {formState.reason === reason.id && (
                     <motion.div
                       layoutId="selected-reason"
@@ -246,7 +276,7 @@ export default function ContactPage() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                     >
-                      <CheckCircleIcon className="h-6 w-6 text-moss-600 dark:text-moss-400" />
+                      <CheckCircleIcon className="h-6 w-6 text-[#051c2c] dark:text-slate-100" />
                     </motion.div>
                   )}
                 </motion.button>
@@ -257,53 +287,53 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Form */}
-      <section className="pb-24">
+      <section className="pb-24 bg-white dark:bg-navy-950">
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="rounded-3xl border-2 border-moss-200 bg-white p-8 shadow-card lg:p-12 dark:border-moss-700 dark:bg-moss-900"
+            className="rounded-sm border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 shadow-sm lg:p-12"
           >
             <div className="mb-8 grid gap-6 lg:grid-cols-[1fr,1.5fr]">
               {/* Contact Info */}
               <div className="space-y-6">
                 <div>
-                  <h3 className="mb-4 text-lg font-bold text-moss-950 dark:text-moss-50">Direct Contact</h3>
-                  <div className="space-y-3 text-sm text-sage-700 dark:text-sage-300">
+                  <h3 className="mb-4 text-lg font-bold text-[#051c2c] dark:text-slate-100">Direct Contact</h3>
+                  <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
                     <a
                       href="mailto:sales@marsala.dev"
-                      className="flex items-center gap-3 rounded-xl border border-moss-200 bg-moss-50/50 p-3 transition-colors hover:border-moss-400 hover:bg-moss-50 dark:border-moss-700 dark:bg-moss-800/50 dark:hover:border-moss-500 dark:hover:bg-moss-800"
+                      className="flex items-center gap-3 rounded-sm border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-navy-950 p-3 transition-colors hover:border-[#051c2c] dark:hover:border-slate-100"
                     >
-                      <EnvelopeIcon className="h-5 w-5 text-moss-600 dark:text-moss-400" />
+                      <EnvelopeIcon className="h-5 w-5 text-[#051c2c] dark:text-slate-100" />
                       <span className="font-semibold">sales@marsala.dev</span>
                     </a>
-                    <div className="rounded-xl border border-moss-200 bg-gradient-to-br from-white to-moss-50/30 p-3 dark:border-moss-700 dark:from-moss-900 dark:to-moss-800/30">
+                    <div className="rounded-sm border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-3">
                       <div className="flex items-start gap-3">
-                        <MapPinIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-moss-600 dark:text-moss-400" />
+                        <MapPinIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#051c2c] dark:text-slate-100" />
                         <div className="text-xs">
-                          <p className="font-semibold text-moss-900 dark:text-moss-100">221 River St., 9th Floor</p>
-                          <p className="text-sage-600 dark:text-sage-300">Hoboken, NJ 07030, USA</p>
-                          <p className="mt-1 text-sage-600 dark:text-sage-300">NYC · London · Remote</p>
+                          <p className="font-semibold text-[#051c2c] dark:text-slate-100">221 River St., 9th Floor</p>
+                          <p className="text-slate-600 dark:text-slate-300">Hoboken, NJ 07030, USA</p>
+                          <p className="mt-1 text-slate-600 dark:text-slate-300">NYC · London · Remote</p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="rounded-xl bg-gradient-to-br from-moss-50 to-sage-50 p-4 dark:from-moss-800 dark:to-sage-800">
+                <div className="rounded-sm bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 p-4">
                   <div className="mb-2 flex items-center gap-2">
-                    <BoltIcon className="h-5 w-5 text-moss-700 dark:text-moss-200" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-moss-700 dark:text-moss-200">Quick Stats</span>
+                    <BoltIcon className="h-5 w-5 text-[#051c2c] dark:text-slate-100" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#051c2c] dark:text-slate-100">Quick Stats</span>
                   </div>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-sage-700 dark:text-sage-300">Avg. Response Time</span>
-                      <span className="font-bold text-moss-900 dark:text-moss-100">1.2 hrs</span>
+                      <span className="text-slate-600 dark:text-slate-300">Avg. Response Time</span>
+                      <span className="font-bold text-[#051c2c] dark:text-slate-100">1.2 hrs</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sage-700 dark:text-sage-300">Support Availability</span>
-                      <span className="font-bold text-moss-900 dark:text-moss-100">24/7</span>
+                      <span className="text-slate-600 dark:text-slate-300">Support Availability</span>
+                      <span className="font-bold text-[#051c2c] dark:text-slate-100">24/7</span>
                     </div>
                   </div>
                 </div>
@@ -313,7 +343,7 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Name */}
                 <div>
-                  <label htmlFor="name" className="mb-2 block text-xs font-bold uppercase tracking-wider text-moss-700 dark:text-moss-300">
+                  <label htmlFor="name" className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                     Name *
                   </label>
                   <input
@@ -324,10 +354,10 @@ export default function ContactPage() {
                     onChange={handleChange}
                     onBlur={() => handleBlur("name")}
                     required
-                    className={`w-full rounded-xl border-2 px-4 py-3 transition-all focus:outline-none focus:ring-2 focus:ring-moss-500/20 ${
+                    className={`w-full rounded-sm border-2 px-4 py-3 transition-all focus:outline-none focus:ring-2 text-[#051c2c] dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${
                       errors.name && touched.name
-                        ? "border-red-300 bg-red-50 dark:bg-red-900/20"
-                        : "border-moss-200 bg-white focus:border-moss-500 dark:border-moss-700 dark:bg-moss-900 dark:focus:border-moss-500"
+                        ? "border-red-400 bg-red-500/10 focus:ring-red-500/20"
+                        : "border-slate-200 dark:border-slate-700 bg-white dark:bg-navy-950 focus:border-[#051c2c] dark:focus:border-slate-100 focus:ring-[#051c2c]/20 dark:focus:ring-slate-100/20"
                     }`}
                     placeholder="Your name"
                   />
@@ -347,7 +377,7 @@ export default function ContactPage() {
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="mb-2 block text-xs font-bold uppercase tracking-wider text-moss-700 dark:text-moss-300">
+                  <label htmlFor="email" className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                     Email *
                   </label>
                   <input
@@ -358,10 +388,10 @@ export default function ContactPage() {
                     onChange={handleChange}
                     onBlur={() => handleBlur("email")}
                     required
-                    className={`w-full rounded-xl border-2 px-4 py-3 transition-all focus:outline-none focus:ring-2 focus:ring-moss-500/20 ${
+                    className={`w-full rounded-sm border-2 px-4 py-3 transition-all focus:outline-none focus:ring-2 text-[#051c2c] dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${
                       errors.email && touched.email
-                        ? "border-red-300 bg-red-50 dark:bg-red-900/20"
-                        : "border-moss-200 bg-white focus:border-moss-500 dark:border-moss-700 dark:bg-moss-900 dark:focus:border-moss-500"
+                        ? "border-red-400 bg-red-500/10 focus:ring-red-500/20"
+                        : "border-slate-200 dark:border-slate-700 bg-white dark:bg-navy-950 focus:border-[#051c2c] dark:focus:border-slate-100 focus:ring-[#051c2c]/20 dark:focus:ring-slate-100/20"
                     }`}
                     placeholder="you@company.com"
                   />
@@ -381,7 +411,7 @@ export default function ContactPage() {
 
                 {/* Company */}
                 <div>
-                  <label htmlFor="company" className="mb-2 block text-xs font-bold uppercase tracking-wider text-moss-700 dark:text-moss-300">
+                  <label htmlFor="company" className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                     Company
                   </label>
                   <input
@@ -390,18 +420,78 @@ export default function ContactPage() {
                     type="text"
                     value={formState.company}
                     onChange={handleChange}
-                    className="w-full rounded-xl border-2 border-moss-200 bg-white px-4 py-3 transition-all focus:border-moss-500 focus:outline-none focus:ring-2 focus:ring-moss-500/20 dark:border-moss-700 dark:bg-moss-900 dark:focus:border-moss-500"
+                    className="w-full rounded-sm border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-navy-950 px-4 py-3 transition-all focus:border-[#051c2c] dark:focus:border-slate-100 focus:outline-none focus:ring-2 focus:ring-[#051c2c]/20 dark:focus:ring-slate-100/20 text-[#051c2c] dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                     placeholder="Your company (optional)"
                   />
+                </div>
+
+                {/* Phone */}
+                <div>
+                  <label htmlFor="phone" className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                    Phone
+                  </label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formState.phone}
+                    onChange={handleChange}
+                    className="w-full rounded-sm border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-navy-950 px-4 py-3 transition-all focus:border-[#051c2c] dark:focus:border-slate-100 focus:outline-none focus:ring-2 focus:ring-[#051c2c]/20 dark:focus:ring-slate-100/20 text-[#051c2c] dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                    placeholder="+1 (555) 123-4567 (optional)"
+                  />
+                </div>
+
+                {/* Budget Range */}
+                <div>
+                  <label htmlFor="budget_range" className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                    Budget Range
+                  </label>
+                  <select
+                    id="budget_range"
+                    name="budget_range"
+                    value={formState.budget_range}
+                    onChange={handleChange}
+                    className="w-full rounded-sm border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-navy-950 px-4 py-3 transition-all focus:border-[#051c2c] dark:focus:border-slate-100 focus:outline-none focus:ring-2 focus:ring-[#051c2c]/20 dark:focus:ring-slate-100/20 text-[#051c2c] dark:text-slate-100"
+                  >
+                    <option value="">Select a budget range (optional)</option>
+                    {budgetRanges.map((range) => (
+                      <option key={range} value={range}>
+                        {range}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Services Interested */}
+                <div>
+                  <label className="mb-3 block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                    Services Interested
+                  </label>
+                  <div className="space-y-2">
+                    {servicesOptions.map((service) => (
+                      <label
+                        key={service}
+                        className="flex items-center gap-3 rounded-sm border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-navy-950 px-4 py-3 transition-all hover:border-[#051c2c] dark:hover:border-slate-100 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formState.services_interested.includes(service)}
+                          onChange={() => handleCheckboxChange(service)}
+                          className="h-4 w-4 rounded-sm border-2 border-slate-300 dark:border-slate-600 text-[#051c2c] focus:ring-2 focus:ring-[#051c2c]/20 dark:focus:ring-slate-100/20"
+                        />
+                        <span className="text-sm text-[#051c2c] dark:text-slate-100">{service}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Message */}
                 <div>
                   <div className="mb-2 flex items-center justify-between">
-                    <label htmlFor="message" className="text-xs font-bold uppercase tracking-wider text-moss-700 dark:text-moss-300">
+                    <label htmlFor="message" className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                       Message *
                     </label>
-                    <span className={`text-xs ${messageLength > maxMessageLength ? "text-red-600 dark:text-red-400" : "text-sage-500 dark:text-sage-400"}`}>
+                    <span className={`text-xs ${messageLength > maxMessageLength ? "text-red-400" : "text-slate-500 dark:text-slate-400"}`}>
                       {messageLength}/{maxMessageLength}
                     </span>
                   </div>
@@ -414,10 +504,10 @@ export default function ContactPage() {
                     onBlur={() => handleBlur("message")}
                     required
                     maxLength={maxMessageLength}
-                    className={`w-full rounded-xl border-2 px-4 py-3 transition-all focus:outline-none focus:ring-2 focus:ring-moss-500/20 ${
+                    className={`w-full rounded-sm border-2 px-4 py-3 transition-all focus:outline-none focus:ring-2 text-[#051c2c] dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${
                       errors.message && touched.message
-                        ? "border-red-300 bg-red-50 dark:bg-red-900/20"
-                        : "border-moss-200 bg-white focus:border-moss-500 dark:border-moss-700 dark:bg-moss-900 dark:focus:border-moss-500"
+                        ? "border-red-400 bg-red-500/10 focus:ring-red-500/20"
+                        : "border-slate-200 dark:border-slate-700 bg-white dark:bg-navy-950 focus:border-[#051c2c] dark:focus:border-slate-100 focus:ring-[#051c2c]/20 dark:focus:ring-slate-100/20"
                     }`}
                     placeholder="Tell us about your project, goals, and how we can help..."
                   />
@@ -442,10 +532,10 @@ export default function ContactPage() {
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      className={`rounded-xl border-2 p-4 ${
+                      className={`rounded-sm border-2 p-4 ${
                         submitStatus.type === "success"
-                          ? "border-green-200 bg-green-50 dark:border-green-700 dark:bg-green-900/20"
-                          : "border-red-200 bg-red-50 dark:border-red-700 dark:bg-red-900/20"
+                          ? "border-green-400/50 bg-green-500/10 dark:bg-green-500/20"
+                          : "border-red-400/50 bg-red-500/10 dark:bg-red-500/20"
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -463,16 +553,16 @@ export default function ContactPage() {
                 </AnimatePresence>
 
                 {/* Privacy Notice */}
-                <p className="text-xs text-sage-600 dark:text-sage-400">
+                <p className="text-xs text-slate-600 dark:text-slate-300">
                   We process your data to respond to you. We do not share it with third parties without consent.
-                  See our <Link href="/legal/privacy" className="font-semibold text-moss-700 hover:underline dark:text-moss-300">Privacy Policy</Link>.
+                  See our <Link href="/legal/privacy" className="font-semibold text-[#051c2c] dark:text-slate-100 hover:underline">Privacy Policy</Link>.
                 </p>
 
                 {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={isSubmitting || Object.keys(errors).some((key) => errors[key])}
-                  className="group relative w-full overflow-hidden rounded-full bg-moss-gradient px-8 py-4 text-base font-semibold text-white shadow-glow transition-all duration-300 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+                  className="group relative w-full overflow-hidden rounded-sm bg-[#051c2c] dark:bg-slate-100 px-8 py-4 text-base font-semibold text-white dark:text-[#051c2c] shadow-sm transition-all duration-300 hover:bg-[#062433] dark:hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     {isSubmitting ? (
@@ -490,7 +580,6 @@ export default function ContactPage() {
                       </>
                     )}
                   </span>
-                  <div className="absolute inset-0 -z-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </button>
               </form>
             </div>

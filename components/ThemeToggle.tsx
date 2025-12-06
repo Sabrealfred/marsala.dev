@@ -9,7 +9,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-moss-300 bg-white text-moss-700 transition-all duration-300 hover:border-moss-500 hover:shadow-lg dark:border-moss-600 dark:bg-moss-900 dark:text-moss-300"
+      className="relative flex h-10 w-10 items-center justify-center rounded-sm border-2 border-slate-300 bg-white text-[#051c2c] transition-all duration-300 hover:border-slate-400 hover:shadow-lg dark:border-slate-700 dark:bg-navy-950 dark:text-slate-100"
       aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
     >
       <motion.div

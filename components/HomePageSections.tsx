@@ -35,14 +35,14 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
 
   return (
     <>
-      {/* Blog Carousel */}
-      <section className="bg-gradient-to-b from-white via-cream-50 to-white py-12 lg:py-20 dark:from-moss-950 dark:via-moss-900 dark:to-moss-950">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8">
+      {/* Blog Carousel - Light Section */}
+      <section className="relative overflow-hidden bg-white dark:bg-navy-950 py-12 lg:py-20">
+        <div className="relative mx-auto max-w-6xl px-6 lg:px-8">
           <div className="mb-8 text-center">
-            <h2 className="text-4xl font-bold tracking-tight text-moss-950 lg:text-5xl dark:text-moss-50">
+            <h2 className="text-4xl font-bold tracking-tight lg:text-5xl text-[#051c2c] dark:text-white uppercase" style={{ letterSpacing: '0.05em' }}>
               {t("home.blog.title")}
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-sage-700 dark:text-sage-300">
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600 dark:text-slate-300 tracking-wide">
               {t("home.blog.subtitle")}
             </p>
           </div>
@@ -52,23 +52,23 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
           <div className="mt-8 text-center">
             <Link
               href="/research"
-              className="inline-flex items-center gap-2 text-base font-semibold text-moss-700 transition-colors hover:text-moss-900 dark:text-moss-300 dark:hover:text-moss-50"
+              className="group inline-flex items-center gap-2 text-base font-semibold text-[#051c2c] dark:text-white transition-all duration-300 hover:text-slate-600 dark:hover:text-slate-300 tracking-wide uppercase" style={{ letterSpacing: '0.08em' }}
             >
               {t("home.blog.viewAll")} ({blogPosts.length})
-              <span>→</span>
+              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Tutoriales Section */}
-      <section className="bg-gradient-to-b from-white via-moss-50 to-white py-16 lg:py-24 dark:from-moss-950 dark:via-moss-900 dark:to-moss-950">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      {/* Tutoriales Section - Dark Navy */}
+      <section className="relative overflow-hidden bg-slate-50 dark:bg-navy-950 py-16 lg:py-24">
+        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mb-12 text-center">
-            <h2 className="text-4xl font-bold tracking-tight text-moss-950 lg:text-5xl dark:text-moss-50">
+            <h2 className="text-4xl font-bold tracking-tight lg:text-5xl text-[#051c2c] dark:text-white uppercase" style={{ letterSpacing: '0.05em' }}>
               {t("home.tutorials.title")}
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-sage-700 dark:text-sage-300">
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600 dark:text-slate-300 tracking-wide">
               {t("home.tutorials.subtitle")}
             </p>
           </div>
@@ -79,8 +79,6 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
                 icon: RocketLaunchIcon,
                 title: "Quick Start Guide",
                 description: "Launch your first module in under 30 minutes",
-                color: "from-blue-500 to-indigo-600",
-                darkColor: "dark:from-blue-800 dark:to-indigo-900",
                 time: "15 min read",
                 href: "/modules",
               },
@@ -88,8 +86,6 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
                 icon: WrenchScrewdriverIcon,
                 title: "Integration Patterns",
                 description: "Connect modules seamlessly with proven workflows",
-                color: "from-purple-500 to-fuchsia-600",
-                darkColor: "dark:from-purple-800 dark:to-fuchsia-900",
                 time: "20 min read",
                 href: "/research",
               },
@@ -97,8 +93,6 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
                 icon: ChartPieIcon,
                 title: "Growth Automation",
                 description: "Scale intelligently with AI-powered systems",
-                color: "from-green-500 to-emerald-600",
-                darkColor: "dark:from-green-800 dark:to-emerald-900",
                 time: "25 min read",
                 href: "/lab",
               },
@@ -106,18 +100,18 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
               <Link
                 key={index}
                 href={tutorial.href}
-                className="group relative overflow-hidden rounded-3xl border-2 border-moss-200 bg-white p-8 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl hover:-translate-y-2 dark:border-moss-700 dark:bg-moss-900 dark:hover:border-moss-500"
+                className="group relative overflow-hidden rounded-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 transition-all duration-300 hover:border-[#051c2c] dark:hover:border-white hover:shadow-lg hover:-translate-y-1"
               >
-                <div className={`mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${tutorial.color} ${tutorial.darkColor} text-3xl shadow-lg`}>
-                  <tutorial.icon className="h-8 w-8 text-white" />
+                <div className="relative mb-6 inline-flex h-16 w-16 items-center justify-center rounded-sm bg-[#051c2c] dark:bg-white">
+                  <tutorial.icon className="h-8 w-8 text-white dark:text-[#051c2c]" />
                 </div>
-                <h3 className="text-2xl font-bold text-moss-950 transition-colors duration-300 group-hover:text-moss-700 dark:text-moss-50 dark:group-hover:text-moss-200">
+                <h3 className="relative text-2xl font-bold text-[#051c2c] dark:text-white uppercase tracking-wide" style={{ letterSpacing: '0.03em' }}>
                   {tutorial.title}
                 </h3>
-                <p className="mt-3 text-sm leading-relaxed text-sage-700 dark:text-sage-300">
+                <p className="relative mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300 tracking-wide">
                   {tutorial.description}
                 </p>
-                <div className="mt-6 flex items-center gap-3 text-xs font-semibold text-sage-600 dark:text-sage-400">
+                <div className="relative mt-6 flex items-center gap-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   <span className="flex items-center gap-1">
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -132,53 +126,53 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
         </div>
       </section>
 
-      {/* Comparativas Section */}
-      <section className="bg-moss-950 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      {/* Comparativas Section - Light Section */}
+      <section className="relative overflow-hidden bg-white dark:bg-navy-950 py-16 lg:py-24">
+        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mb-12 text-center">
-            <h2 className="text-4xl font-bold tracking-tight text-white lg:text-5xl dark:text-moss-50">
+            <h2 className="text-4xl font-bold tracking-tight lg:text-5xl text-[#051c2c] dark:text-white uppercase" style={{ letterSpacing: '0.05em' }}>
               {t("home.comparison.title")}
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-sage-300 dark:text-sage-400">
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600 dark:text-slate-300 tracking-wide">
               {t("home.comparison.subtitle")}
             </p>
           </div>
 
           <div className="grid gap-6 lg:grid-cols-3">
-            <div className="rounded-3xl border-2 border-moss-700 bg-moss-900/50 p-8 backdrop-blur-sm dark:border-moss-600 dark:bg-moss-900">
-              <h3 className="mb-6 text-xl font-bold text-moss-300 dark:text-moss-100">{t("home.comparison.agencies")}</h3>
+            <div className="rounded-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+              <h3 className="mb-6 text-xl font-bold text-[#051c2c] dark:text-white uppercase tracking-wide" style={{ letterSpacing: '0.05em' }}>{t("home.comparison.agencies")}</h3>
               <ul className="space-y-3">
                 {["Fixed packages", "Long contracts", "Vendor lock-in", "One-size-fits-all"].map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-sage-400 dark:text-sage-300">
-                    <XMarkIcon className="h-6 w-6 text-red-400" />
+                  <li key={item} className="flex items-start gap-3 text-slate-600 dark:text-slate-300 tracking-wide">
+                    <XMarkIcon className="h-6 w-6 text-red-500 flex-shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="rounded-3xl border-2 border-moss-400 bg-gradient-to-br from-moss-600 to-moss-700 p-8 shadow-2xl lg:scale-110 dark:border-moss-500 dark:from-moss-700 dark:to-moss-800">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-white">
-                <span className="h-2 w-2 rounded-full bg-white" />
+            <div className="relative rounded-sm border-2 border-[#051c2c] dark:border-white bg-[#051c2c] dark:bg-white p-8 shadow-2xl lg:scale-105 transition-all duration-300 hover:scale-110">
+              <div className="relative mb-4 inline-flex items-center gap-2 rounded-sm bg-white/20 dark:bg-[#051c2c]/20 backdrop-blur-sm px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-white dark:text-[#051c2c] border border-white/30 dark:border-[#051c2c]/30">
+                <span className="h-2 w-2 rounded-sm bg-white dark:bg-[#051c2c] animate-pulse" />
                 Marsala OS
               </div>
-              <h3 className="mb-6 text-xl font-bold text-white dark:text-moss-50">{t("home.comparison.marsala")}</h3>
-              <ul className="space-y-3">
+              <h3 className="relative mb-6 text-xl font-bold text-white dark:text-[#051c2c] uppercase tracking-wide" style={{ letterSpacing: '0.05em' }}>{t("home.comparison.marsala")}</h3>
+              <ul className="relative space-y-3">
                 {["Pay-as-you-grow", "No long-term contracts", "Full ownership", "Customized for you"].map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-white dark:text-moss-100">
-                    <CheckIcon className="h-6 w-6 text-green-300" />
-                    <span className="font-semibold">{item}</span>
+                  <li key={item} className="flex items-start gap-3 text-white dark:text-[#051c2c]">
+                    <CheckIcon className="h-6 w-6 text-white dark:text-[#051c2c] flex-shrink-0" />
+                    <span className="font-semibold tracking-wide">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="rounded-3xl border-2 border-moss-700 bg-moss-900/50 p-8 backdrop-blur-sm dark:border-moss-600 dark:bg-moss-900">
-              <h3 className="mb-6 text-xl font-bold text-moss-300 dark:text-moss-100">{t("home.comparison.inhouse")}</h3>
+            <div className="rounded-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+              <h3 className="mb-6 text-xl font-bold text-[#051c2c] dark:text-white uppercase tracking-wide" style={{ letterSpacing: '0.05em' }}>{t("home.comparison.inhouse")}</h3>
               <ul className="space-y-3">
                 {["High overhead", "Slow hiring", "Limited expertise", "Hard to scale"].map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-sage-400 dark:text-sage-300">
-                    <XMarkIcon className="h-6 w-6 text-red-400" />
+                  <li key={item} className="flex items-start gap-3 text-slate-600 dark:text-slate-300 tracking-wide">
+                    <XMarkIcon className="h-6 w-6 text-red-500 flex-shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -188,74 +182,74 @@ export function HomePageSections({ blogPosts }: HomePageSectionsProps) {
         </div>
       </section>
 
-      {/* Highlights Section */}
-      <section className="bg-gradient-to-b from-cream-50 via-white to-moss-50 py-16 lg:py-24 dark:from-moss-950 dark:via-moss-900 dark:to-moss-950">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      {/* Highlights Section - Dark Navy */}
+      <section className="relative overflow-hidden bg-slate-50 dark:bg-navy-950 py-16 lg:py-24">
+        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mb-16 text-center">
-            <h2 className="text-4xl font-bold tracking-tight text-moss-950 lg:text-5xl dark:text-moss-50">
+            <h2 className="text-4xl font-bold tracking-tight lg:text-5xl text-[#051c2c] dark:text-white uppercase" style={{ letterSpacing: '0.05em' }}>
               {t("home.highlights.title")}
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-sage-700 dark:text-sage-300">
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600 dark:text-slate-300 tracking-wide">
               {t("home.highlights.subtitle")}
             </p>
           </div>
 
           <div className="grid gap-8 lg:grid-cols-2">
-            <Link href="/modules" className="group relative overflow-hidden rounded-4xl border-2 border-moss-300 bg-white p-10 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl hover:-translate-y-1 dark:border-moss-700 dark:bg-moss-900 dark:hover:border-moss-500">
-              <div className="absolute right-8 top-8 text-6xl opacity-10 transition-opacity duration-500 group-hover:opacity-20">
-                <ShieldCheckIcon className="h-16 w-16" />
+            <Link href="/modules" className="group relative overflow-hidden rounded-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-10 transition-all duration-300 hover:border-[#051c2c] dark:hover:border-white hover:shadow-lg hover:-translate-y-1">
+              <div className="absolute right-8 top-8 text-6xl opacity-5">
+                <ShieldCheckIcon className="h-16 w-16 text-[#051c2c] dark:text-white" />
               </div>
-              <h3 className="mb-4 text-3xl font-bold text-moss-950 dark:text-moss-50">Data-Driven Decisions</h3>
-              <p className="text-lg leading-relaxed text-sage-700 dark:text-sage-300">
+              <h3 className="relative mb-4 text-3xl font-bold text-[#051c2c] dark:text-white uppercase tracking-wide" style={{ letterSpacing: '0.03em' }}>Data-Driven Decisions</h3>
+              <p className="relative text-lg leading-relaxed text-slate-600 dark:text-slate-300 tracking-wide">
                 Every module integrates with your analytics stack, giving you real-time insights
                 into what&apos;s working and what needs optimization.
               </p>
-              <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-moss-700 dark:text-moss-300">
+              <div className="relative mt-6 flex items-center gap-2 text-sm font-semibold text-[#051c2c] dark:text-white uppercase tracking-wider">
                 <span>Explore Analytics Module</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </div>
             </Link>
 
-            <Link href="/legal/sla" className="group relative overflow-hidden rounded-4xl border-2 border-moss-300 bg-white p-10 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl hover:-translate-y-1 dark:border-moss-700 dark:bg-moss-900 dark:hover:border-moss-500">
-              <div className="absolute right-8 top-8 text-6xl opacity-10 transition-opacity duration-500 group-hover:opacity-20">
-                <LockClosedIcon className="h-16 w-16" />
+            <Link href="/legal/sla" className="group relative overflow-hidden rounded-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-10 transition-all duration-300 hover:border-[#051c2c] dark:hover:border-white hover:shadow-lg hover:-translate-y-1">
+              <div className="absolute right-8 top-8 text-6xl opacity-5">
+                <LockClosedIcon className="h-16 w-16 text-[#051c2c] dark:text-white" />
               </div>
-              <h3 className="mb-4 text-3xl font-bold text-moss-950 dark:text-moss-50">Enterprise Security</h3>
-              <p className="text-lg leading-relaxed text-sage-700 dark:text-sage-300">
+              <h3 className="relative mb-4 text-3xl font-bold text-[#051c2c] dark:text-white uppercase tracking-wide" style={{ letterSpacing: '0.03em' }}>Enterprise Security</h3>
+              <p className="relative text-lg leading-relaxed text-slate-600 dark:text-slate-300 tracking-wide">
                 SOC 2 Type II certified infrastructure with end-to-end encryption, audit logs,
                 and compliance-ready documentation out of the box.
               </p>
-              <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-moss-700 dark:text-moss-300">
+              <div className="relative mt-6 flex items-center gap-2 text-sm font-semibold text-[#051c2c] dark:text-white uppercase tracking-wider">
                 <span>View Security Details</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </div>
             </Link>
 
-            <Link href="/lab" className="group relative overflow-hidden rounded-4xl border-2 border-moss-300 bg-white p-10 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl hover:-translate-y-1 dark:border-moss-700 dark:bg-moss-900 dark:hover:border-moss-500">
-              <div className="absolute right-8 top-8 text-6xl opacity-10 transition-opacity duration-500 group-hover:opacity-20">
-                <BoltIcon className="h-16 w-16" />
+            <Link href="/lab" className="group relative overflow-hidden rounded-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-10 transition-all duration-300 hover:border-[#051c2c] dark:hover:border-white hover:shadow-lg hover:-translate-y-1">
+              <div className="absolute right-8 top-8 text-6xl opacity-5">
+                <BoltIcon className="h-16 w-16 text-[#051c2c] dark:text-white" />
               </div>
-              <h3 className="mb-4 text-3xl font-bold text-moss-950 dark:text-moss-50">Lightning Fast</h3>
-              <p className="text-lg leading-relaxed text-sage-700 dark:text-sage-300">
+              <h3 className="relative mb-4 text-3xl font-bold text-[#051c2c] dark:text-white uppercase tracking-wide" style={{ letterSpacing: '0.03em' }}>Lightning Fast</h3>
+              <p className="relative text-lg leading-relaxed text-slate-600 dark:text-slate-300 tracking-wide">
                 Built on Next.js 14 with edge deployment, achieving sub-100ms response times
                 globally and perfect Lighthouse scores.
               </p>
-              <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-moss-700 dark:text-moss-300">
+              <div className="relative mt-6 flex items-center gap-2 text-sm font-semibold text-[#051c2c] dark:text-white uppercase tracking-wider">
                 <span>See Performance Metrics</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </div>
             </Link>
 
-            <Link href="/contact" className="group relative overflow-hidden rounded-4xl border-2 border-moss-300 bg-white p-10 transition-all duration-500 hover:border-moss-500 hover:shadow-2xl hover:-translate-y-1 dark:border-moss-700 dark:bg-moss-900 dark:hover:border-moss-500">
-              <div className="absolute right-8 top-8 text-6xl opacity-10 transition-opacity duration-500 group-hover:opacity-20">
-                <HandThumbUpIcon className="h-16 w-16" />
+            <Link href="/contact" className="group relative overflow-hidden rounded-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-10 transition-all duration-300 hover:border-[#051c2c] dark:hover:border-white hover:shadow-lg hover:-translate-y-1">
+              <div className="absolute right-8 top-8 text-6xl opacity-5">
+                <HandThumbUpIcon className="h-16 w-16 text-[#051c2c] dark:text-white" />
               </div>
-              <h3 className="mb-4 text-3xl font-bold text-moss-950 dark:text-moss-50">White-Glove Support</h3>
-              <p className="text-lg leading-relaxed text-sage-700 dark:text-sage-300">
+              <h3 className="relative mb-4 text-3xl font-bold text-[#051c2c] dark:text-white uppercase tracking-wide" style={{ letterSpacing: '0.03em' }}>White-Glove Support</h3>
+              <p className="relative text-lg leading-relaxed text-slate-600 dark:text-slate-300 tracking-wide">
                 Dedicated growth engineer, weekly strategy calls, and 24/7 technical support
                 to ensure your success every step of the way.
               </p>
-              <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-moss-700 dark:text-moss-300">
+              <div className="relative mt-6 flex items-center gap-2 text-sm font-semibold text-[#051c2c] dark:text-white uppercase tracking-wider">
                 <span>Talk to Our Team</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </div>

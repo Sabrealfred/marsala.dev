@@ -37,7 +37,7 @@ export default function TermsPage() {
       </p>
       <div className="mt-8 space-y-6">
         {sections.map((section) => (
-          <section key={section.title} className="rounded-3xl border border-border bg-white/80 p-6 shadow-card">
+          <section key={section.title} className="rounded-sm border border-border bg-white/80 p-6 shadow-card">
             <h2 className="text-base font-semibold text-foreground">{section.title}</h2>
             <p className="mt-3 text-sm text-foreground">{section.en}</p>
             <p className="mt-2 text-xs text-foreground-muted">{section.es}</p>

@@ -74,10 +74,10 @@ export function InfiniteModulesSlider() {
         {duplicatedModules.map((module, idx) => (
           <div
             key={`top-${idx}`}
-            className="flex items-center gap-3 rounded-2xl border border-moss-700/30 bg-moss-900/20 px-6 py-3 backdrop-blur-sm"
+            className="flex items-center gap-3 rounded-sm border border-moss-700/30 bg-moss-900/20 px-6 py-3 backdrop-blur-sm"
             style={{ minWidth: "200px" }}
           >
-            <div className={`flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ${module.gradient}`}>
+            <div className={`flex h-10 w-10 items-center justify-center rounded-sm bg-gradient-to-br ${module.gradient}`}>
               <module.icon className="h-5 w-5 text-white" stroke={1.5} />
             </div>
             <span className="text-sm font-medium text-moss-100">{t(module.titleKey)}</span>
@@ -103,10 +103,10 @@ export function InfiniteModulesSlider() {
         {duplicatedModules.map((module, idx) => (
           <div
             key={`middle-${idx}`}
-            className="flex items-center gap-3 rounded-2xl border border-moss-700/30 bg-moss-900/20 px-6 py-3 backdrop-blur-sm"
+            className="flex items-center gap-3 rounded-sm border border-moss-700/30 bg-moss-900/20 px-6 py-3 backdrop-blur-sm"
             style={{ minWidth: "200px" }}
           >
-            <div className={`flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ${module.gradient}`}>
+            <div className={`flex h-10 w-10 items-center justify-center rounded-sm bg-gradient-to-br ${module.gradient}`}>
               <module.icon className="h-5 w-5 text-white" stroke={1.5} />
             </div>
             <span className="text-sm font-medium text-moss-100">{t(module.titleKey)}</span>
@@ -132,10 +132,10 @@ export function InfiniteModulesSlider() {
         {duplicatedModules.map((module, idx) => (
           <div
             key={`bottom-${idx}`}
-            className="flex items-center gap-3 rounded-2xl border border-moss-700/30 bg-moss-900/20 px-6 py-3 backdrop-blur-sm"
+            className="flex items-center gap-3 rounded-sm border border-moss-700/30 bg-moss-900/20 px-6 py-3 backdrop-blur-sm"
             style={{ minWidth: "200px" }}
           >
-            <div className={`flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ${module.gradient}`}>
+            <div className={`flex h-10 w-10 items-center justify-center rounded-sm bg-gradient-to-br ${module.gradient}`}>
               <module.icon className="h-5 w-5 text-white" stroke={1.5} />
             </div>
             <span className="text-sm font-medium text-moss-100">{t(module.titleKey)}</span>

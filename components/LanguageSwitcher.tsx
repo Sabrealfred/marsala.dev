@@ -31,7 +31,7 @@ export function LanguageSwitcher() {
     <div ref={dropdownRef} className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-moss-300 bg-white text-lg transition-all duration-300 hover:border-moss-500 hover:shadow-lg dark:border-moss-600 dark:bg-moss-900"
+        className="flex h-10 w-10 items-center justify-center rounded-sm border-2 border-slate-300 bg-white text-lg transition-all duration-300 hover:border-slate-400 hover:shadow-lg dark:border-slate-700 dark:bg-navy-950"
         aria-label="Change language"
       >
         {localeFlags[locale]}
@@ -44,9 +44,9 @@ export function LanguageSwitcher() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 top-12 z-50 w-48 overflow-hidden rounded-2xl border-2 border-moss-300 bg-white shadow-2xl dark:border-moss-600 dark:bg-moss-900"
+            className="absolute right-0 top-12 z-50 w-48 overflow-hidden rounded-sm border-2 border-slate-300 bg-white shadow-2xl dark:border-slate-700 dark:bg-navy-950"
           >
-            <div className="bg-moss-gradient p-3">
+            <div className="bg-gradient-to-r from-[#051c2c] to-[#0a2d42] p-3">
               <p className="text-xs font-bold uppercase tracking-wider text-white">
                 Select Language
               </p>
@@ -57,10 +57,10 @@ export function LanguageSwitcher() {
                 <button
                   key={loc}
                   onClick={() => handleLocaleChange(loc)}
-                  className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition-all duration-200 ${
+                  className={`flex w-full items-center gap-3 rounded-sm px-4 py-3 text-left transition-all duration-200 ${
                     locale === loc
-                      ? "bg-moss-gradient text-white shadow-lg"
-                      : "text-moss-900 hover:bg-moss-50 dark:text-moss-100 dark:hover:bg-moss-800"
+                      ? "bg-gradient-to-r from-[#051c2c] to-[#0a2d42] text-white shadow-lg"
+                      : "text-[#051c2c] hover:bg-slate-50 dark:text-slate-100 dark:hover:bg-slate-800"
                   }`}
                 >
                   <span className="text-xl">{localeFlags[loc]}</span>

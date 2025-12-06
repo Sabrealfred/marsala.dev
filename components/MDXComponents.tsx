@@ -58,7 +58,7 @@ export const mdxComponents: MDXRemoteProps["components"] = {
       return (
         <code
           {...props}
-          className="rounded-md bg-moss-900/90 px-2 py-1 text-sm text-white"
+          className="rounded-sm bg-moss-900/90 px-2 py-1 text-sm text-white"
         />
       );
     }
@@ -73,7 +73,7 @@ export const mdxComponents: MDXRemoteProps["components"] = {
   pre: ({ children, ...props }) => (
     <pre
       {...props}
-      className="mt-6 overflow-x-auto rounded-2xl bg-moss-950/95 p-6 text-sm text-white shadow-inner"
+      className="mt-6 overflow-x-auto rounded-sm bg-moss-950/95 p-6 text-sm text-white shadow-inner"
     >
       {children}
     </pre>
@@ -97,7 +97,7 @@ export const mdxComponents: MDXRemoteProps["components"] = {
     />
   ),
   table: (props) => (
-    <div className="my-8 overflow-x-auto rounded-2xl border border-moss-100">
+    <div className="my-8 overflow-x-auto rounded-sm border border-moss-100">
       <table
         {...props}
         className="w-full text-left text-sm text-sage-800"

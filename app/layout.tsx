@@ -1,35 +1,28 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
+import { Inter, Roboto_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { LanguageProvider } from "@/components/LanguageProvider";
 
-// Space Grotesk for headings/display
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+// McKinsey-style serif for headings (elegant, authoritative)
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-playfair",
   display: "swap",
 });
 
-// Inter for body text
 const inter = Inter({
-  variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-inter",
   display: "swap",
 });
 
-// IBM Plex Mono for code
-const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-ibm-plex-mono",
+const robotoMono = Roboto_Mono({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  variable: "--font-roboto-mono",
   display: "swap",
-  fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
-  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -74,8 +67,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} min-h-screen bg-white font-sans antialiased dark:bg-moss-950`}>
+    <html lang="en" className={`${playfair.variable} ${inter.variable} ${robotoMono.variable}`}>
+      <body className="min-h-screen bg-white font-sans antialiased dark:bg-navy-950">
         <ThemeProvider>
           <LanguageProvider>
             <Navbar />

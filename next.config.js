@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  optimizeFonts: false,
   // Optimize for production
   swcMinify: true,
   compress: true,

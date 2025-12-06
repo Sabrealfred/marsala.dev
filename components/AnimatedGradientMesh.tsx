@@ -28,7 +28,7 @@ export function AnimatedGradientMesh() {
     <div ref={meshRef} className="absolute inset-0 overflow-hidden opacity-50">
       {/* Animated gradient blobs with autonomous motion */}
       <motion.div
-        className="absolute h-[700px] w-[700px] rounded-full bg-gradient-to-br from-moss-400 via-moss-300 to-transparent blur-3xl dark:from-moss-700 dark:via-moss-600 dark:to-transparent"
+        className="absolute h-[700px] w-[700px] rounded-sm bg-gradient-to-br from-moss-400 via-moss-300 to-transparent blur-3xl dark:from-moss-700 dark:via-moss-600 dark:to-transparent"
         style={{
           left: "15%",
           top: "15%",
@@ -49,7 +49,7 @@ export function AnimatedGradientMesh() {
       />
 
       <motion.div
-        className="absolute h-[550px] w-[550px] rounded-full bg-gradient-to-br from-sage-400 via-sage-300 to-transparent blur-3xl dark:from-sage-700 dark:via-sage-600 dark:to-transparent"
+        className="absolute h-[550px] w-[550px] rounded-sm bg-gradient-to-br from-sage-400 via-sage-300 to-transparent blur-3xl dark:from-sage-700 dark:via-sage-600 dark:to-transparent"
         style={{
           right: "15%",
           top: "35%",
@@ -71,7 +71,7 @@ export function AnimatedGradientMesh() {
       />
 
       <motion.div
-        className="absolute h-[500px] w-[500px] rounded-full bg-gradient-to-br from-moss-500 via-moss-200 to-transparent blur-3xl dark:from-moss-800 dark:via-moss-500 dark:to-transparent"
+        className="absolute h-[500px] w-[500px] rounded-sm bg-gradient-to-br from-moss-500 via-moss-200 to-transparent blur-3xl dark:from-moss-800 dark:via-moss-500 dark:to-transparent"
         style={{
           left: "45%",
           bottom: "15%",

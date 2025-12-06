@@ -124,25 +124,25 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
   return (
     <>
       {/* Search and Filters */}
-      <section className="sticky top-0 z-20 bg-gradient-to-b from-white to-white/95 backdrop-blur-xl border-b-2 border-moss-200/50 py-6 shadow-sm dark:from-moss-950 dark:to-moss-950/95 dark:border-moss-800">
+      <section className="sticky top-0 z-20 bg-slate-50 dark:bg-slate-900 backdrop-blur-xl border-b border-slate-200 dark:border-slate-700 py-6 shadow-lg">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           {/* Search Bar */}
           <div className="mb-6">
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                <MagnifyingGlassIcon className="h-5 w-5 text-moss-600 dark:text-moss-400" />
+                <MagnifyingGlassIcon className="h-5 w-5 text-[#051c2c] dark:text-slate-400" />
               </div>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search articles by title, content, or tags..."
-                className="w-full rounded-2xl border-2 border-moss-200 bg-white py-3 pl-12 pr-4 text-sm text-moss-950 placeholder-sage-500 transition-all focus:border-moss-500 focus:outline-none focus:ring-2 focus:ring-moss-500/20 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-50 dark:placeholder-sage-400 dark:focus:border-moss-500"
+                className="w-full rounded-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-950 py-3 pl-12 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 transition-all focus:border-[#051c2c] dark:focus:border-slate-100 focus:outline-none focus:ring-2 focus:ring-[#051c2c]/20 dark:focus:ring-slate-100/20"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute inset-y-0 right-0 flex items-center pr-4 text-sage-500 hover:text-moss-700 dark:text-sage-400 dark:hover:text-moss-200"
+                  className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500 dark:text-slate-400 hover:text-[#051c2c] dark:hover:text-slate-100 transition-colors"
                 >
                   <XMarkIcon className="h-5 w-5" />
                 </button>
@@ -152,22 +152,26 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
 
           {/* Category Filter Label */}
           <div className="mb-4 flex items-center gap-2">
-            <FunnelIcon className="h-5 w-5 text-moss-600 dark:text-moss-400" />
-            <span className="text-sm font-bold uppercase tracking-widest text-moss-700 dark:text-moss-300">Filter by Category</span>
+            <FunnelIcon className="h-5 w-5 text-[#051c2c] dark:text-slate-100" />
+            <span className="text-sm font-bold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">Filter by Category</span>
           </div>
 
           {/* Category Buttons */}
           <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
             <button
               onClick={() => setSelectedCategory(null)}
-              className={`group flex-shrink-0 rounded-2xl px-6 py-3 text-sm font-bold transition-all duration-300 ${
+              className={`group flex-shrink-0 rounded-sm px-6 py-3 text-sm font-bold transition-all duration-300 ${
                 selectedCategory === null
-                  ? "bg-moss-gradient text-white shadow-xl scale-105 dark:bg-moss-gradient-dark"
-                  : "border-2 border-moss-200 bg-white text-moss-700 hover:border-moss-500 hover:shadow-lg hover:scale-105 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-300 dark:hover:border-moss-500"
+                  ? "bg-[#051c2c] dark:bg-slate-100 text-white dark:text-[#051c2c] shadow-lg scale-105"
+                  : "border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-950 text-slate-600 dark:text-slate-300 hover:border-[#051c2c] dark:hover:border-slate-100 hover:shadow-lg hover:scale-105"
               }`}
             >
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/20 text-lg">
+                <div className={`flex h-8 w-8 items-center justify-center rounded-sm text-lg ${
+                  selectedCategory === null
+                    ? "bg-white/20 dark:bg-[#051c2c]/20"
+                    : "bg-slate-100 dark:bg-slate-800"
+                }`}>
                   <BookOpenIcon className="h-5 w-5" />
                 </div>
                 <div className="flex flex-col items-start">
@@ -188,15 +192,17 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`group flex-shrink-0 rounded-2xl px-6 py-3 text-sm font-bold transition-all duration-300 ${
+                  className={`group flex-shrink-0 rounded-sm px-6 py-3 text-sm font-bold transition-all duration-300 ${
                     isActive
-                      ? "bg-moss-gradient text-white shadow-xl scale-105 dark:bg-moss-gradient-dark"
-                      : "border-2 border-moss-200 bg-white text-moss-700 hover:border-moss-500 hover:shadow-lg hover:scale-105 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-300 dark:hover:border-moss-500"
+                      ? "bg-[#051c2c] dark:bg-slate-100 text-white dark:text-[#051c2c] shadow-lg scale-105"
+                      : "border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-950 text-slate-600 dark:text-slate-300 hover:border-[#051c2c] dark:hover:border-slate-100 hover:shadow-lg hover:scale-105"
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className={`flex h-8 w-8 items-center justify-center rounded-xl text-lg transition-all ${
-                      isActive ? "bg-white/20" : "bg-moss-50 group-hover:bg-moss-100 dark:bg-moss-800 dark:group-hover:bg-moss-700"
+                    <div className={`flex h-8 w-8 items-center justify-center rounded-sm text-lg transition-all ${
+                      isActive
+                        ? "bg-white/20 dark:bg-[#051c2c]/20"
+                        : "bg-slate-100 dark:bg-slate-800 group-hover:bg-slate-200 dark:group-hover:bg-slate-700"
                     }`}>
                       <CategoryIcon className="h-5 w-5" />
                     </div>
@@ -217,16 +223,16 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
             const activeCategory = categories.find(c => c.id === selectedCategory);
             const CategoryIcon = activeCategory ? getIconComponent(activeCategory.iconName) : null;
             return activeCategory?.description && CategoryIcon && (
-              <div className="mt-4 rounded-2xl border border-moss-200 bg-moss-50/30 px-6 py-4 backdrop-blur-sm dark:border-moss-800 dark:bg-moss-900/30">
+              <div className="mt-4 rounded-sm border-2 border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-navy-950 px-6 py-4">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-moss-gradient text-lg shadow-lg">
-                    <CategoryIcon className="h-6 w-6 text-white" />
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-sm bg-[#051c2c] dark:bg-slate-100 text-lg shadow-lg">
+                    <CategoryIcon className="h-6 w-6 text-white dark:text-[#051c2c]" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-moss-800 dark:text-moss-200">
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
                       {activeCategory.name}
                     </p>
-                    <p className="mt-1 text-sm leading-relaxed text-sage-700 dark:text-sage-300">
+                    <p className="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                       {activeCategory.description}
                     </p>
                   </div>
@@ -239,16 +245,16 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
           {allTags.length > 0 && (
             <div className="mt-6">
               <div className="mb-3 flex items-center gap-2">
-                <TagIcon className="h-4 w-4 text-moss-600 dark:text-moss-400" />
-                <span className="text-xs font-bold uppercase tracking-widest text-moss-700 dark:text-moss-300">Filter by Tag</span>
+                <TagIcon className="h-4 w-4 text-[#051c2c] dark:text-slate-100" />
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">Filter by Tag</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setSelectedTag(null)}
-                  className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
+                  className={`rounded-sm px-4 py-2 text-xs font-semibold transition-all ${
                     selectedTag === null
-                      ? "bg-moss-gradient text-white shadow-md dark:bg-moss-gradient-dark"
-                      : "border border-moss-200 bg-white text-moss-700 hover:border-moss-400 hover:bg-moss-50 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-300 dark:hover:border-moss-500 dark:hover:bg-moss-800"
+                      ? "bg-[#051c2c] dark:bg-slate-100 text-white dark:text-[#051c2c] shadow-md"
+                      : "border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-950 text-slate-600 dark:text-slate-300 hover:border-[#051c2c] dark:hover:border-slate-100"
                   }`}
                 >
                   All Tags
@@ -257,10 +263,10 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
                   <button
                     key={tag}
                     onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
-                    className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
+                    className={`rounded-sm px-4 py-2 text-xs font-semibold transition-all ${
                       selectedTag === tag
-                        ? "bg-moss-gradient text-white shadow-md dark:bg-moss-gradient-dark"
-                        : "border border-moss-200 bg-white text-moss-700 hover:border-moss-400 hover:bg-moss-50 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-300 dark:hover:border-moss-500 dark:hover:bg-moss-800"
+                        ? "bg-[#051c2c] dark:bg-slate-100 text-white dark:text-[#051c2c] shadow-md"
+                        : "border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-950 text-slate-600 dark:text-slate-300 hover:border-[#051c2c] dark:hover:border-slate-100"
                     }`}
                   >
                     #{tag}
@@ -273,16 +279,16 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
       </section>
 
       {/* Posts Grid */}
-      <section className="bg-gradient-to-b from-white via-cream-50 to-white py-16 lg:py-24 dark:from-moss-950 dark:via-moss-900 dark:to-moss-950">
+      <section className="bg-white dark:bg-navy-950 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           {displayPosts.length === 0 && (
-            <div className="rounded-4xl border-2 border-dashed border-moss-200 bg-white/70 p-12 text-center dark:border-moss-700 dark:bg-moss-900/70">
+            <div className="rounded-sm border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-12 text-center">
               <div className="mx-auto max-w-md">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-moss-100 dark:bg-moss-800">
-                  <BookOpenIcon className="h-8 w-8 text-moss-600 dark:text-moss-400" />
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-sm bg-[#051c2c] dark:bg-slate-100">
+                  <BookOpenIcon className="h-8 w-8 text-white dark:text-[#051c2c]" />
                 </div>
-                <h3 className="text-lg font-bold text-moss-950 dark:text-moss-50">No articles found</h3>
-                <p className="mt-2 text-sm text-sage-600 dark:text-sage-300">
+                <h3 className="text-lg font-bold text-[#051c2c] dark:text-white">No articles found</h3>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
                   {searchQuery || selectedTag || selectedCategory
                     ? "Try adjusting your search or filter criteria to find what you're looking for."
                     : "Check back soon for new content!"}
@@ -294,7 +300,7 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
                       setSelectedTag(null);
                       setSelectedCategory(null);
                     }}
-                    className="mt-4 inline-flex items-center gap-2 rounded-full border-2 border-moss-200 bg-white px-6 py-2 text-sm font-semibold text-moss-700 transition-all hover:border-moss-500 hover:bg-moss-50 dark:border-moss-700 dark:bg-moss-900 dark:text-moss-300 dark:hover:border-moss-500 dark:hover:bg-moss-800"
+                    className="mt-4 inline-flex items-center gap-2 rounded-sm border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-950 px-6 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 transition-all hover:border-[#051c2c] dark:hover:border-slate-100"
                   >
                     Clear all filters
                   </button>
@@ -308,18 +314,6 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
               const CategoryIcon = getCategoryIcon(post.tags);
               const categoryName = getCategoryName(post.tags);
 
-              // Determinar gradiente por categoría
-              const categoryGradients: Record<string, string> = {
-                "AI & Automation": "from-blue-500/10 via-indigo-500/10 to-purple-500/10",
-                "Growth & Marketing": "from-green-500/10 via-emerald-500/10 to-teal-500/10",
-                "Data & Analytics": "from-orange-500/10 via-amber-500/10 to-yellow-500/10",
-                "CRM & Sales": "from-purple-500/10 via-fuchsia-500/10 to-pink-500/10",
-                "Tech & Architecture": "from-slate-500/10 via-gray-500/10 to-zinc-500/10",
-                "General": "from-moss-500/10 via-sage-500/10 to-moss-400/10",
-              };
-
-              const gradient = categoryGradients[categoryName] || "from-moss-500/10 via-sage-500/10 to-moss-400/10";
-
               return (
                 <Link
                   key={post.slug}
@@ -327,47 +321,44 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
                   className="group relative"
                 >
                   {/* Card */}
-                  <div className="relative h-full overflow-hidden rounded-3xl border-2 border-moss-200 bg-white transition-all duration-500 hover:border-moss-400 hover:shadow-2xl hover:-translate-y-2 dark:border-moss-800 dark:bg-moss-900 dark:hover:border-moss-600">
-                    {/* Gradient Background */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 transition-opacity duration-500 group-hover:opacity-100`} />
-
+                  <div className="relative h-full overflow-hidden rounded-sm border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-all duration-500 hover:border-[#051c2c] dark:hover:border-slate-100 hover:shadow-2xl hover:-translate-y-2">
                     {/* Top Color Bar */}
-                    <div className={`h-2 w-full bg-gradient-to-r ${gradient.replace(/\/10/g, '')}`} />
+                    <div className="h-1 w-full bg-[#051c2c] dark:bg-slate-100" />
 
                     {/* Content */}
                     <div className="relative p-8 space-y-5">
                       {/* Category Badge - Larger & Prominent */}
                       <div className="flex items-center gap-3">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-moss-gradient text-2xl shadow-lg">
-                          <CategoryIcon className="h-8 w-8 text-white" />
+                        <div className="flex h-14 w-14 items-center justify-center rounded-sm bg-[#051c2c] dark:bg-slate-100 text-2xl shadow-lg">
+                          <CategoryIcon className="h-8 w-8 text-white dark:text-[#051c2c]" />
                         </div>
                         <div>
-                          <p className="text-xs font-bold uppercase tracking-widest text-moss-700 dark:text-moss-300">
+                          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
                             {categoryName}
                           </p>
-                          <p className="text-xs text-sage-600 dark:text-sage-400">{formatBlogDate(post.date)}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">{formatBlogDate(post.date)}</p>
                         </div>
                       </div>
 
                       {/* Title */}
-                      <h2 className="text-xl font-bold leading-tight text-moss-950 transition-colors duration-300 group-hover:text-moss-700 lg:text-2xl min-h-[3.5rem] dark:text-moss-50 dark:group-hover:text-moss-200">
+                      <h2 className="text-xl font-bold leading-tight text-[#051c2c] dark:text-white transition-all duration-300 lg:text-2xl min-h-[3.5rem]">
                         {post.title}
                       </h2>
 
                       {/* Summary */}
-                      <p className="text-sm leading-relaxed text-sage-700 line-clamp-3 min-h-[4rem] dark:text-sage-300">
+                      <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400 line-clamp-3 min-h-[4rem]">
                         {post.summary}
                       </p>
 
                       {/* Meta Info */}
-                      <div className="flex items-center gap-3 text-xs text-sage-600 pt-2 border-t border-moss-100 dark:border-moss-800 dark:text-sage-400">
-                        <span className="rounded-full bg-moss-100 px-3 py-1.5 font-semibold text-moss-800 dark:bg-moss-800 dark:text-moss-200">
+                      <div className="flex items-center gap-3 text-xs pt-2 border-t border-slate-200 dark:border-slate-700">
+                        <span className="rounded-sm bg-[#051c2c] dark:bg-slate-100 px-3 py-1.5 font-semibold text-white dark:text-[#051c2c]">
                           {post.type}
                         </span>
                         {post.readingTime && (
                           <>
-                            <span className="text-sage-400 dark:text-sage-500">•</span>
-                            <span className="flex items-center gap-1">
+                            <span className="text-slate-400 dark:text-slate-500">•</span>
+                            <span className="flex items-center gap-1 text-slate-600 dark:text-slate-400">
                               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
@@ -383,7 +374,7 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
                           {post.tags.slice(0, 3).map((tag) => (
                             <span
                               key={tag}
-                              className="rounded-lg border border-moss-200 bg-white/60 px-2.5 py-1 text-xs font-medium text-moss-700 backdrop-blur-sm dark:border-moss-700 dark:bg-moss-900/60 dark:text-moss-300"
+                              className="rounded-sm border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300"
                             >
                               {tag}
                             </span>
@@ -392,17 +383,12 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
                       )}
 
                       {/* Read More Arrow */}
-                      <div className="flex items-center gap-2 pt-4 text-sm font-bold text-moss-700 transition-all duration-300 group-hover:gap-4 dark:text-moss-200">
+                      <div className="flex items-center gap-2 pt-4 text-sm font-bold text-[#051c2c] dark:text-slate-100 transition-all duration-300 group-hover:gap-4">
                         <span>Read Article</span>
                         <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
                       </div>
-                    </div>
-
-                    {/* Hover Glow Effect */}
-                    <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none">
-                      <div className="absolute -inset-1 bg-moss-gradient opacity-20 blur-xl" />
                     </div>
                   </div>
                 </Link>
@@ -413,17 +399,17 @@ export function ResearchPageClient({ allPosts, postsByCategory, categories }: Re
       </section>
 
       {/* CTA Section */}
-      <section className="bg-moss-950 py-12 lg:py-16">
+      <section className="bg-slate-50 dark:bg-slate-900 py-12 lg:py-16 border-t border-slate-200 dark:border-slate-700">
         <div className="mx-auto max-w-4xl px-6 text-center lg:px-8">
-          <h2 className="text-3xl font-bold text-white lg:text-4xl">
+          <h2 className="font-heading text-3xl font-bold text-[#051c2c] dark:text-slate-100 lg:text-4xl tracking-tight">
             Need help with your growth stack?
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-sage-300">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600 dark:text-slate-300 tracking-wide">
             Schedule a call to design your ideal modular system
           </p>
           <Link
             href="/contact"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-moss-gradient px-8 py-3 text-base font-semibold text-white shadow-glow transition-all duration-300 hover:scale-105"
+            className="mt-8 inline-flex items-center gap-2 rounded-sm bg-[#051c2c] dark:bg-slate-100 px-8 py-3 text-base font-semibold text-white dark:text-[#051c2c] shadow-lg transition-all duration-300 hover:bg-[#062433] dark:hover:bg-slate-200"
           >
             Get in Touch
             <span>→</span>

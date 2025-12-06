@@ -3,28 +3,104 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* McKinsey-style Navy Palette */
+    --navy-50: #f0f4f8;
+    --navy-100: #d9e2ec;
+    --navy-200: #bcccdc;
+    --navy-300: #9fb3c8;
+    --navy-400: #829ab1;
+    --navy-500: #627d98;
+    --navy-600: #486581;
+    --navy-700: #334e68;
+    --navy-800: #243b53;
+    --navy-900: #0f1d32;
+    --navy-950: #0a1628;
+
+    /* Slate Palette */
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
+    --slate-950: #020617;
+
+    /* Professional Gradients */
+    --gradient-primary: linear-gradient(135deg, #051c2c 0%, #0a2d45 100%);
+    --gradient-secondary: linear-gradient(135deg, #334155 0%, #475569 100%);
+    --gradient-accent: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+
+    /* Light Mode Colors */
+    --background: #ffffff;
+    --foreground: #0a1628;
+    --card-bg: #ffffff;
+    --border: #e2e8f0;
+  }
+
+  .dark {
+    /* Dark Mode Colors */
+    --background: #0a1628;
+    --foreground: #f1f5f9;
+    --card-bg: #1e293b;
+    --border: #475569;
+
+    /* Dark Mode Gradients */
+    --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    --gradient-secondary: linear-gradient(135deg, #475569 0%, #64748b 100%);
+    --gradient-accent: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  }
+
   * {
     @apply border-border;
   }
 
-  body {
-    @apply text-foreground;
-    min-height: 100vh;
+  html {
+    scroll-behavior: smooth;
   }
 
-  /* Space Grotesk for all headings */
+  body {
+    @apply text-foreground;
+    background-color: var(--background);
+    color: var(--foreground);
+    min-height: 100vh;
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Playfair Display for all headings - McKinsey Typography */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display;
+    @apply font-heading;
     font-weight: 500;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
   }
 
   h1 {
     font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
   }
 
-  h2, h3 {
+  h2 {
     font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  h3 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    line-height: 1.7;
+    letter-spacing: -0.011em;
   }
 
   /* IBM Plex Mono for code elements */
@@ -34,19 +110,202 @@
 
   code {
     font-size: 0.95em;
-    padding: 0.125rem 0.25rem;
-    border-radius: 0.25rem;
-    background-color: rgba(106, 138, 108, 0.1);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.375rem;
+    background-color: rgba(148, 163, 184, 0.1);
+    font-weight: 500;
+    letter-spacing: -0.01em;
   }
 
   pre code {
     padding: 0;
     background-color: transparent;
   }
+
+  /* Custom Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 5px;
+    transition: background 0.2s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(71, 85, 105, 0.5);
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(71, 85, 105, 0.7);
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+  }
+
+  .dark * {
+    scrollbar-color: rgba(71, 85, 105, 0.5) transparent;
+  }
+}
+
+@layer components {
+  /* McKinsey-Style Professional Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 font-semibold text-white;
+    background: #051c2c;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    letter-spacing: -0.01em;
+    border: none;
+  }
+
+  .btn-primary:hover {
+    background: #0a2d45;
+    opacity: 0.95;
+  }
+
+  .btn-primary:active {
+    opacity: 0.9;
+  }
+
+  .dark .btn-primary {
+    background: #3b82f6;
+    color: #ffffff;
+  }
+
+  .dark .btn-primary:hover {
+    background: #2563eb;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 font-semibold;
+    background: #ffffff;
+    border: 2px solid #051c2c;
+    color: #051c2c;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    letter-spacing: -0.01em;
+  }
+
+  .btn-secondary:hover {
+    background: #f8f9fa;
+    border-color: #0a2d45;
+  }
+
+  .btn-secondary:active {
+    background: #e9ecef;
+  }
+
+  .dark .btn-secondary {
+    background: #1e293b;
+    border-color: #475569;
+    color: #f1f5f9;
+  }
+
+  .dark .btn-secondary:hover {
+    background: #334155;
+    border-color: #64748b;
+  }
+
+  .dark .btn-secondary:active {
+    background: #475569;
+  }
+
+  /* McKinsey-Style Professional Card */
+  .card-premium {
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+
+  .card-premium:hover {
+    border-color: #c0c0c0;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .card-premium {
+    background: var(--card-bg);
+    border-color: var(--border);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  .dark .card-premium:hover {
+    border-color: #64748b;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.4);
+  }
+
+  /* Simplified Text Gradient - McKinsey Style */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-primary);
+  }
+
+  /* McKinsey Button Utilities */
+  .btn-mckinsey {
+    @apply inline-flex items-center justify-center px-6 py-3 font-semibold text-white;
+    background: #051c2c;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+    letter-spacing: -0.01em;
+  }
+
+  .btn-mckinsey:hover {
+    background: #0a2d45;
+  }
+
+  .dark .btn-mckinsey {
+    background: #3b82f6;
+  }
+
+  .dark .btn-mckinsey:hover {
+    background: #2563eb;
+  }
+
+  .btn-mckinsey-outline {
+    @apply inline-flex items-center justify-center px-6 py-3 font-semibold;
+    background: #ffffff;
+    border: 2px solid #051c2c;
+    color: #051c2c;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+    letter-spacing: -0.01em;
+  }
+
+  .btn-mckinsey-outline:hover {
+    background: #f8f9fa;
+    border-color: #0a2d45;
+  }
+
+  .dark .btn-mckinsey-outline {
+    background: #1e293b;
+    border-color: #475569;
+    color: #f1f5f9;
+  }
+
+  .dark .btn-mckinsey-outline:hover {
+    background: #334155;
+    border-color: #64748b;
+  }
 }
 
 @layer utilities {
-  /* Container utilities for consistent max-widths */
+  /* Enhanced Container Utilities */
   .container-sm {
     @apply mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8;
   }
@@ -75,12 +334,76 @@
   .section-py-lg {
     @apply py-16 lg:py-28;
   }
+
+  /* Animation Utilities - Reduced Intensity */
+  .animate-float {
+    animation: float 8s ease-in-out infinite;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+
+  /* Transition Utilities */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .transition-bounce {
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  /* Hide scrollbar for horizontal scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Custom styled scrollbar */
+  .scrollbar-styled {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+  }
+
+  .scrollbar-styled::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-styled::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 4px;
+  }
+
+  .scrollbar-styled::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+  }
+
+  .dark .scrollbar-styled {
+    scrollbar-color: rgba(71, 85, 105, 0.5) transparent;
+  }
+
+  .dark .scrollbar-styled::-webkit-scrollbar-thumb {
+    background: rgba(71, 85, 105, 0.5);
+  }
+
+  .dark .scrollbar-styled::-webkit-scrollbar-thumb:hover {
+    background: rgba(71, 85, 105, 0.7);
+  }
 }
 
+/* Keyframe Animations */
+
+/* Fade Up Animation */
 .fade-up {
   opacity: 0;
   transform: translateY(16px);
-  animation: fadeUp 0.9s ease forwards;
+  animation: fadeUp 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .fade-up.delay-1 {
@@ -91,6 +414,10 @@
   animation-delay: 0.3s;
 }
 
+.fade-up.delay-3 {
+  animation-delay: 0.45s;
+}
+
 @keyframes fadeUp {
   to {
     opacity: 1;
@@ -98,12 +425,48 @@
   }
 }
 
-/* Hide scrollbar for horizontal scroll in category filters */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* Float Animation - Reduced Intensity */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+/* Scale In Animation */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Slide In From Left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide In From Right */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

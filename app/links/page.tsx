@@ -35,7 +35,7 @@ const linkGroups = [
 export default function LinksPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-6 pb-24 pt-24 md:px-10">
-      <h1 className="font-display text-4xl font-semibold text-foreground">Quick Links · Linktree</h1>
+      <h1 className="font-heading text-4xl font-semibold text-foreground">Quick Links · Linktree</h1>
       <p className="mt-4 text-base text-foreground-muted">
         Everything Marsala OS in one place — choose the path you need.
         <span className="mt-1 block text-sm text-foreground">
@@ -44,14 +44,14 @@ export default function LinksPage() {
       </p>
       <div className="mt-10 space-y-6">
         {linkGroups.map((group) => (
-          <section key={group.title} className="rounded-3xl border border-border bg-white/80 p-6 shadow-card">
+          <section key={group.title} className="rounded-sm border border-border bg-white/80 p-6 shadow-card">
             <h2 className="text-xs font-semibold uppercase tracking-[0.3em] text-foreground/60">{group.title}</h2>
             <div className="mt-4 grid gap-3">
               {group.links.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="inline-flex items-center justify-between rounded-full border border-border px-5 py-3 text-sm font-semibold text-foreground shadow-card transition-transform duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-accent"
+                  className="inline-flex items-center justify-between rounded-sm border border-border px-5 py-3 text-sm font-semibold text-foreground shadow-card transition-transform duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-accent"
                 >
                   {link.label}
                   <span aria-hidden>↗</span>

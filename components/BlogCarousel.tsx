@@ -116,11 +116,11 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
   };
 
   return (
-    <div className="group relative overflow-hidden rounded-4xl border-2 border-moss-200 bg-gradient-to-br from-white via-cream-50 to-moss-50 p-8 shadow-card transition-all duration-500 hover:border-moss-400 hover:shadow-hover lg:p-12">
+    <div className="group relative overflow-hidden rounded-sm border-2 border-slate-200 bg-white p-8 shadow-card transition-all duration-500 hover:border-slate-300 hover:shadow-lg lg:p-12 dark:border-slate-700 dark:bg-navy-950 dark:hover:border-slate-600">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute left-0 top-0 h-full w-1/2 bg-moss-gradient blur-3xl" />
-        <div className="absolute right-0 bottom-0 h-full w-1/2 bg-sage-gradient blur-3xl" />
+        <div className="absolute left-0 top-0 h-full w-1/2 bg-gradient-to-br from-slate-300 to-transparent blur-3xl" />
+        <div className="absolute right-0 bottom-0 h-full w-1/2 bg-gradient-to-tl from-slate-300 to-transparent blur-3xl" />
       </div>
 
       {/* Content */}
@@ -128,14 +128,14 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-moss-gradient text-lg shadow-glow">
+            <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-[#051c2c] text-lg shadow-sm dark:bg-slate-700">
               📚
             </div>
             <div>
-              <h3 className="text-sm font-bold uppercase tracking-wider text-moss-700">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-[#051c2c] dark:text-white">
                 Latest Insights
               </h3>
-              <p className="text-xs text-sage-600">From Marsala Research</p>
+              <p className="text-xs text-slate-600 dark:text-slate-400">From Marsala Research</p>
             </div>
           </div>
 
@@ -143,14 +143,14 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
           <div className="flex items-center gap-2">
             <button
               onClick={goToPrev}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-moss-300 bg-white text-moss-700 transition-all hover:border-moss-500 hover:bg-moss-50"
+              className="flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-white text-[#051c2c] transition-all hover:border-slate-300 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:hover:border-slate-500 dark:hover:bg-slate-700"
               aria-label="Previous post"
             >
               ←
             </button>
             <button
               onClick={goToNext}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-moss-300 bg-white text-moss-700 transition-all hover:border-moss-500 hover:bg-moss-50"
+              className="flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-white text-[#051c2c] transition-all hover:border-slate-300 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:hover:border-slate-500 dark:hover:bg-slate-700"
               aria-label="Next post"
             >
               →
@@ -178,25 +178,25 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
             >
               {/* Category & Meta */}
               <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-                <span className="rounded-full bg-moss-gradient px-3 py-1 text-white shadow-sm">
+                <span className="rounded-sm bg-[#051c2c] px-3 py-1 text-white shadow-sm dark:bg-slate-700">
                   {categoryIcon} {currentPost.type || "Insight"}
                 </span>
-                <span className="text-sage-600">·</span>
-                <span className="text-sage-600">{formatBlogDate(currentPost.date)}</span>
+                <span className="text-slate-600 dark:text-slate-400">·</span>
+                <span className="text-slate-600 dark:text-slate-400">{formatBlogDate(currentPost.date)}</span>
                 {currentPost.readingTime && (
                   <>
-                    <span className="text-sage-600">·</span>
-                    <span className="text-sage-600">{currentPost.readingTime}</span>
+                    <span className="text-slate-600 dark:text-slate-400">·</span>
+                    <span className="text-slate-600 dark:text-slate-400">{currentPost.readingTime}</span>
                   </>
                 )}
               </div>
 
               {/* Title & Summary */}
               <div>
-                <h4 className="text-2xl font-bold text-moss-950 transition-colors group-hover:text-moss-700 lg:text-3xl">
+                <h4 className="text-2xl font-bold text-[#051c2c] transition-colors group-hover:text-slate-700 lg:text-3xl dark:text-white dark:group-hover:text-slate-200">
                   {currentPost.title}
                 </h4>
-                <p className="mt-3 line-clamp-2 text-base text-sage-700 lg:text-lg">
+                <p className="mt-3 line-clamp-2 text-base text-slate-700 lg:text-lg dark:text-slate-300">
                   {currentPost.summary}
                 </p>
               </div>
@@ -206,7 +206,7 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
                 {currentPost.tags?.slice(0, 4).map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full border border-moss-200 bg-white/60 px-3 py-1 text-xs font-semibold text-moss-700 backdrop-blur-sm"
+                    className="rounded-sm border border-slate-200 bg-white/60 px-3 py-1 text-xs font-semibold text-[#051c2c] backdrop-blur-sm dark:border-slate-600 dark:bg-slate-800/60 dark:text-white"
                   >
                     #{tag}
                   </span>
@@ -214,7 +214,7 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
               </div>
 
               {/* CTA */}
-              <div className="flex items-center gap-2 text-sm font-semibold text-moss-700 transition-all duration-300 group-hover:translate-x-1">
+              <div className="flex items-center gap-2 text-sm font-semibold text-[#051c2c] transition-all duration-300 group-hover:translate-x-1 dark:text-white">
                 <span>{t("common.readMore")}</span>
                 <span>→</span>
               </div>
@@ -228,10 +228,10 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`h-2 rounded-full transition-all duration-300 ${
+              className={`h-2 rounded-sm transition-all duration-300 ${
                 index === currentIndex
-                  ? "w-8 bg-moss-gradient shadow-glow"
-                  : "w-2 bg-moss-300 hover:bg-moss-400"
+                  ? "w-8 bg-[#051c2c] shadow-sm dark:bg-slate-200"
+                  : "w-2 bg-slate-300 hover:bg-slate-400 dark:bg-slate-600 dark:hover:bg-slate-500"
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
@@ -241,9 +241,9 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
 
       {/* Progress Bar */}
       {isAutoPlaying && (
-        <div className="absolute bottom-0 left-0 h-1 w-full overflow-hidden bg-moss-100">
+        <div className="absolute bottom-0 left-0 h-1 w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
           <div
-            className="h-full bg-moss-gradient"
+            className="h-full bg-[#051c2c] dark:bg-slate-200"
             style={{
               animation: "progress 5s linear infinite",
             }}

@@ -30,7 +30,7 @@ export default function AIUsagePage() {
       <h1 className="font-display text-4xl font-semibold text-foreground">AI Usage · Uso de IA</h1>
       <div className="mt-8 space-y-4">
         {items.map((item) => (
-          <p key={item.en} className="rounded-3xl border border-border bg-white/80 p-5 text-sm text-foreground shadow-card">
+          <p key={item.en} className="rounded-sm border border-border bg-white/80 p-5 text-sm text-foreground shadow-card">
             {item.en}
             <span className="mt-1 block text-xs text-foreground-muted">{item.es}</span>
           </p>
