@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
 import type { Database } from '@/lib/supabase/types';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy initialization to avoid build-time errors
+const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
 type NewsletterSubscriberInsert = Database['public']['Tables']['newsletter_subscribers']['Insert'];
 
@@ -85,7 +86,7 @@ export async function POST(request: NextRequest) {
 
         // Send reactivation confirmation email
         try {
-          await resend.emails.send({
+          await getResend().emails.send({
             from: 'Marsala Newsletter <newsletter@marsala.dev>',
             to: [email],
             subject: 'Welcome back to Marsala Newsletter!',
@@ -133,7 +134,7 @@ export async function POST(request: NextRequest) {
 
     // Send confirmation email
     try {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: 'Marsala Newsletter <newsletter@marsala.dev>',
         to: [email],
         subject: 'Welcome to Marsala Newsletter!',
@@ -147,7 +148,7 @@ export async function POST(request: NextRequest) {
 
     // Notify admin
     try {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: 'Marsala Newsletter <newsletter@marsala.dev>',
         to: ['sabre.alfredo@gmail.com'], // Change to your email
         subject: 'New Newsletter Subscriber',
@@ -257,7 +258,7 @@ export async function DELETE(request: NextRequest) {
 
     // Send unsubscribe confirmation email
     try {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: 'Marsala Newsletter <newsletter@marsala.dev>',
         to: [email],
         subject: 'You have been unsubscribed',

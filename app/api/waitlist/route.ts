@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
 import type { WaitlistInsert, WaitlistEntry } from '@/lib/supabase/types';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy initialization to avoid build-time errors
+const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -89,7 +90,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Send notification email to sales team
-    const salesEmailResult = await resend.emails.send({
+    const salesEmailResult = await getResend().emails.send({
       from: 'Marsala Waitlist <onboarding@resend.dev>',
       to: ['sabre.alfredo@gmail.com'],
       subject: `New Waitlist Signup - ${email}`,
@@ -176,7 +177,7 @@ ${referral_source ? `Referral Source: ${referral_source}` : ''}
     }
 
     // Send welcome/confirmation email to user
-    const welcomeEmailResult = await resend.emails.send({
+    const welcomeEmailResult = await getResend().emails.send({
       from: 'Marsala OS <onboarding@resend.dev>',
       to: [email],
       subject: 'Welcome to Marsala OS Waitlist',

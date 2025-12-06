@@ -174,7 +174,7 @@ export default function AnalyticsDemo() {
 
       <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
         <p className="text-sm text-yellow-800">
-          <strong>Note:</strong> Analytics events are sent asynchronously and won't block
+          <strong>Note:</strong> Analytics events are sent asynchronously and won&apos;t block
           the UI. Check your Supabase dashboard to verify events are being stored.
         </p>
       </div>

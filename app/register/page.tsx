@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [formState, setFormState] = useState({
@@ -394,5 +394,27 @@ export default function RegisterPage() {
         </p>
       </section>
     </main>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={
+      <main className="mx-auto w-full max-w-md px-6 pb-24 pt-24 md:px-10 bg-white dark:bg-navy-950 min-h-screen">
+        <div className="text-center mb-8">
+          <p className="text-xs uppercase tracking-[0.35em] text-slate-600 dark:text-slate-400">
+            Create Account
+          </p>
+          <h1 className="mt-2 font-heading text-4xl font-semibold text-[#051c2c] dark:text-slate-100">
+            Join Marsala OS
+          </h1>
+          <p className="mt-4 text-base text-slate-600 dark:text-slate-300">
+            Loading...
+          </p>
+        </div>
+      </main>
+    }>
+      <RegisterForm />
+    </Suspense>
   );
 }

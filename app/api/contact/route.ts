@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
 import type { ContactInsert, FormSubmissionInsert, Database } from '@/lib/supabase/types';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy initialization to avoid build-time errors
+const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
 // Simple in-memory rate limiting (for production, use Redis or Upstash)
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
@@ -410,7 +411,7 @@ ${referer ? `Referrer: ${referer}\n` : ''}
 Submitted: ${new Date().toISOString()}
     `.trim();
 
-    const { data: emailData, error: emailError } = await resend.emails.send({
+    const { data: emailData, error: emailError } = await getResend().emails.send({
       from: 'Marsala Contact Form <onboarding@resend.dev>',
       to: ['sales@marsala.dev'],
       subject: `New Contact Form Submission${company ? ` from ${company}` : ''}${entryPoint ? ` - ${entryPoint}` : ''}`,
